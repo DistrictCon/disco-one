@@ -5,8 +5,8 @@ router.get('/', async (req, res) => {
 
     res.setHeader('X-author', 'jakerella')
     res.render('game', {
-        page: 'DisCo Game',
-        title: process.env.APP_NAME || 'Game',
+        page: 'game',
+        title: process.env.TITLE || 'The Game',
         appName: process.env.APP_NAME || ''
     })
 })

@@ -1,5 +1,23 @@
+extends partials/layout.pug
 
-h1 The Game 
+block content
+    header 
+        h1= title
 
-p.
-    This is the game!
+    main
+        section
+            form(action="/", method="post")
+                input(type="hidden", name="action", value="pattern")
+                label(for="pattern")
+                    | New Pattern: 
+                    input#pattern(type="text", name="pattern")
+
+        section
+            h2 Found Patterns
+            ul
+                li one
+                li two
+
+    footer
+        p
+            | &copy; DistrictCon 2025
