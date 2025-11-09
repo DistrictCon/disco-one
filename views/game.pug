@@ -3,14 +3,20 @@ extends partials/layout.pug
 block content
     header 
         h1= title
+        p
+            | User: 
+            =user.username
+        a(href="/user/logout") Logout
+        #if(message)
+            p= message
 
     main
         section
-            form(action="/", method="post")
-                input(type="hidden", name="action", value="pattern")
+            form(action="/pattern", method="post")
                 label(for="pattern")
                     | New Pattern: 
                     input#pattern(type="text", name="pattern")
+                input(type="submit", value="Submit")
 
         section
             h2 Found Patterns

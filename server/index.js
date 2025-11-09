@@ -2,14 +2,17 @@ require('dotenv').config({ override: true })
 
 const express = require('express')
 const session = require('express-session')
+const AppError = require('../util/AppError')
+const { getConnection } = require('../util/database')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const game = require('../routes/game')
+const user = require('../routes/user')
 
 
 const PORT = process.env.PORT || 80
 
-function main() {
+async function main() {
 
     /* ********** basic express app creation ********** */
     const app = express()
@@ -19,12 +22,24 @@ function main() {
     app.use(express.urlencoded({ extended: false }))
 
 
+    /* ******* testing DB connection ******** */
+    const db = getConnection()
+    try {
+        await db.authenticate()
+        logger.info('Successfuly tested DB connection on process start.')
+    } catch (err) {
+        logger.error('Unable to connect to the database:', err)
+        return Promise.reject(new AppError('Unable to connect to database.', 500))
+    }
+    // TODO: close connection on server shutdown
+
     /* ********** session handling ********** */
     const sessionOptions = {
         secret: process.env.SESS_SECRET,
         cookie: { maxAge: 86400000 * 3 }, // 3 days
         name: `${process.env.APP_NAME}-session`,
-        saveUninitialized: false
+        saveUninitialized: false,
+        resave: false
     }
     if (process.env.NODE_ENV !== 'development') {
         app.set('trust proxy', 1)
@@ -35,6 +50,7 @@ function main() {
 
     /* ********** routes and middleware ********** */
     app.use('/', game)
+    app.use('/user', user)
 
 
     app.use((req, res, next) => {
@@ -66,9 +82,9 @@ function main() {
     /* ********** app startup ********** */
     app.listen(PORT, () => {
         if (process.env.NODE_ENV === 'development') {
-            logger.info(`Listening at https://localhost:${PORT}`)
+            logger.info(`${process.env.APP_NAME} is listening at https://localhost:${PORT}`)
         } else {
-            logger.info(`Listening on port ${PORT}`)
+            logger.info(`${process.env.APP_NAME} is listening on port ${PORT}`)
         }
     })
     /* ********************************* */
