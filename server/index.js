@@ -2,6 +2,7 @@ require('dotenv').config({ override: true })
 
 const express = require('express')
 const session = require('express-session')
+const pgSession = require('connect-pg-simple')(session)
 const AppError = require('../util/AppError')
 const { getConnection } = require('../util/database')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
@@ -33,13 +34,19 @@ async function main() {
     }
     // TODO: close connection on server shutdown
 
+
     /* ********** session handling ********** */
     const sessionOptions = {
+        store: new pgSession({
+            tableName: 'user_sessions',
+            conString: process.env.DATABASE_URL
+        }),
         secret: process.env.SESS_SECRET,
         cookie: { maxAge: 86400000 * 3 }, // 3 days
         name: `${process.env.APP_NAME}-session`,
         saveUninitialized: false,
-        resave: false
+        resave: false,
+        cookie: { maxAge: (1000 * 60 * 60 * 24 * 3) }
     }
     if (process.env.NODE_ENV !== 'development') {
         app.set('trust proxy', 1)
