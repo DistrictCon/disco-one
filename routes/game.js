@@ -1,5 +1,6 @@
 const express = require('express')
-const AppError = require('../util/AppError')
+const { checkUserAuth, checkAPIAuth } = require('../util/middleware')
+const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
 
@@ -24,21 +25,14 @@ router.get('/', (req, res) => {
     })
 })
 
-router.post('/pattern', (req, res, next) => {
-    if (!req.session.user) {
-        return next(new AppError('You must be logged in.', 401))
-    }
+router.post('/pattern', checkUserAuth, (req, res, next) => {
 
     // TODO: check pattern and add to queue
-    console.log('pattern:', req.body.pattern)
+    console.log('pattern:', req.body?.pattern)
 
-    res.render('game', {
-        page: 'game',
-        message: 'You have found a new pattern!',
-        user: req.session.user,
-        title: process.env.TITLE || 'The Game',
-        appName: process.env.APP_NAME || ''
-    })
+    req.session.message = 'You have found a new pattern!'
+
+    res.redirect('/')
 })
 
 router.get('/queue', (req, res) => {
@@ -51,7 +45,7 @@ router.get('/queue', (req, res) => {
     ])
 })
 
-router.delete('/queue', (req, res) => {
+router.delete('/queue', checkAPIAuth, (req, res) => {
 
     // TODO: return and remove the next in the queue
 
@@ -68,14 +62,20 @@ router.get('leaderboard', (req, res) => {
     ])
 })
 
-router.get('/display', (req, res) => {
+router.get('/display', checkAPIAuth, (req, res) => {
 
     // TODO: get queue and leaderboard data for display
 
     res.render('display', {
         page: 'display',
-        queue: [],
-        leaderboard: [],
+        queue: [
+            { username: 'jordan', pattern: 'rrrzzrzrrrz' },
+            { username: 'roro', pattern: 'rzrzrzrzrzr' }
+        ],
+        leaderboard: [
+            { username: 'jordan', watts: 75 },
+            { username: 'roro', watts: 30 }
+        ],
         title: process.env.TITLE || 'The Game',
         appName: process.env.APP_NAME || ''
     })

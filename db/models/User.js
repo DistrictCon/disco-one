@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const { DataTypes } = require('sequelize')
 const Submission = require('./Submission')
 const { getConnection } = require('../../util/database')
@@ -17,6 +18,13 @@ const User = sequelize.define(
         timestamps: true
     }
 )
+
+User.hashPass = function hashPass(pass) {
+    return crypto.createHash('sha256').update(`${pass}-${process.env.SALT}`).digest('hex')
+}
+User.cleanUsername = function cleanUsername(username) {
+    return username.trim().replaceAll(/[^\w\-\.\']/ig, '').substring(0, 255)
+}
 
 User.validateAllScores = async function validateAllScores() {
     // TODO: go through all User records and validate all scores

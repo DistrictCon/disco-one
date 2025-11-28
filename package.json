@@ -5,9 +5,11 @@
   "description": "Challenge repo for DistrictCon Year One",
   "main": "server/cluster.js",
   "scripts": {
-    "db:init": "node ./db/create-database.js",
+    "db:init": "node ./db/create-database.js && node ./db/seed-database.js",
+    "db:create": "node ./db/create-database.js",
+    "db:seed": "node ./db/seed-database.js",
     "start": "node .",
-    "watch": "./node_modules/nodemon/bin/nodemon.js -e js,pug,json ."
+    "watch": "npx nodemon -e js,pug,json ."
   },
   "author": "Jordan Kasper",
   "license": "MIT",

@@ -1,16 +1,6 @@
-const crypto = require('crypto')
 const express = require('express')
 const router = express.Router()
 const User = require('../db/models/User')
-const AppError = require('../util/AppError')
-
-function hashPass(pass) {
-    return crypto.createHash('sha256').update(`${pass}-${process.env.SALT}`).digest('hex')
-}
-function cleanUsername(username) {
-    return username.trim().replaceAll(/[^\w\-\.\']/ig, '').substring(0, 255)
-}
-
 
 router.get('/', (req, res) => {
     if (!req.session.user) {
@@ -36,8 +26,8 @@ router.post('/login', async (req, res, next) => {
     let user = null
     let message = null
 
-    const username = cleanUsername(req.body.username)
-    const password = hashPass(req.body.password)
+    const username = User.cleanUsername(req.body.username)
+    const password = User.hashPass(req.body.password)
 
     if (username && username === req.body.username) {
         user = await User.findOne({ where: { username: req.body.username } })

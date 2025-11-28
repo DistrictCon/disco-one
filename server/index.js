@@ -68,19 +68,20 @@ async function main() {
 
     app.use((err, req, res, next) => {
         let status = err.status || 500
+        let message = (status > 499) ? 'Sorry, there was a problem. Try again later.' : err.message
         if (status > 499) {
             logger.error(`${err.message || err} ${err.stack.split('\n')[1]}`)
         }
         
         res.status(status)
         
-        if (req.headers.accept === 'text/plain') {
-            res.end((status > 499) ? 'Sorry, there was a problem. Try again later.' : err.message)
+        if (req.headers.accept === 'application/json') {
+            res.json({ status, message })
         } else {
             res.render('error', {
                 page: 'error',
                 title: `${process.env.APP_NAME} Error`,
-                message: (status === 500) ? 'Sorry, we ran into a problem.' : err.message
+                message
             })
         }
     })
