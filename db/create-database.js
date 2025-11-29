@@ -1,11 +1,11 @@
 require('dotenv').config({ override: true })
 const pg = require('pg')
-const { User, Submission, Queue, Pattern } = require('../db/models/app-models')
+const { User, Submission, Pattern } = require('../db/models/app-models')
 
 // Force DB connection opening in Sequelize
 const { getConnection } = require('../util/database')
 
-const models = [ User, Submission, Queue, Pattern ]
+const models = [ User, Submission, Pattern ]
 
 ;(async () => {
     if (process.env.NODE_ENV !== 'development') {

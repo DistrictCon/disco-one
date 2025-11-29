@@ -1,8 +1,7 @@
 const express = require('express')
 const { checkUserAuth, checkAPIAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
-const { getConnection } = require('../util/database')
-const { Submission, Queue } = require('../db/models/app-models')
+const { Submission } = require('../db/models/app-models')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const { PATTERN_REGEX } = require('../util/constants')
@@ -17,7 +16,7 @@ router.get('/', (req, res) => {
         res.setHeader('X-author', 'jakerella')
     }
 
-    // TODO: get user data from DB
+    // TODO: get submissions, points, hints
 
     const message = req.session.message || null
     req.session.message = null
@@ -34,7 +33,6 @@ router.get('/', (req, res) => {
 router.post('/pattern', checkUserAuth, async (req, res) => {
     const pattern = req.body?.pattern?.toLowerCase() || null
     
-    let trans = null
     try {
         if (!PATTERN_REGEX.test(pattern)) {
             throw new AppError('That is not a valid pattern format.', 400)
@@ -54,16 +52,13 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
             throw new AppError('You have already tried that pattern!', 400)
         }
 
-        trans = await getConnection().transaction()
-        const sub = await Submission.create(
-            { UserId: req.session.user.id, pattern },
-            { transaction: trans }
-        )
-        const queued = await Queue.create(
-            { UserId: req.session.user.id, SubmissionId: sub.id },
-            { transaction: trans }
-        )
-        await trans.commit()
+        // TODO: determine if the submission is valid before creating
+        const isValid = false
+
+        const sub = await Submission.create({ UserId: req.session.user.id, pattern, isValid })
+        if (!sub) {
+            throw new AppError('No submission was returned from creation method.', 500)
+        }
 
         logger.debug(`Added new submission for User ${req.session.user.username}: ${pattern}`)
 
@@ -78,29 +73,59 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
             logger.error(`Problem with submission for User: ${req.session.user.username} and Pattern: ${pattern}`)
             logger.error(err)
         }
-        if (trans) {
-            trans.rollback()
-        }
         req.session.message = message
         res.redirect('/')
     }
 })
 
-router.get('/queue', (req, res) => {
-    
-    // TODO: retrieve the queue
+router.get('/queue', async (req, res, next) => {
+    try {
+        const queue = await Submission.findAll({
+            where: { executedAt: null },
+            order: [ ['createdAt', 'ASC'] ],
+            include: { all: true, nested: true },
+            raw: true
+        })
+        
+        res.json(queue.map(sub => {
+            return {
+                pattern: sub.pattern,
+                username: sub['User.username'],
+                createdAt: sub.createdAt.getTime()
+            }
+        }))
 
-    res.json([
-        { username: 'jordan', pattern: 'rrrzzrzrrrz' },
-        { username: 'roro', pattern: 'rzrzrzrzrzr' }
-    ])
+    } catch(err) {
+        return next(err)
+    }
 })
 
-router.delete('/queue', checkAPIAuth, (req, res) => {
+router.post('/run', checkAPIAuth, async (req, res, next) => {
+    try {
+        const nextSub = await Submission.findAll({
+            where: { executedAt: null },
+            order: [ ['createdAt', 'ASC'] ],
+            include: { all: true, nested: true },
+            limit: 1
+        })
 
-    // TODO: return and remove the next in the queue
+        if (nextSub.length < 1) {
+            res.status(204)
+            res.json(null)
+        } else {
+            nextSub[0].executedAt = Date.now()
+            await nextSub[0].save()
 
-    res.json({ username: 'jordan', pattern: 'rrrzzrzrrrz' })
+            res.json({
+                pattern: nextSub[0].pattern,
+                username: nextSub[0].User.username,
+                createdAt: nextSub[0].createdAt.getTime()
+            })
+        }
+
+    } catch(err) {
+        return next(err)
+    }
 })
 
 router.get('leaderboard', (req, res) => {

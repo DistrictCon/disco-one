@@ -2,8 +2,8 @@ require('dotenv').config({ override: true })
 const fs = require('fs')
 const pg = require('pg')
 
-const { User, Submission, Queue, Pattern } = require('../db/models/app-models')
-const models = [ User, Submission, Queue, Pattern ]
+const { User, Submission, Pattern } = require('../db/models/app-models')
+const models = [ User, Submission, Pattern ]
 
 ;(async () => {
     console.log('Opening database connection for seeding')
