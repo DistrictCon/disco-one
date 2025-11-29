@@ -1,6 +1,5 @@
 const crypto = require('crypto')
 const { DataTypes } = require('sequelize')
-const Submission = require('./Submission')
 const { getConnection } = require('../../util/database')
 
 const sequelize = getConnection()
@@ -38,5 +37,4 @@ User.prototype.validateScore = async function validateScore() {
     return 0
 }
 
-User.Submissions = User.hasMany(Submission)
 module.exports = User

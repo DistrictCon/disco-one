@@ -10,7 +10,6 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 const game = require('../routes/game')
 const user = require('../routes/user')
 
-
 const PORT = process.env.PORT || 80
 
 async function main() {

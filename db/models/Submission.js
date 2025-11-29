@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize')
-const User = require('./User')
 const { getConnection } = require('../../util/database')
 
 const sequelize = getConnection()

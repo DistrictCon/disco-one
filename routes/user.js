@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const User = require('../db/models/User')
+const { User } = require('../db/models/app-models')
 
 router.get('/', (req, res) => {
     if (!req.session.user) {
