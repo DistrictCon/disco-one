@@ -1,7 +1,7 @@
 const express = require('express')
 const { checkUserAuth, checkAPIAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
-const { Submission } = require('../db/models/app-models')
+const { Pattern, Submission } = require('../db/models/app-models')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const { PATTERN_REGEX } = require('../util/constants')
@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
 })
 
 router.post('/pattern', checkUserAuth, async (req, res) => {
-    const pattern = req.body?.pattern?.toLowerCase() || null
+    const pattern = req.body?.pattern?.trim().toLowerCase() || null
     
     try {
         if (!PATTERN_REGEX.test(pattern)) {
@@ -52,10 +52,13 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
             throw new AppError('You have already tried that pattern!', 400)
         }
 
-        // TODO: determine if the submission is valid before creating
-        const isValid = false
+        const isValid = await Pattern.isValid(pattern)
 
-        const sub = await Submission.create({ UserId: req.session.user.id, pattern, isValid })
+        const sub = await Submission.create({
+            pattern,
+            UserId: req.session.user.id,
+            isValid
+        })
         if (!sub) {
             throw new AppError('No submission was returned from creation method.', 500)
         }

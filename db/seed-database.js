@@ -3,7 +3,8 @@ const fs = require('fs')
 const pg = require('pg')
 
 const { User, Submission, Pattern } = require('../db/models/app-models')
-const models = [ User, Submission, Pattern ]
+// Order matters here for the FK constraints
+const models = [ Submission, User, Pattern ]
 
 ;(async () => {
     console.log('Opening database connection for seeding')
@@ -13,6 +14,10 @@ const models = [ User, Submission, Pattern ]
 
     for (let i=0; i<models.length; ++i) {
         const tableName = models[i].getTableName()
+        
+        console.log(`Deleted all ${tableName} records`)
+        await client.query(`DELETE FROM "${tableName}";`)
+        
         let data = null
         try {
             data = fs.readFileSync(`./db/seeds/${tableName}.dump`).toString()
@@ -29,11 +34,6 @@ const models = [ User, Submission, Pattern ]
             console.log(`No seed data for ${tableName}`)
             continue
         }
-
-        
-        console.log(`Deleted all ${tableName} records`)
-        await client.query(`DELETE FROM "${tableName}";`)
-
 
         console.log(`Seeding data for ${tableName}`)
         const rows = data.split('\n').map(line => line.split('|'))

@@ -3,7 +3,10 @@ const { getConnection } = require('../../util/database')
 
 const sequelize = getConnection()
 
-module.exports = sequelize.define(
+// We cache all valid patterns the first time they are requested
+let allPatterns = null
+
+const Pattern = sequelize.define(
     'Pattern',
     {
         id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
@@ -16,3 +19,12 @@ module.exports = sequelize.define(
         timestamps: true
     }
 )
+
+Pattern.isValid = async function isValid(pattern) {
+    if (!allPatterns) {
+        allPatterns = await Pattern.findAll({ raw: true })
+    }
+    return !!allPatterns.filter(p => p.pattern === pattern).length
+}
+
+module.exports = Pattern
