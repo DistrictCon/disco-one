@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const { DataTypes } = require('sequelize')
 const { getConnection } = require('../../util/database')
+const patterns = require('../patterns.json')
 
 const sequelize = getConnection()
 
@@ -30,11 +31,15 @@ User.validateAllScores = async function validateAllScores() {
     //       this will potentially update all user records!
 }
 
-User.prototype.validateScore = async function validateScore() {
-    // TODO: go through all executed submissions and call getPatternPoints
-    //       if score differs, update record
-    //       return validated score
-    return 0
+User.prototype.checkScore = async function checkScore() {
+    let score = (await this.getSubmissions()).reduce((p, c) => {
+        if (c.executedAt && patterns[c.pattern]) {
+            return p + patterns[c.pattern].points
+        }
+        return p
+    }, 0)
+
+    return score
 }
 
 module.exports = User

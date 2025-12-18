@@ -16,10 +16,6 @@ function checkUserAuth(req, res, next) {
 }
 
 function checkAPIAuth(req, res, next) {
-    if (process.env.NODE_ENV === 'development' && req.hostname === 'localhost') {
-        return next()
-    }
-
     if (req.headers?.authorization !== process.env.API_KEY) {
         const ip = req.headers['x-client-ip'] || req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'unknown'
         logger.info(`Attempt to hit restricted API endpoint (${req.path}) with bad key from ${ip}`)

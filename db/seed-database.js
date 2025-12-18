@@ -2,9 +2,9 @@ require('dotenv').config({ override: true })
 const fs = require('fs')
 const pg = require('pg')
 
-const { User, Submission, Pattern } = require('../db/models/app-models')
+const { User, Submission } = require('../db/models/app-models')
 // Order matters here for the FK constraints
-const models = [ Submission, User, Pattern ]
+const models = [ Submission, User ]
 
 ;(async () => {
     console.log('Opening database connection for seeding')

@@ -1,11 +1,11 @@
 const express = require('express')
+const AppError = require('../util/AppError')
 const { checkUserAuth, checkAPIAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
-const { Pattern, Submission } = require('../db/models/app-models')
-const logger = require('../util/logger')(process.env.LOG_LEVEL)
-
+const { Submission } = require('../db/models/app-models')
+const { getConnection } = require('../util/database')
 const { PATTERN_REGEX } = require('../util/constants')
-const AppError = require('../util/AppError')
+const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
 
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
         res.setHeader('X-author', 'jakerella')
     }
 
-    // TODO: get submissions, points, hints
+    // TODO: get submissions, points, hints, etc
 
     const message = req.session.message || null
     req.session.message = null
@@ -52,12 +52,9 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
             throw new AppError('You have already tried that pattern!', 400)
         }
 
-        const isValid = await Pattern.isValid(pattern)
-
         const sub = await Submission.create({
             pattern,
-            UserId: req.session.user.id,
-            isValid
+            UserId: req.session.user.id
         })
         if (!sub) {
             throw new AppError('No submission was returned from creation method.', 500)
@@ -92,7 +89,7 @@ router.get('/queue', async (req, res, next) => {
         
         res.json(queue.map(sub => {
             return {
-                pattern: sub.pattern,
+                pattern: sub.pattern.replaceAll(/[a-z0-9]+/ig, '*'),
                 username: sub['User.username'],
                 createdAt: sub.createdAt.getTime()
             }
@@ -103,35 +100,59 @@ router.get('/queue', async (req, res, next) => {
     }
 })
 
-router.post('/run', checkAPIAuth, async (req, res, next) => {
+router.post('/queue/run', checkAPIAuth, async (req, res, next) => {
+    let nextSub = null
     try {
-        const nextSub = await Submission.findAll({
+        nextSub = await Submission.findAll({
             where: { executedAt: null },
             order: [ ['createdAt', 'ASC'] ],
             include: { all: true, nested: true },
             limit: 1
         })
+    } catch(err) {
+        logger.warn('Unable to retrieve queue:', (err.message || err))
+        return next(new AppError('Unable to retrieve queue', 500))
+    }
 
-        if (nextSub.length < 1) {
-            res.status(204)
-            res.json(null)
-        } else {
-            nextSub[0].executedAt = Date.now()
-            await nextSub[0].save()
+    if (nextSub.length < 1) {
+        res.status(204)
+        return res.json(null)
+    }
 
-            res.json({
-                pattern: nextSub[0].pattern,
-                username: nextSub[0].User.username,
-                createdAt: nextSub[0].createdAt.getTime()
-            })
+    let t = null
+    let points = nextSub[0].getPoints()
+    try {
+        const sequelize = getConnection()
+        t = await sequelize.transaction()
+
+        if (nextSub[0].isValid()) {
+            // this double checks the user's score to ensure integrity when new points added
+            let score = await nextSub[0].User.checkScore()
+            score += points
+            nextSub[0].User.score = score
+            nextSub[0].User.save({ transaction: t })
         }
+        nextSub[0].executedAt = Date.now()
+        await nextSub[0].save({ transaction: t })
+        
+        await t.commit()
 
     } catch(err) {
-        return next(err)
+        if (t) { await t.rollback() }
+        logger.error('Unable to save User or Submission:', (err.message.trim() || err))
+        return next(new AppError('Unable to save User or Submission, queue not advanced', 500))
     }
+
+    res.json({
+        username: nextSub[0].User.username,
+        path: nextSub[0].getPath(),
+        isValid: nextSub[0].isValid(),
+        points,
+        createdAt: nextSub[0].createdAt.getTime()
+    })
 })
 
-router.get('leaderboard', (req, res) => {
+router.get('/leaderboard', (req, res) => {
 
     // TODO: retrieve leaderboard data
 

@@ -15,3 +15,16 @@ Challenge repo for DistrictCon Year One
 3. Load the table schema in the DB: `npm run db:init` (WARNING: this is DESTRUCTIVE action!)
 4. Start server cluster (`node .` or to watch for file changes `npm run watch`)
 5. Hit server at http://localhost:3000
+
+
+You can hit the API endpoints using `fetch` in the browser. For example, to run the next pattern in the queue:
+
+```javascript
+const result = await (await fetch('/queue/run', {
+    method: 'post',
+    headers: {
+        accept: 'application/json'
+        authorization: 'the key'
+    }
+})).json()
+```
