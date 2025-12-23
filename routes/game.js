@@ -2,32 +2,75 @@ const express = require('express')
 const AppError = require('../util/AppError')
 const { checkUserAuth, checkAPIAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
-const { Submission } = require('../db/models/app-models')
+const { Submission, User } = require('../db/models/app-models')
 const { getConnection } = require('../util/database')
 const { PATTERN_REGEX } = require('../util/constants')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res, next) => {
     const page = (req.session?.user) ? 'game' : 'home'
 
-    if (!req.session.user) {
-        res.setHeader('X-author', 'jakerella')
-    }
-
-    // TODO: get submissions, points, hints, etc
+    res.setHeader('X-author', 'jakerella')
 
     const message = req.session.message || null
     req.session.message = null
 
-    res.render(page, {
-        page,
-        message,
-        user: req.session?.user || null,
-        title: process.env.TITLE || 'The Game',
-        appName: process.env.APP_NAME || ''
-    })
+    try {
+        const user = await User.findOne({
+            where: { id: req.session?.user?.id },
+            include: Submission
+        })
+
+        let patterns = []
+        let failed = []
+        let queued = null
+        let queuePos = null
+
+        if (user) {
+            patterns = user.Submissions
+                .filter(s => s.executedAt !== null && s.isValid())
+                .map(submission => submission.getPatternInfo())
+            failed = user.Submissions
+                .filter(s => s.executedAt !== null && !s.isValid())
+                .map(submission => submission.pattern)
+            queued = user.Submissions.filter(s => s.executedAt === null)[0]
+        }
+
+        if (queued) {
+            (await Submission.findAll({
+                where: { executedAt: null },
+                order: [ ['createdAt', 'ASC'] ],
+                raw: true
+            })).forEach((sub, i) => {
+                if (sub.pattern === queued.pattern) {
+                    queuePos = i
+                }
+            })
+        }
+
+        const pageUser = (user) ? {
+            username: user.username,
+            score: user?.score,
+            isAdmin: user?.isAdmin,
+            patterns,
+            queued: (queued) ? { pattern: queued.pattern, position: queuePos + 1 } : null,
+            failed
+        } : null
+
+        console.log(pageUser)
+
+        res.render(page, {
+            page,
+            message,
+            user: pageUser,
+            title: process.env.TITLE || 'The Game',
+            appName: process.env.APP_NAME || ''
+        })
+    } catch(err) {
+        return next(err)
+    }
 })
 
 router.post('/pattern', checkUserAuth, async (req, res) => {
@@ -62,7 +105,7 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
 
         logger.debug(`Added new submission for User ${req.session.user.username}: ${pattern}`)
 
-        req.session.message = 'Your pattern has been queued to run, go check out the laser table!'
+        req.session.message = 'Your pattern has been queued to run, go check out the badge LED table in teh VoV space!'
         res.redirect('/')
 
     } catch(err) {

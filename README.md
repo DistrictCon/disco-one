@@ -4,7 +4,7 @@ Challenge repo for DistrictCon Year One
 
 
 1. Install dependencies (`npm install`)
-2. Install and Start PostgreSQL (on WSL it's `sudo service postgresql start`)
+2. Install and Start PostgreSQL (on ubuntu it's `sudo service postgresql start`)
     * Connect to postgres as root: `sudo -u postgres psql`
     * Create the database and user for local testing:
         - `CREATE USER [username] WITH PASSWORD '[password]';`

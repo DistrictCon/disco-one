@@ -25,6 +25,19 @@ Submission.prototype.isValid = function isValid() {
     return !!patterns[this.pattern]
 }
 
+Submission.prototype.getPatternInfo = function getPatternInfo() {
+    if (patterns[this.pattern]) {
+        return {
+            pattern: this.pattern,
+            points: patterns[this.pattern].points,
+            hint: patterns[this.pattern].hint,
+            badgePattern: patterns[this.pattern].badgePattern
+        }
+    } else {
+        return null
+    }
+}
+
 Submission.prototype.getPath = function getPath() {
     if (patterns[this.pattern]) {
         return patterns[this.pattern].path

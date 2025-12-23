@@ -7,22 +7,34 @@ block content
             | User: 
             =user.username
         a(href="/user/logout") Logout
-        #if(message)
+        if(message)
             p= message
 
     main
-        section
-            form(action="/pattern", method="post")
-                label(for="pattern")
-                    | New Pattern: 
-                    input#pattern(type="text", name="pattern", required)
-                input(type="submit", value="Submit")
+        section.submit
+            if user.queued
+                aside 
+                    | You have a pattern in the queue: 
+                    span.queued-pattern= user.queued.pattern
+                    |  (currently number #{user.queued.position} in the queue)
+            else
+                form(action="/pattern", method="post")
+                    label(for="pattern")
+                        | New Pattern: 
+                        input#pattern(type="text", name="pattern", required)
+                    input(type="submit", value="Submit")
 
         section
             h2 Found Patterns
             ul
-                li one
-                li two
+                each pattern in user.patterns
+                    li= pattern.pattern
+
+        section 
+            h2 Failed Patterns
+            ul
+                each pattern in user.failed
+                    li= pattern
 
     footer
         p
