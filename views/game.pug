@@ -1,41 +1,51 @@
 extends partials/layout.pug
 
 block content
-    header 
-        h1= title
-        p
-            | User: 
-            =user.username
-        a(href="/user/logout") Logout
-        if(message)
-            p= message
+    section.game-action
+        if !user.queued
+            form.new-pattern(action="/pattern", method="post")
+                label(for="pattern") Found a New Pattern? 
+                input#pattern(type="text", name="pattern", required)
+                input(type="submit", value="Submit")
 
-    main
-        section.submit
-            if user.queued
-                aside 
-                    | You have a pattern in the queue: 
-                    span.queued-pattern= user.queued.pattern
-                    |  (currently number #{user.queued.position} in the queue)
-            else
-                form(action="/pattern", method="post")
-                    label(for="pattern")
-                        | New Pattern: 
-                        input#pattern(type="text", name="pattern", required)
-                    input(type="submit", value="Submit")
+        if user.queued
+            aside.in-queue
+                | You have a pattern in the queue: 
+                span.queued-pattern= user.queued.pattern
+                |  (currently number #{user.queued.position} in the queue)
 
-        section
+        else if user.mostRecent
+            aside.last-submission
+                p
+                    | Your last submission was<br><strong>#{user.mostRecent.pattern}</strong><br>
+                    if user.mostRecent.hint
+                        | and was worth #{user.mostRecent.points} watts:<br><br>"#{user.mostRecent.hint}"
+                    else
+                        | and was not valid.
+
+
+    details(open)
+        summary
             h2 Found Patterns
-            ul
+        
+        if user.patterns.length
+            table
                 each pattern in user.patterns
-                    li= pattern.pattern
+                    tr.pattern
+                        td= pattern.points
+                        td= pattern.pattern
+                    tr.hint
+                        td(colspan=2)
+                            =pattern.hint
+                            |  (#{pattern.badgePattern})
+        else
+            p You have not found any patterns yet. Maybe check out the badge challenge table in the VoV space?
 
-        section 
+    details
+        summary
             h2 Failed Patterns
-            ul
-                each pattern in user.failed
-                    li= pattern
+        
+        ul
+            each pattern in user.failed
+                li= pattern.pattern
 
-    footer
-        p
-            | &copy; DistrictCon 2025

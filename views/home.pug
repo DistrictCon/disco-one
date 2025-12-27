@@ -1,26 +1,21 @@
 extends partials/layout.pug
 
 block content
-    header 
-        h1= title
-        #if(message)
-            p= message
-
-    main
-        section
-            form(action="/user/login", method="post")
-                div.field-group
-                    label(for="username")
-                        | Username: 
-                        input#username(type="text", name="username", autocomplete="username", required)
-                    p.
-                        Usernames may only contain alphanumerics, hyphens, periods, and apostrophes.
-                div.field-group
-                    label(for="password")
-                        | Password: 
-                        input#password(type="password", name="password", autocomplete="password", required)
+    section
+        form.login(action="/user/login-register", method="post")
+            div.field-group
+                label(for="username") Username: 
+                input#username(type="text", name="username", autocomplete="username", required)
+            
+            div.field-group
+                label(for="password") Password: 
+                input#password(type="password", name="password", autocomplete="password", required)
+            
+            div.field-group
+                label(for="register") New User? 
+                input#register(type="checkbox", name="register", value="true")
+            
+            div.actions
                 input(type="submit", value="Login or Register")
-
-    footer
-        p
-            | &copy; DistrictCon 2025
+        
+        p.fine Usernames may only contain alphanumerics, hyphens, periods, and apostrophes.

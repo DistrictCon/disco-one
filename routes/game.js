@@ -18,53 +18,70 @@ router.get('/', async (req, res, next) => {
     req.session.message = null
 
     try {
-        const user = await User.findOne({
-            where: { id: req.session?.user?.id },
-            include: Submission
-        })
-
+        let user = null
         let patterns = []
         let failed = []
         let queued = null
         let queuePos = null
-
-        if (user) {
-            patterns = user.Submissions
-                .filter(s => s.executedAt !== null && s.isValid())
-                .map(submission => submission.getPatternInfo())
-            failed = user.Submissions
-                .filter(s => s.executedAt !== null && !s.isValid())
-                .map(submission => submission.pattern)
-            queued = user.Submissions.filter(s => s.executedAt === null)[0]
-        }
-
-        if (queued) {
-            (await Submission.findAll({
-                where: { executedAt: null },
-                order: [ ['createdAt', 'ASC'] ],
-                raw: true
-            })).forEach((sub, i) => {
-                if (sub.pattern === queued.pattern) {
-                    queuePos = i
-                }
+        
+        if (req.session?.user) {
+            user = await User.findOne({
+                where: { id: req.session.user.id },
+                include: Submission    // TODO: can I sort the submissions in the join?
             })
+
+            if (user) {
+                patterns = user.Submissions
+                    .filter(sub => sub.executedAt !== null && sub.isValid())
+                    // TODO: I can remove this if the submissions can be ordered in the SQL query
+                    .sort((a, b) => { return (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime() })
+                    .map(sub => sub.getPatternInfo())
+                failed = user.Submissions
+                    .filter(s => s.executedAt !== null && !s.isValid())
+                    // TODO: I can remove this if the submissions can be ordered in the SQL query
+                    .sort((a, b) => { return (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime() })
+                    .map(sub => sub.getPatternInfo())
+                queued = user.Submissions.filter(s => s.executedAt === null)[0]
+            }
+
+            if (queued) {
+                (await Submission.findAll({
+                    where: { executedAt: null },
+                    order: [ ['createdAt', 'ASC'] ],
+                    raw: true
+                })).forEach((sub, i) => {
+                    if (sub.pattern === queued.pattern) {
+                        queuePos = i
+                    }
+                })
+            }
         }
 
-        const pageUser = (user) ? {
+        let mostRecent = null
+        if (user && (patterns.length || failed.length)) {
+            if (!failed.length) {
+                mostRecent = patterns[0]
+            } else if (!patterns.length) {
+                mostRecent = failed[0]
+            } else {
+                mostRecent = (patterns[0].createdAt < failed[0].createdAt) ? failed[0] : patterns[0]
+            }
+        }
+
+        const userData = (user) ? {
             username: user.username,
             score: user?.score,
             isAdmin: user?.isAdmin,
             patterns,
             queued: (queued) ? { pattern: queued.pattern, position: queuePos + 1 } : null,
-            failed
+            failed,
+            mostRecent
         } : null
-
-        console.log(pageUser)
 
         res.render(page, {
             page,
             message,
-            user: pageUser,
+            user: userData,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
         })
@@ -105,7 +122,7 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
 
         logger.debug(`Added new submission for User ${req.session.user.username}: ${pattern}`)
 
-        req.session.message = 'Your pattern has been queued to run, go check out the badge LED table in teh VoV space!'
+        req.session.message = 'Your pattern has been queued to run, go check out the badge LED table in the VoV space!'
         res.redirect('/')
 
     } catch(err) {
@@ -195,32 +212,42 @@ router.post('/queue/run', checkAPIAuth, async (req, res, next) => {
     })
 })
 
-router.get('/leaderboard', (req, res) => {
+router.get('/leaderboard', async (req, res, next) => {
 
-    // TODO: retrieve leaderboard data
+    try {
+        const leaders = await User.findAll({
+            where: { score: { [Op.gt]: 0 } },
+            order: [ ['score', 'DESC'] ],
+            raw: true,
+            limit: 20
+        })
+        
+        const data = leaders.map(user => { return {
+            username: user.username,
+            score: user.score
+        } })
+        
+        if (req.headers.accept === 'application/json') {
+            res.json(data)
+        } else {
+            res.render('leaderboard', {
+                page: 'leaderboard',
+                title: `${process.env.APP_NAME} LeaderBoard`,
+                leaders: data
+            })
+        }
 
-    res.json([
-        { username: 'jordan', watts: 75 },
-        { username: 'roro', watts: 30 }
-    ])
+    } catch(err) {
+        return next(err)
+    }
 })
 
 router.get('/display', checkAPIAuth, (req, res) => {
-
-    // TODO: get queue and leaderboard data for display
-
+    // All data will come from fetches to /queue and /leaderboard
     res.render('display', {
         page: 'display',
-        queue: [
-            { username: 'jordan', pattern: 'rrrzzrzrrrz' },
-            { username: 'roro', pattern: 'rzrzrzrzrzr' }
-        ],
-        leaderboard: [
-            { username: 'jordan', watts: 75 },
-            { username: 'roro', watts: 30 }
-        ],
-        title: process.env.TITLE || 'The Game',
-        appName: process.env.APP_NAME || ''
+        title: process.env.TITLE,
+        appName: process.env.APP_NAME
     })
 })
 

@@ -3,6 +3,29 @@ html(lang='en-US')
     head
         include head.pug
     
-    body
+    body(class='page-'+page)
+        header
+            h1 DistrictCon
+            if user
+                section.sub-header
+                    aside.user
+                        | #{user.username} (#{user.score})
+                    nav
+                        ul 
+                            li 
+                                a(href="/user/logout") Logout
+                            li
+                                a.mode-switch(href='#') 
+        
+        aside.messages
+            if(message)
+                p.message= message
+
         main
             block content
+
+        footer
+            p
+                | &copy; DistrictCon 2026
+
+        script(src='/game-ui.js')

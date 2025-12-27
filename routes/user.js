@@ -1,23 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const { User } = require('../db/models/app-models')
+const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 router.get('/', (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/')
-    }
-
-    // TODO: get user info from DB... but do we need this page???
-
-    res.render('user', {
-        page: 'user',
-        user: req.session.user,
-        title: process.env.TITLE || 'The Game',
-        appName: process.env.APP_NAME || ''
-    })
+    return res.redirect('/')
 })
 
-router.post('/login', async (req, res, next) => {
+router.post('/login-register', async (req, res, next) => {
     if (req.session?.user) {
         req.session.message = 'You are already logged in!'
         return res.redirect('/')
@@ -28,20 +18,26 @@ router.post('/login', async (req, res, next) => {
 
     const username = User.cleanUsername(req.body.username)
     const password = User.hashPass(req.body.password)
+    const register = req.body.register === 'true'
 
     if (username && username === req.body.username) {
         user = await User.findOne({ where: { username: req.body.username } })
 
-        if (user && user.password === password) {
+        if (!register && user && user.password === password) {
             message = 'You are now logged in.'
-        } else if (!user) {
+            logger.debug(`User login: ${username}`)
+        } else if (register && !user) {
             user = await User.create({ username, password })
             message = 'Your account has been created and you are logged in!'
+            logger.info(`A new user account has been registered: ${username}`)
+        } else if (register && user) {
+            user = null
+            message = 'Sorry, but that username has been taken.'
+            logger.debug(`User attempted to use existing username: ${username}`)
         } else {
             user = null
             message = 'Sorry, but that username/password is not valid.'
         }
-        
     } else {
         message = 'Sorry, but that is not a valid username.'
     }
@@ -69,10 +65,12 @@ router.post('/login', async (req, res, next) => {
 })
 
 router.get('/logout', (req, res) => {
+    const username = req.session?.user?.username || null
     req.session.user = null
     req.session.save((_) => {
         req.session.regenerate((_) => {
             req.session.message = 'You have been logged out.'
+            logger.debug(`User logout: ${username}`)
             res.redirect('/')
         })
     })

@@ -26,15 +26,13 @@ Submission.prototype.isValid = function isValid() {
 }
 
 Submission.prototype.getPatternInfo = function getPatternInfo() {
-    if (patterns[this.pattern]) {
-        return {
-            pattern: this.pattern,
-            points: patterns[this.pattern].points,
-            hint: patterns[this.pattern].hint,
-            badgePattern: patterns[this.pattern].badgePattern
-        }
-    } else {
-        return null
+    return {
+        pattern: this.pattern,
+        createdAt: (new Date(this.createdAt)).getTime(),
+        executedAt: (this.executedAt) ? (new Date(this.executedAt)).getTime() : null,
+        points: (patterns[this.pattern]) ? patterns[this.pattern].points : 0,
+        hint: (patterns[this.pattern]) ? patterns[this.pattern].hint : null,
+        badgePattern: (patterns[this.pattern]) ? patterns[this.pattern].badgePattern: null
     }
 }
 
@@ -43,8 +41,8 @@ Submission.prototype.getPath = function getPath() {
         return patterns[this.pattern].path
     } else {
         // If this is an invalid path we'll show the first color in it for 2 seconds, but only the perpendicular path
-        let color = this.pattern.match(/([rgybo])/i)[1]
-        if (!color) { color = 'R' }
+        let color = this.pattern.match(/([rgybo])/i)
+        color = (color) ? color[1] : 'R'
         return `${color.toUpperCase()}2-${colorPerpendiculars[color]}`
     }
 }
