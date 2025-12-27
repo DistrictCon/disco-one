@@ -27,19 +27,18 @@ router.get('/', async (req, res, next) => {
         if (req.session?.user) {
             user = await User.findOne({
                 where: { id: req.session.user.id },
-                include: Submission    // TODO: can I sort the submissions in the join?
+                include: Submission,
+                order: [
+                    [Submission, 'createdAt', 'DESC']
+                ]
             })
 
             if (user) {
                 patterns = user.Submissions
                     .filter(sub => sub.executedAt !== null && sub.isValid())
-                    // TODO: I can remove this if the submissions can be ordered in the SQL query
-                    .sort((a, b) => { return (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime() })
                     .map(sub => sub.getPatternInfo())
                 failed = user.Submissions
                     .filter(s => s.executedAt !== null && !s.isValid())
-                    // TODO: I can remove this if the submissions can be ordered in the SQL query
-                    .sort((a, b) => { return (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime() })
                     .map(sub => sub.getPatternInfo())
                 queued = user.Submissions.filter(s => s.executedAt === null)[0]
             }
