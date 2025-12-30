@@ -17,6 +17,10 @@ const Submission = sequelize.define(
     }
 )
 
+Submission.getMaxPoints = function getMaxPoints() {
+    return Object.keys(patterns).reduce((p, c) => patterns[c].points + p, 0)
+}
+
 Submission.prototype.getPoints = function getPoints() {
     return (patterns[this.pattern]) ? patterns[this.pattern].points : 0
 }

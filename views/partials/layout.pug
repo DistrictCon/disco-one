@@ -16,6 +16,8 @@ html(lang='en-US')
                                 a(href="/user/logout") Logout
                             li
                                 a.mode-switch(href='#') 
+                aside.progress-tracker
+                    figure.user-progress(style='width:'+user.progress+'%;')
         
         aside.messages
             if(message)

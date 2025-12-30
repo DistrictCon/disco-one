@@ -9,6 +9,8 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
 
+const LIGHTS_ON_PERCENT = 0.66
+
 router.get('/', async (req, res, next) => {
     const page = (req.session?.user) ? 'game' : 'home'
 
@@ -67,10 +69,12 @@ router.get('/', async (req, res, next) => {
             }
         }
 
+        const max = Submission.getMaxPoints()
         const userData = (user) ? {
             username: user.username,
-            score: user?.score,
-            isAdmin: user?.isAdmin,
+            score: user.score,
+            progress: Math.round((user.score / (max * LIGHTS_ON_PERCENT)) * 100),
+            isAdmin: user.isAdmin,
             patterns,
             queued: (queued) ? { pattern: queued.pattern, position: queuePos + 1 } : null,
             failed,
@@ -81,6 +85,7 @@ router.get('/', async (req, res, next) => {
             page,
             message,
             user: userData,
+            maxScore: max,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
         })

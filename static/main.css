@@ -6,9 +6,8 @@ html{background:#000;box-sizing:border-box;font-size:16px;height:100%;}body{back
 
 html.light-mode { background-color: #fff; }
 
-body { border: 0.5rem solid #000; font-size: 1.2rem; padding: 6rem 0 2rem 0;
-}
-.light-mode body { background-color: #fff; color: #000; border: 0.5rem solid #fff; }
+body { font-size: 1.2rem; padding: 7rem 0.5rem 2rem 0.5rem; }
+.light-mode body { background-color: #fff; color: #000; }
 
 header {
     position: fixed;
@@ -16,9 +15,8 @@ header {
     top: 0;
     left: 0;
     background: #000;
-    border-bottom: 2px solid #eee;
 }
-.light-mode header { background-color: #fff; border-bottom: 2px solid #333; }
+.light-mode header { background-color: #fff; }
 
 h1 { text-align: center; }
 
@@ -93,6 +91,22 @@ nav a { color: #eee; text-decoration: none; }
 .mode-switch::after { content: "☀"; }
 .light-mode .mode-switch::after { content: "☾"; }
 
+.progress-tracker {
+    width: 100%;
+    height: 0.3rem;
+    background: #222;
+    position: relative;
+}
+.light-mode .progress-tracker { background-color: #eee; }
+.user-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 0.3rem;
+    background: #3594cb;
+    margin: 0;
+}
+
 
 /* GAME PLAY PAGE MAIN CONTENT */
 
@@ -106,9 +120,9 @@ nav a { color: #eee; text-decoration: none; }
 .last-submission { margin: 1rem 0; text-align: center; }
 
 .page-game details { margin: 1rem 0; }
+.page-game summary { margin-bottom: 0.5rem; }
 .page-game details h2 { display: inline-block }
-.page-game tr.pattern td { padding-top: 0.5rem; }
-.page-game tr.pattern td { padding: 0 0.25rem; }
-.page-game tr.pattern td:nth-child(1) { border-right: 1px solid #eee; }
+.page-game tr.pattern td { border-top: 1px solid #eee; padding: 0.25rem; }
+.page-game tr.pattern td:nth-child(1) { border: 1px solid #eee; text-align: center; }
 .light-mode .page-game tr.pattern td:nth-child(1) { border-right: 1px solid #333; }
-.page-game tr.hint td { padding-bottom: 0.5rem; }
+.page-game tr.hint td { padding: 0.5rem 0 1rem 0; }
