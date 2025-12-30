@@ -5,7 +5,12 @@ html(lang='en-US')
     
     body(class='page-'+page)
         header
-            h1 DistrictCon
+            h1
+                | DisC
+                span.logo
+                    if user
+                        img(src='/disco-one-logo-small.png', alt='DistrictCon Year 1 logo', style='opacity:'+(user.progress / 100)+';')
+
             if user
                 section.sub-header
                     aside.user
@@ -15,7 +20,8 @@ html(lang='en-US')
                             li 
                                 a(href="/user/logout") Logout
                             li
-                                a.mode-switch(href='#') 
+                                a.mode-switch(href='#')
+                
                 aside.progress-tracker
                     figure.user-progress(style='width:'+user.progress+'%;')
         

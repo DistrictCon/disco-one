@@ -17,8 +17,26 @@ header {
     background: #000;
 }
 .light-mode header { background-color: #fff; }
-
 h1 { text-align: center; }
+h1 .logo {
+    display: inline-block;
+    height: 1.5rem;
+    width: 1.5rem;
+    border: 3px solid #eee;
+    border-radius: 50%;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+}
+.light-mode h1 .logo { border: 3px solid #000; }
+h1 img {
+    display: inline-block;
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    opacity: 0;
+    max-width: calc(100% + 8px);
+}
 
 .message {
     border-radius: 0.4rem;
@@ -105,7 +123,9 @@ nav a { color: #eee; text-decoration: none; }
     height: 0.3rem;
     background: #3594cb;
     margin: 0;
+    filter: drop-shadow(1px 0px 5px #fff);
 }
+.light-mode .user-progress { filter: drop-shadow(1px 0px 5px #99f); }
 
 
 /* GAME PLAY PAGE MAIN CONTENT */
