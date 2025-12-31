@@ -13,7 +13,7 @@ const LIGHTS_ON_PERCENT = 0.66
 
 router.get('/', async (req, res, next) => {
     const page = (req.session?.user) ? 'game' : 'home'
-
+    
     res.setHeader('X-author', 'jakerella')
 
     const message = req.session.message || null

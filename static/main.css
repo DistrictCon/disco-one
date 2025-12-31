@@ -1,34 +1,32 @@
-/* BROWSER STYLE RESET */
-html{background:#000;box-sizing:border-box;font-size:16px;height:100%;}body{background:#000;color:#eee;height:100%;}*,*:before,*:after{box-sizing:inherit;}body,h1,h2,h3,h4,h5,h6,p,ol,ul{margin:0;padding:0;font-weight:normal;}img{max-width:100%;height:auto;}
+/* COMMON VARS */
+html { --bg: #000; --fc: #eee; --lc: #eee; }
+html.light-mode { --bg: #fff; --fc: #000; --lc: #333; }
 
+/* BROWSER STYLE RESET */
+html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body{background:var(--bg);color:var(--fc);height:100%;}*,*:before,*:after{box-sizing:inherit;}body,h1,h2,h3,h4,h5,h6,p,ol,ul{margin:0;padding:0;font-weight:normal;}img{max-width:100%;height:auto;}
 
 /* GENERAL PAGE STYLES */
 
-html.light-mode { background-color: #fff; }
-
-body { font-size: 1.2rem; padding: 7rem 0.5rem 2rem 0.5rem; }
-.light-mode body { background-color: #fff; color: #000; }
+body { font-size: 1.2rem; padding: 7rem 0 2rem 0; }
 
 header {
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
-    background: #000;
+    background: var(--bg);
 }
-.light-mode header { background-color: #fff; }
 h1 { text-align: center; }
 h1 .logo {
     display: inline-block;
     height: 1.5rem;
     width: 1.5rem;
-    border: 3px solid #eee;
+    border: 3px solid var(--fc);
     border-radius: 50%;
     vertical-align: middle;
     position: relative;
     top: -2px;
 }
-.light-mode h1 .logo { border: 3px solid #000; }
 h1 img {
     display: inline-block;
     position: absolute;
@@ -40,7 +38,7 @@ h1 img {
 
 .message {
     border-radius: 0.4rem;
-    margin-top: 0.5rem;
+    margin: 0.5rem;
     padding: 0.5rem 1rem;
     text-align: center;
     background: #ddd;
@@ -73,16 +71,9 @@ input[type="submit"] {
 input[type="submit"]:hover { box-shadow: 0 4px #555; top: 2px; }
 input[type="submit"]:active { box-shadow: 0 0 #555; top: 6px; }
 
-footer {
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    text-align: center;
-    border-top: 1px solid #ccc;
-    padding: 1rem;
-    background: #222;
-}
+main { min-height: calc(100% - 2.5rem); padding: 0 0.5rem; }
+
+footer { text-align: center; border-top: 1px solid #ccc; padding: 1rem; background: #222; }
 .light-mode footer { border-top: 1px solid #333; background-color: #eee; }
 
 
@@ -90,8 +81,7 @@ footer {
 
 .login * { margin: 0.5rem 0; font-size: 1.3rem; }
 #register { position: relative; }
-#register::after { content: "yes"; position: absolute; right: 20%; color: #eee; }
-.light-mode #register::after { color: #333; }
+#register::after { content: "yes"; position: absolute; right: 20%; color: var(--fc); }
 .page-home .fine { text-align: center; }
 
 
@@ -103,8 +93,7 @@ nav ul { display: flex; justify-content: flex-end; list-style: none; }
 
 nav li { margin-left: 1rem; }
 
-nav a { color: #eee; text-decoration: none; }
-.light-mode nav a { color: #333; }
+nav a { color: var(--fc); text-decoration: none; }
 
 .mode-switch::after { content: "☀"; }
 .light-mode .mode-switch::after { content: "☾"; }
@@ -112,7 +101,7 @@ nav a { color: #eee; text-decoration: none; }
 .progress-tracker {
     width: 100%;
     height: 0.3rem;
-    background: #222;
+    background-color: #222;
     position: relative;
 }
 .light-mode .progress-tracker { background-color: #eee; }
@@ -136,13 +125,13 @@ nav a { color: #eee; text-decoration: none; }
 
 .new-pattern { display: flex; flex-direction: column; text-align: center; }
 .new-pattern * { margin: 0.5rem 0; font-size: 1.3rem; }
+input#pattern { padding: 0.5rem 0.3rem; }
 
 .last-submission { margin: 1rem 0; text-align: center; }
 
 .page-game details { margin: 1rem 0; }
 .page-game summary { margin-bottom: 0.5rem; }
 .page-game details h2 { display: inline-block }
-.page-game tr.pattern td { border-top: 1px solid #eee; padding: 0.25rem; }
-.page-game tr.pattern td:nth-child(1) { border: 1px solid #eee; text-align: center; }
-.light-mode .page-game tr.pattern td:nth-child(1) { border-right: 1px solid #333; }
+.page-game tr.pattern td { border-top: 1px solid var(--lc); padding: 0.25rem; }
+.page-game tr.pattern td:nth-child(1) { border: 1px solid var(--lc); text-align: center; }
 .page-game tr.hint td { padding: 0.5rem 0 1rem 0; }
