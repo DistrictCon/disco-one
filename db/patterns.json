@@ -2,7 +2,7 @@
     "rrzzrrrzrrzzrzzzrrr": {
         "pattern": "rrzzrrrzrrzzrzzzrrr",
         "points": 40,
-        "path": "R2-1-Z2-R3-11-Z-R2-21-Z2-R1-12-Z3-R3-21",
+        "path": "R2-1-Z2-R3-11-Z1-R2-21-Z2-R1-12-Z3-R3-21",
         "hint": "I love that song! Who plays it?",
         "badgePattern": "lubaduba",
         "note": "badge disco balls"
@@ -26,7 +26,7 @@
     "4rrr1z94bbbz1ggg093z4ooo1z94yyy737": {
         "pattern": "4rrr1z94bbbz1ggg093z4ooo1z94yyy737",
         "points": 5,
-        "path": "R3-21-B-Z-B3-G-Z-G3-10-O-Z-O3-23-Y-Z-Y3-20-19-27-26",
+        "path": "R3-21-B-Z1-B3-G-Z1-G3-10-O-Z1-O3-23-Y-Z1-Y3-20-19-27-26",
         "hint": "TODO",
         "badgePattern": "TODO",
         "note": "printed material"
@@ -34,7 +34,7 @@
     "1gg410946935oo793": {
         "pattern": "1gg41094693z5oo792",
         "points": 5,
-        "path": "G2-9-16-18-8-10-O-Z-O2-14-7",
+        "path": "G2-9-16-18-8-10-O-Z1-O2-14-7",
         "hint": "TODO",
         "badgePattern": "TODO",
         "note": ""

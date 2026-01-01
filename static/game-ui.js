@@ -20,6 +20,7 @@
         } else {
             page.classList.add('light-mode')
             mode = 1
+            // TODO: light mode clue
         }
         cache.mode = mode
         saveCache()

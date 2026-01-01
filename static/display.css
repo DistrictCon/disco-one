@@ -1,0 +1,63 @@
+/* COMMON VARS */
+html { --bg: #000; --fc: #eee; --lc: #eee; }
+
+/* BROWSER STYLE RESET */
+html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body{background:var(--bg);color:var(--fc);height:100%;}*,*:before,*:after{box-sizing:inherit;}body,h1,h2,h3,h4,h5,h6,p,ol,ul{margin:0;padding:0;font-weight:normal;}img{max-width:100%;height:auto;}
+
+body { overflow: hidden; }
+svg {
+    width: 100%;
+    height: 100%;
+}
+
+circle { stroke: none; }
+
+circle.red {
+    fill: #f00;
+    filter: drop-shadow(0 0 3px #f99) drop-shadow(0 0 5px #f00) drop-shadow(0 0 8px #f00);
+}
+line.red {
+    stroke: #f00;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 15px #f00) drop-shadow(0 0 20px #f00);
+}
+
+circle.green {
+    fill: #0f0;
+    filter: drop-shadow(0 0 3px #9f9) drop-shadow(0 0 5px #0f0) drop-shadow(0 0 8px #0f0);
+}
+line.green {
+    stroke: #0f0;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 15px #0f0) drop-shadow(0 0 20px #0f0);
+}
+
+circle.blue {
+    fill: #00f;
+    filter: drop-shadow(0 0 3px #99f) drop-shadow(0 0 5px #00f) drop-shadow(0 0 8px #00f);
+}
+line.blue {
+    stroke: #00f;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 15px #00f) drop-shadow(0 0 20px #00f);
+}
+
+circle.orange {
+    fill: #f80;
+    filter: drop-shadow(0 0 3px #fb4) drop-shadow(0 0 5px #f80) drop-shadow(0 0 8px #f80);
+}
+line.orange {
+    stroke: #f80;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 15px #f80) drop-shadow(0 0 20px #f80);
+}
+
+circle.yellow {
+    fill: #ff0;
+    filter: drop-shadow(0 0 3px #ff9) drop-shadow(0 0 5px #ff0) drop-shadow(0 0 8px #ff0);
+}
+line.yellow {
+    stroke: #ff0;
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 15px #ff0) drop-shadow(0 0 20px #ff0);
+}

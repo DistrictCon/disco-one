@@ -13,7 +13,7 @@ const LIGHTS_ON_PERCENT = 0.66
 
 router.get('/', async (req, res, next) => {
     const page = (req.session?.user) ? 'game' : 'home'
-    
+
     res.setHeader('X-author', 'jakerella')
 
     const message = req.session.message || null
@@ -246,13 +246,5 @@ router.get('/leaderboard', async (req, res, next) => {
     }
 })
 
-router.get('/display', checkAPIAuth, (req, res) => {
-    // All data will come from fetches to /queue and /leaderboard
-    res.render('display', {
-        page: 'display',
-        title: process.env.TITLE,
-        appName: process.env.APP_NAME
-    })
-})
 
 module.exports = router
