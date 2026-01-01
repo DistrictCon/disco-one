@@ -3,30 +3,27 @@
     const SVG = document.getElementById('display')
     const LIGHT_TIME_UNIT = 500
     const PAUSE_TIME_UNIT = 75
+    const LINE_SEGMENT_DELAY = 75
 
     const MAP_COORDS = setMapLayout()
-    const COLOR_MAP = {
-        R: {name: 'red'},
-        G: {name: 'green'},
-        B: {name: 'blue'},
-        O: {name: 'orange'},
-        Y: {name: 'yellow'}
-    }
+    const COLOR_MAP = { R:{name:'red'}, G:{name:'green'}, B:{name:'blue'}, O:{name:'orange'}, Y:{name:'yellow'} }
     Object.keys(COLOR_MAP).forEach(c => {
         COLOR_MAP[c].start = MAP_COORDS[c]
     })
-
-    // TODO: draw venue walls
     
 
     // TODO: fetch the data we need
-    const lines = parsePattern('G2-9-16-18-8-10-O-Z1-O2-14-7')
-    console.log(lines)
+
+    // const lines = parsePattern('G2-9-16-18-8-10-O-Z1-O2-14-7')
+    // const lines = parsePattern('R2-1-Z2-R3-11-Z1-R2-21-Z2-R1-12-Z3-R3-2')
+    // const lines = parsePattern('R2-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R2-21-Z1-R2-21')
+    // const lines = parsePattern('R1-1-R1-21-R1-2-B1-29-B1-5-B1-22-G1-5-G1-10-G1-B-O1-14-O1-23-O1-10-Y1-20-Y1-23-Y1-27')
+    const lines = parsePattern('G2-10-17-R2-11-12-O2-14-R2-11-B2-22-O2-14-R2-11-12-21-O2-14')
 
     for (let i=0; i<lines.length; ++i) {
-        await showLine(lines[i].color, lines[i].segments)
+        const elemIDs = await showLine(lines[i].color, lines[i].segments)
         setTimeout(async () => {
-            disipateLine(lines[i].color, lines[i].pause * PAUSE_TIME_UNIT)
+            await disipateLine(elemIDs, lines[i].color, lines[i].pause * PAUSE_TIME_UNIT)
         }, lines[i].duration * LIGHT_TIME_UNIT)
     }
 
@@ -56,30 +53,39 @@
     }
 
     async function showLine(color, points) {
-        await pulseSource(color, points[0])
+        const elems = []
+        elems.push(await pulseSource(color, points[0]))
         for (let i=0; i<points.length-1; ++i) {
-            await addSegment(color, points[i], points[i+1])
+            elems.push(await addSegment(color, points[i], points[i+1]))
         }
+        return elems
     }
     
     function addSegment(color, start, end) {
         return new Promise((resolve, _) => {
-            addElem(`<line id='line-${Date.now()}' class='${color}' x1='${start[0]}' y1='${start[1]}' x2='${end[0]}' y2='${end[1]}'></line>`)
-            setTimeout(() => { resolve() }, 75)
+            const segId = `line-${Date.now()}`
+            const segment = addElem(`<line id='${segId}' class='${color}' x1='${start[0]}' y1='${start[1]}' x2='${end[0]}' y2='${end[1]}'></line>`)
+            setTimeout(() => { resolve(segId) }, LINE_SEGMENT_DELAY)
         })
     }
 
-    function disipateLine(color, delay) {
+    function disipateLine(elemIDs, color, delay) {
         return new Promise((resolve, _) => {
-            const elems = Array.from(SVG.querySelectorAll(`line.${color}, circle.${color}`))
             let opacity = 1
             let intHandle = setInterval(() => {
                 opacity -= 0.1
-                elems.forEach(e => e.style.opacity = opacity)
-                if (opacity <= 0) {
+                elemIDs.forEach(id => {
+                    const el = SVG.getElementById(id)
+                    if (el) { el.style.opacity = opacity }
+                })
+                
+                if (opacity < 0.1) {
                     clearInterval(intHandle)
                     intHandle = null
-                    elems.forEach(e => SVG.removeChild(e))
+                    elemIDs.forEach(id => {
+                        const el = SVG.getElementById(id)
+                        if (el) { el.parentNode?.removeChild(el) }
+                    })
                     resolve()
                 }
             }, delay || 40)
@@ -99,7 +105,7 @@
                     time -= (radius * Math.floor((Math.random() * 5) + 8))
                     incrementRadius(time, radius, circle, resolve)
                 } else {
-                    resolve()
+                    resolve(circle.getAttribute('id'))
                 }
             }, time)
         }
@@ -131,16 +137,41 @@
         pointMap.O = [41 * unit, 9 * unit]
         pointMap.Y = [59 * unit, 23 * unit]
 
+        pointMap[1] = [1 * unit, 1 * unit]
+        pointMap[2] = [13 * unit, 1 * unit]
+        pointMap[3] = [1 * unit, 5 * unit]
+        pointMap[4] = [13 * unit, 5 * unit]
+        pointMap[5] = [16 * unit, 8 * unit]
+        pointMap[6] = [20 * unit, 8 * unit]
         pointMap[7] = [24 * unit, 8 * unit]
         pointMap[8] = [48 * unit, 10 * unit]
         pointMap[9] = [27 * unit, 13 * unit]
-        pointMap[10] = [43 * unit, 12 * unit]
+        pointMap[10] = [43 * unit, 13 * unit]
+        pointMap[11] = [1 * unit, 16 * unit]
+        pointMap[12] = [13 * unit, 16 * unit]
+        pointMap[13] = [20 * unit, 17 * unit]
         pointMap[14] = [36 * unit, 17 * unit]
+        pointMap[15] = [20 * unit, 20 * unit]
         pointMap[16] = [27 * unit, 20 * unit]
+        pointMap[17] = [39 * unit, 20 * unit]
         pointMap[18] = [48 * unit, 20 * unit]
+        pointMap[19] = [54 * unit, 19 * unit]
+        pointMap[20] = [59 * unit, 19 * unit]
+        pointMap[21] = [7 * unit, 23 * unit]
+        pointMap[22] = [20 * unit, 23 * unit]
+        pointMap[23] = [41 * unit, 23 * unit]
+        pointMap[24] = [50 * unit, 22 * unit]
+        pointMap[25] = [50 * unit, 25 * unit]
+        pointMap[26] = [54 * unit, 26 * unit]
+        pointMap[27] = [59 * unit, 26 * unit]
+        pointMap[28] = [36 * unit, 8 * unit]
+        pointMap[29] = [2 * unit, 23 * unit]
+        pointMap[30] = [38 * unit, 17 * unit]
+
+        // TODO: add wall lines
+        // addElem(`<line class='wall' x1='${start[0]}' y1='${21*unit}' x2='${end[0]}' y2='${end[1]}'></line>`)
 
         return pointMap
     }
-
 
 })();

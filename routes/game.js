@@ -95,6 +95,9 @@ router.get('/', async (req, res, next) => {
 })
 
 router.post('/pattern', checkUserAuth, async (req, res) => {
+    
+    // TODO: allow pattern resubmit
+    
     const pattern = req.body?.pattern?.trim().toLowerCase() || null
     
     try {
