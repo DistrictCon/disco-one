@@ -11,4 +11,29 @@ html(lang='en-US')
     body(class='page-'+page)
         svg#display
 
+        section.meta
+            aside.last
+                | Last Run: ...
+                | @TODO
+            aside.admin
+                form#admin-pattern
+                    div
+                        input#pattern
+                    div
+                        label(for='hold')
+                            input#hold(type='checkbox', value='true', checked='checked')
+                            | Hold 
+                        input#clear(type='button', value='Clear')
+                        input(type='submit', value='Run')
+
+        
+        section.stats
+            aside
+                h2 Leaderboard
+                | @TODO
+
+            aside
+                h2 Queue
+                | @TODO
+
         script(src='/display-ui.js')

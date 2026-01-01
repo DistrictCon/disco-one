@@ -10,25 +10,31 @@
     Object.keys(COLOR_MAP).forEach(c => {
         COLOR_MAP[c].start = MAP_COORDS[c]
     })
+
+
+    if (window.location.search === '?admin') {
+        document.querySelector('.admin').style.display = 'block'
+        const patternElem = document.getElementById('pattern')
+        const holdElem = document.getElementById('hold')
+        // Testing (nearly) all paths and points
+        patternElem.value = 'R2-1-3-12-11-21-29-B2-21-12-R-2-4-3-G2-5-6-9-10-8-18-17-O2-14-13-G-B-22-15-16-Y2-20-19-26-27-24-23-25-17-16-9-6-7-14-28'
+        document.getElementById('admin-pattern').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            await parsePattern(patternElem.value, holdElem.checked === true)
+            return false
+        })
+        document.getElementById('clear').addEventListener('click', () => {
+            SVG.innerHTML = ''
+        })
+    }
+
     
 
     // TODO: fetch the data we need
 
-    // const lines = parsePattern('G2-9-16-18-8-10-O-Z1-O2-14-7')
-    // const lines = parsePattern('R2-1-Z2-R3-11-Z1-R2-21-Z2-R1-12-Z3-R3-2')
-    // const lines = parsePattern('R2-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R2-21-Z1-R2-21')
-    // const lines = parsePattern('R1-1-R1-21-R1-2-B1-29-B1-5-B1-22-G1-5-G1-10-G1-B-O1-14-O1-23-O1-10-Y1-20-Y1-23-Y1-27')
-    const lines = parsePattern('G2-10-17-R2-11-12-O2-14-R2-11-B2-22-O2-14-R2-11-12-21-O2-14')
-
-    for (let i=0; i<lines.length; ++i) {
-        const elemIDs = await showLine(lines[i].color, lines[i].segments)
-        setTimeout(async () => {
-            await disipateLine(elemIDs, lines[i].color, lines[i].pause * PAUSE_TIME_UNIT)
-        }, lines[i].duration * LIGHT_TIME_UNIT)
-    }
 
 
-    function parsePattern(pattern) {
+    async function parsePattern(pattern, hold=false) {
         const lines = []
         let curr = null
         pattern.split('-').forEach(n => {
@@ -49,6 +55,16 @@
             }
         })
         if (curr) { lines.push(curr) }
+
+        for (let i=0; i<lines.length; ++i) {
+            const elemIDs = await showLine(lines[i].color, lines[i].segments)
+            if (!hold) {
+                setTimeout(async () => {
+                    await disipateLine(elemIDs, lines[i].color, lines[i].pause * PAUSE_TIME_UNIT)
+                }, lines[i].duration * LIGHT_TIME_UNIT)
+            }
+        }
+
         return lines
     }
 
@@ -114,7 +130,7 @@
     function addElem(html, query=null) {
         SVG.innerHTML += html
         if (!query) {
-            const id = html.split(' ').filter(a => /id=/.test(a))[0].replaceAll(`'`, '')
+            const id = html.split(' ').filter(a => /id=/.test(a))[0]?.replaceAll(`'`, '')
             if (id) {
                 query = '#' + id.split('=')[1]
             } else {
@@ -128,6 +144,7 @@
         const dim = [60, 27]  // map is 60 units widw x 27 units tall
         const w = SVG.clientWidth
         const h = Math.round(w / (dim[0] / dim[1]))
+        SVG.style.height = `${h}px`
         const unit = Math.round(w / dim[0])
         
         const pointMap = {}
@@ -144,9 +161,9 @@
         pointMap[5] = [16 * unit, 8 * unit]
         pointMap[6] = [20 * unit, 8 * unit]
         pointMap[7] = [24 * unit, 8 * unit]
-        pointMap[8] = [48 * unit, 10 * unit]
+        pointMap[8] = [48 * unit, 11 * unit]
         pointMap[9] = [27 * unit, 13 * unit]
-        pointMap[10] = [43 * unit, 13 * unit]
+        pointMap[10] = [42 * unit, 13 * unit]
         pointMap[11] = [1 * unit, 16 * unit]
         pointMap[12] = [13 * unit, 16 * unit]
         pointMap[13] = [20 * unit, 17 * unit]
@@ -155,21 +172,30 @@
         pointMap[16] = [27 * unit, 20 * unit]
         pointMap[17] = [39 * unit, 20 * unit]
         pointMap[18] = [48 * unit, 20 * unit]
-        pointMap[19] = [54 * unit, 19 * unit]
+        pointMap[19] = [53 * unit, 19 * unit]
         pointMap[20] = [59 * unit, 19 * unit]
         pointMap[21] = [7 * unit, 23 * unit]
         pointMap[22] = [20 * unit, 23 * unit]
         pointMap[23] = [41 * unit, 23 * unit]
         pointMap[24] = [50 * unit, 22 * unit]
-        pointMap[25] = [50 * unit, 25 * unit]
-        pointMap[26] = [54 * unit, 26 * unit]
+        pointMap[25] = [50 * unit, 24 * unit]
+        pointMap[26] = [53 * unit, 26 * unit]
         pointMap[27] = [59 * unit, 26 * unit]
         pointMap[28] = [36 * unit, 8 * unit]
         pointMap[29] = [2 * unit, 23 * unit]
         pointMap[30] = [38 * unit, 17 * unit]
 
-        // TODO: add wall lines
-        // addElem(`<line class='wall' x1='${start[0]}' y1='${21*unit}' x2='${end[0]}' y2='${end[1]}'></line>`)
+        const walls = [
+            [0, 0, 14, 0], [0, 0, 0, 21], [0, 21, 14, 21], [14, 0, 14, 21],
+            [14, 7, 39, 7], [39, 7, 39, 18], [14, 18, 39, 18], 
+            [43, 10, 52, 10], [52, 10, 52, 21], [52, 21, 43, 21], [43, 21, 43, 10], 
+            [52, 18, 60, 18], [60, 18, 60, 27], [60, 27, 52, 27], [52, 27, 52, 21],
+            [1, 21, 1, 25], [1, 25, 21, 25], [21, 25, 21, 22],
+            [21, 22, 40, 22], [40, 22, 40, 25], [40, 25, 52, 25]
+        ]
+        walls.forEach(w => {
+            addElem(`<line class='wall' x1='${w[0]*unit}' y1='${w[1]*unit}' x2='${w[2]*unit}' y2='${w[3]*unit}'></line>`)
+        })
 
         return pointMap
     }
