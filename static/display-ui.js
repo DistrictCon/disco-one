@@ -4,9 +4,9 @@
     const MAP_DIMENSIONS = [60, 27]
     const DEFAULT_LIGHT_TIME_UNIT = 500
     let LIGHT_TIME_UNIT = DEFAULT_LIGHT_TIME_UNIT
-    const PAUSE_TIME_UNIT = 75
+    const PAUSE_TIME_UNIT = 300
     const LINE_SEGMENT_DELAY = 75
-    const TEST_PATH = 'R2-1-3-12-11-21-29-B2-21-12-R-2-4-3-G2-5-6-9-10-8-18-17-O2-14-13-G-B-22-15-16-Y2-20-19-26-27-24-23-25-17-16-9-6-7-14-28'
+    const DISSIPATION_INTERVAL = 50
 
     let ACTIVE_PATTERN = null
     let LAST_PATTERN = null
@@ -143,45 +143,45 @@
 
         ACTIVE_PATTERN = pattern
 
-        executePattern(lines, hold, () => {
-            if (edgeFlash) {
-                flashOutline(COLOR_MAP[edgeFlash[0]].name, edgeFlash[1], 30, () => {
-                    LAST_PATTERN = ACTIVE_PATTERN
-                    ACTIVE_PATTERN = null
-                    toggleButtons('on')
-                    done(lines)
-                })
-            } else {
+        for (let i=0; i<lines.length; ++i) {
+            await showLine(lines[i], hold)
+        }
+
+        if (edgeFlash) {
+            flashOutline(COLOR_MAP[edgeFlash[0]].name, edgeFlash[1], 30, () => {
                 LAST_PATTERN = ACTIVE_PATTERN
                 ACTIVE_PATTERN = null
                 toggleButtons('on')
                 done(lines)
+            })
+        } else {
+            LAST_PATTERN = ACTIVE_PATTERN
+            ACTIVE_PATTERN = null
+            toggleButtons('on')
+            done(lines)
+        }
+    }
+
+    async function showLine(line, hold=false) {
+        return new Promise(async (resolve, _) => {
+            const elems = []
+            elems.push(await pulseSource(line.color, line.segments[0]))
+            for (let i=0; i<line.segments.length-1; ++i) {
+                elems.push(await addSegment(line.color, line.segments[i], line.segments[i+1]))
             }
+            setTimeout(async () => {
+                if (!hold) {
+                    await disipateLine(elems)
+                }
+                if (line.pause) {
+                    setTimeout(() => {
+                        resolve()
+                    }, line.pause * PAUSE_TIME_UNIT)
+                } else {
+                    resolve()
+                }
+            }, line.duration * LIGHT_TIME_UNIT)
         })
-    }
-
-    async function executePattern(lines, hold=false, done=()=>{}) {
-        let count = lines.length
-        for (let i=0; i<lines.length; ++i) {
-            const elemIDs = await showLine(lines[i].color, lines[i].segments)
-            if (!hold) {
-                setTimeout(async () => {
-                    count--
-                    await disipateLine(elemIDs, lines[i].color, lines[i].pause * PAUSE_TIME_UNIT)
-                    if (count <= 0) { done() }
-                }, lines[i].duration * LIGHT_TIME_UNIT)
-            }
-        }
-        if (hold) { done() }
-    }
-
-    async function showLine(color, points) {
-        const elems = []
-        elems.push(await pulseSource(color, points[0]))
-        for (let i=0; i<points.length-1; ++i) {
-            elems.push(await addSegment(color, points[i], points[i+1]))
-        }
-        return elems
     }
     
     function addSegment(color, start, end) {
@@ -192,7 +192,7 @@
         })
     }
 
-    function disipateLine(elemIDs, color, delay) {
+    function disipateLine(elemIDs) {
         return new Promise((resolve, _) => {
             let opacity = 1
             let intHandle = setInterval(() => {
@@ -211,7 +211,7 @@
                     })
                     resolve()
                 }
-            }, delay || 40)
+            }, DISSIPATION_INTERVAL)
         })
     }
 

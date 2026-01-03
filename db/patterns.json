@@ -47,10 +47,10 @@
         "badgePattern": "TODO",
         "note": "dancing men cipher"
     },
-    "95bbb10094693zz3oo9647004700": {
-        "pattern": "95bbb10094693zz3oo9647004700",
+    "95bbb10094693zz3ooo9647004700": {
+        "pattern": "95bbb10094693zz3ooo9647004700",
         "points": 15,
-        "path": "B3-",
+        "path": "B3-15-18-8-10-O-Z2-O3-10-8-18-15-22-29",
         "hint": "Well done! That light sure is specific, I wonder what it's lighting up exactly?",
         "badgePattern": "TODO",
         "note": "sponsor table puzzle"
@@ -62,13 +62,5 @@
         "hint": "TODO",
         "badgePattern": "TODO",
         "note": "website source puzzle"
-    },
-    "rzr": {
-        "pattern": "rzr",
-        "points": 1,
-        "path": "R1-1-Z1-R1-2",
-        "hint": "TODO",
-        "badgePattern": "TODO",
-        "note": ""
     }
 }
