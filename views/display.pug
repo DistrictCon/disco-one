@@ -12,28 +12,42 @@ html(lang='en-US')
         svg#display
 
         section.meta
-            aside.last
-                | Last Run: ...
-                | @TODO
-            aside.admin
+            header
+                p.last.hide
+                    | Last Run by 
+                    strong.username [some-username] 
+                    span.result earned 30 points!
+                button.run-next Run Next
+                
+            aside.admin.hide
                 form#admin-pattern
                     div
                         input#pattern
                     div
+                        label(for='units')
+                            input#units(type='number', min='100', value='1000', step='25')
+                            |  units | 
                         label(for='hold')
-                            input#hold(type='checkbox', value='true', checked='checked')
-                            | Hold 
-                        input#clear(type='button', value='Clear')
+                            input#hold(type='checkbox', value='true')
+                            |  hold | 
                         input(type='submit', value='Run')
+                        input#clear(type='button', value='Clear')
+                        input#rerun(type='button', value='Re-run Last')
 
         
         section.stats
             aside
-                h2 Leaderboard
-                | @TODO
+                h2
+                    | Leaderboard (
+                    span.userCount
+                    |  total players)
+                ol.leaderboard
 
             aside
-                h2 Queue
-                | @TODO
+                h2
+                    | Queue (
+                    span.queueCount
+                    |  total)
+                ol.queue
 
         script(src='/display-ui.js')

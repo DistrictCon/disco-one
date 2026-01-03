@@ -1,40 +1,119 @@
 
 ;(async () => {
     const SVG = document.getElementById('display')
-    const LIGHT_TIME_UNIT = 500
+    const MAP_DIMENSIONS = [60, 27]
+    const DEFAULT_LIGHT_TIME_UNIT = 500
+    let LIGHT_TIME_UNIT = DEFAULT_LIGHT_TIME_UNIT
     const PAUSE_TIME_UNIT = 75
     const LINE_SEGMENT_DELAY = 75
+    const TEST_PATH = 'R2-1-3-12-11-21-29-B2-21-12-R-2-4-3-G2-5-6-9-10-8-18-17-O2-14-13-G-B-22-15-16-Y2-20-19-26-27-24-23-25-17-16-9-6-7-14-28'
+
+    let ACTIVE_PATTERN = null
+    let LAST_PATTERN = null
 
     const MAP_COORDS = setMapLayout()
     const COLOR_MAP = { R:{name:'red'}, G:{name:'green'}, B:{name:'blue'}, O:{name:'orange'}, Y:{name:'yellow'} }
+    const ALL_COLORS = []
     Object.keys(COLOR_MAP).forEach(c => {
         COLOR_MAP[c].start = MAP_COORDS[c]
+        ALL_COLORS.push(COLOR_MAP[c].name)
     })
 
+    setupAdminUI()
+    
+    updateLeaderboard()
+    updateQueue()
 
-    if (window.location.search === '?admin') {
-        document.querySelector('.admin').style.display = 'block'
-        const patternElem = document.getElementById('pattern')
-        const holdElem = document.getElementById('hold')
-        // Testing (nearly) all paths and points
-        patternElem.value = 'R2-1-3-12-11-21-29-B2-21-12-R-2-4-3-G2-5-6-9-10-8-18-17-O2-14-13-G-B-22-15-16-Y2-20-19-26-27-24-23-25-17-16-9-6-7-14-28'
-        document.getElementById('admin-pattern').addEventListener('submit', async (e) => {
-            e.preventDefault()
-            await parsePattern(patternElem.value, holdElem.checked === true)
-            return false
+    document.querySelector('.run-next').addEventListener('click', () => {
+        if (!ACTIVE_PATTERN) { runNext() }
+    })
+
+    setInterval(() => { updateQueue() }, 5000)
+
+
+    async function runNext() {
+        const resp = await fetch('/queue/run', {
+            method: 'post',
+            headers: { accept: 'application/json' }
         })
-        document.getElementById('clear').addEventListener('click', () => {
-            SVG.innerHTML = ''
+        if (resp.status === 204) {
+            console.info('No patterns in the queue!')
+        } else if (resp.status === 200) {
+            const data = await resp.json()
+            if (!data.path) {
+                return console.warn('No path in the data!', data)
+            }
+            parsePattern(data.path, false, () => {
+                document.querySelector('.last').classList.remove('hide')
+                document.querySelector('.last .username').innerText = data.username
+                document.querySelector('.last .result').innerText = (data.isValid) ? ` earned ${data.points} points!` : ' was not valid.'
+                if (data.isValid) {
+                    updateLeaderboard()
+                }
+                updateQueue()
+            })
+
+        } else {
+            const button = document.querySelector('.run-next')
+            button.classList.add('hide')
+            document.querySelector('.last').innerText = 'Unable to process next pattern! Find the admin.'
+            console.warn('Unable to process next in queue:', resp.status)
+        }
+    }
+
+
+    async function updateLeaderboard() {
+        const resp = await fetch('/leaderboard', {
+            headers: { accept: 'application/json' }
+        })
+        if (resp.status < 300) {
+            const data = await resp.json()
+            const leaders = data.leaders.map(user => {
+                return `<li>${user.username} (${user.score})</li>`
+            })
+            document.querySelector('.userCount').innerText = data.userCount
+            document.querySelector('.leaderboard').innerHTML = leaders.join('\n')
+        } else {
+            console.warn('Unable to fetch leaderboard:', resp.status)
+        }
+    }
+
+    async function updateQueue() {
+        const resp = await fetch('/queue', {
+            headers: { accept: 'application/json' }
+        })
+        if (resp.status < 300) {
+            const data = await resp.json()
+            const queue = data.queue.map(entry => {
+                return `<li>${entry.username} (${entry.score})</li>`
+            })
+            document.querySelector('.queueCount').innerText = data.count
+            document.querySelector('.queue').innerHTML = queue.join('\n')
+        } else {
+            console.warn('Unable to fetch queue:', resp.status)
+        }
+    }
+
+    function clearAllLines() {
+        Array.from(SVG.querySelectorAll('line:not(.wall, .edge), circle')).forEach(n => {
+            n.parentNode?.removeChild(n)
         })
     }
 
-    
+    async function parsePattern(pattern, hold=false, done=()=>{}) {
+        if (ACTIVE_PATTERN) {
+            console.warn('There is already a pattern running!')
+            return
+        }
 
-    // TODO: fetch the data we need
+        clearAllLines()
 
+        if (!/^[RGBOY]\d\-[RBGOYZE\d\-]+\-(\d+|[RGBOY]|E[RGBOY]\d)$/.test(pattern)) {
+            return flashOutline('red', 2, 40)
+        }
 
+        toggleButtons('off')
 
-    async function parsePattern(pattern, hold=false) {
         const lines = []
         let curr = null
         pattern.split('-').forEach(n => {
@@ -56,16 +135,44 @@
         })
         if (curr) { lines.push(curr) }
 
+        let edgeFlash = null
+        if (/-E[RGBOY]\d$/.test(pattern)) {
+            edgeFlash = pattern.split('-E')[1].split('')
+            edgeFlash[1] = Number(edgeFlash[1])
+        }
+
+        ACTIVE_PATTERN = pattern
+
+        executePattern(lines, hold, () => {
+            if (edgeFlash) {
+                flashOutline(COLOR_MAP[edgeFlash[0]].name, edgeFlash[1], 30, () => {
+                    LAST_PATTERN = ACTIVE_PATTERN
+                    ACTIVE_PATTERN = null
+                    toggleButtons('on')
+                    done(lines)
+                })
+            } else {
+                LAST_PATTERN = ACTIVE_PATTERN
+                ACTIVE_PATTERN = null
+                toggleButtons('on')
+                done(lines)
+            }
+        })
+    }
+
+    async function executePattern(lines, hold=false, done=()=>{}) {
+        let count = lines.length
         for (let i=0; i<lines.length; ++i) {
             const elemIDs = await showLine(lines[i].color, lines[i].segments)
             if (!hold) {
                 setTimeout(async () => {
+                    count--
                     await disipateLine(elemIDs, lines[i].color, lines[i].pause * PAUSE_TIME_UNIT)
+                    if (count <= 0) { done() }
                 }, lines[i].duration * LIGHT_TIME_UNIT)
             }
         }
-
-        return lines
+        if (hold) { done() }
     }
 
     async function showLine(color, points) {
@@ -140,12 +247,38 @@
         return SVG.querySelector(query)
     }
 
+    function flashOutline(color='red', count=1, pulse=100, done=()=>{}) {
+        const edges = Array.from(SVG.querySelectorAll('line.edge'))
+        edges.forEach(n => {
+            n.classList.remove(...ALL_COLORS)
+            n.classList.add(color)
+        })
+
+        let opacity = 0
+        let change = 0.1
+        let intHandle = setInterval(() => {
+            opacity += change
+            edges.forEach(n => n.style.opacity = opacity )
+            
+            if (opacity > 0.95) {
+                change = change * (-1)
+            } else if (opacity < 0.1) {
+                count--
+                change = change * (-1)
+            }
+            if (count < 1) {
+                clearInterval(intHandle)
+                intHandle = null
+                done()
+            }
+        }, pulse)
+    }
+
     function setMapLayout() {
-        const dim = [60, 27]  // map is 60 units widw x 27 units tall
         const w = SVG.clientWidth
-        const h = Math.round(w / (dim[0] / dim[1]))
+        const h = Math.round(w / (MAP_DIMENSIONS[0] / MAP_DIMENSIONS[1])) + 10
         SVG.style.height = `${h}px`
-        const unit = Math.round(w / dim[0])
+        const unit = Math.round(w / MAP_DIMENSIONS[0])
         
         const pointMap = {}
         pointMap.R = [7 * unit, 1 * unit]
@@ -186,7 +319,7 @@
         pointMap[30] = [38 * unit, 17 * unit]
 
         const walls = [
-            [0, 0, 14, 0], [0, 0, 0, 21], [0, 21, 14, 21], [14, 0, 14, 21],
+            [0.25, 0.5, 14, 0.5], [0.25, 0.5, 0.25, 21], [0.25, 21, 14, 21], [14, 0.5, 14, 21],
             [14, 7, 39, 7], [39, 7, 39, 18], [14, 18, 39, 18], 
             [43, 10, 52, 10], [52, 10, 52, 21], [52, 21, 43, 21], [43, 21, 43, 10], 
             [52, 18, 60, 18], [60, 18, 60, 27], [60, 27, 52, 27], [52, 27, 52, 21],
@@ -197,7 +330,57 @@
             addElem(`<line class='wall' x1='${w[0]*unit}' y1='${w[1]*unit}' x2='${w[2]*unit}' y2='${w[3]*unit}'></line>`)
         })
 
+        addElem(`<line class='edge' x1='2' y1='2' x2='${w-2}' y2='2'></line>`)
+        addElem(`<line class='edge' x1='${w-2}' y1='2' x2='${w-2}' y2='${h-2}'></line>`)
+        addElem(`<line class='edge' x1='${w-2}' y1='${h-2}' x2='2' y2='${h-2}'></line>`)
+        addElem(`<line class='edge' x1='2' y1='${h-2}' x2='2' y2='2'></line>`)
+
         return pointMap
+    }
+
+    function setupAdminUI() {
+        const adminElem = document.querySelector('.admin')
+        const patternElem = document.getElementById('pattern')
+        const holdElem = document.getElementById('hold')
+        const unitsElem = document.getElementById('units')
+        // Testing (nearly) all paths and points
+        patternElem.value = 'R2-1-3-12-11-21-29-B2-21-12-R-2-4-3-G2-5-6-9-10-8-18-17-O2-14-13-G-B-22-15-16-Y2-20-19-26-27-24-23-25-17-16-9-6-7-14-28'
+        document.getElementById('admin-pattern').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            const units = Number(unitsElem.value)
+            LIGHT_TIME_UNIT = (units) ? units : DEFAULT_LIGHT_TIME_UNIT
+            await parsePattern(patternElem.value, holdElem.checked === true)
+            return false
+        })
+        document.getElementById('clear').addEventListener('click', () => {
+            clearAllLines()
+        })
+        document.getElementById('rerun').addEventListener('click', () => {
+            if (LAST_PATTERN) {
+                parsePattern(LAST_PATTERN, holdElem.checked === true)
+            } else {
+                console.warn('There is nor previous pattern to run!')
+            }
+        })
+        document.body.addEventListener('keyup', e => {
+            if (e.altKey && e.keyCode === 65) {
+                if (adminElem.classList.contains('hide')) {
+                    adminElem.classList.remove('hide')
+                } else {
+                    adminElem.classList.add('hide')
+                }
+            }
+        })
+    }
+
+    function toggleButtons(onOff='on') {
+        Array.from(document.querySelectorAll('button, [type="submit"], [type="button"]')).forEach(n => {
+            if (onOff === 'off') {
+                n.setAttribute('disabled', 'disabled')
+            } else {
+                n.removeAttribute('disabled')
+            }
+        })
     }
 
 })();

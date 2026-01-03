@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 const { getConnection } = require('../../util/database')
 
 const patterns = require('../patterns.json')
-const colorPerpendiculars = { r: 21, b: 5, g: 10, o: 23, y: 23 }
+const colorPerpendiculars = { R: 21, G: 10, B: 5, O: 23, Y: 23 }
 const sequelize = getConnection()
 
 const Submission = sequelize.define(
@@ -44,10 +44,11 @@ Submission.prototype.getPath = function getPath() {
     if (patterns[this.pattern]) {
         return patterns[this.pattern].path
     } else {
-        // If this is an invalid path we'll show the first color in it for 2 seconds, but only the perpendicular path
+        // If this is an invalid path we'll show the first color found,
+        // but only the perpendicular path, then flash the edge lights as an error
         let color = this.pattern.match(/([rgybo])/i)
-        color = (color) ? color[1] : 'R'
-        return `${color.toUpperCase()}2-${colorPerpendiculars[color]}`
+        color = ((color) ? color[1] : 'R').toUpperCase()
+        return `${color}1-${colorPerpendiculars[color]}-ER3`
     }
 }
 

@@ -7,8 +7,11 @@ html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body
 body { overflow: hidden; font-size: 1.3rem; }
 svg { width: 100%; min-height: 400px; }
 
+.hide { display: none; }
+
 circle { stroke: none; }
 line.wall { stroke: #222; stroke-width: 2px; }
+line.edge { opacity: 0; }
 
 circle.red {
     fill: #f00;
@@ -64,13 +67,35 @@ line.yellow {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    width: 20rem;
+    width: 50rem;
+    text-align: right;
 }
+.meta header { display: flex; justify-content: flex-end; margin-bottom: 1rem; }
+.meta .last { width: 40rem; margin-right: 2rem; }
 
-.admin { display: none; }
-#pattern { width: 100%; }
+.run-next {
+    display: inline-block;
+    border: none;
+    font-size: 1.2rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    padding: 0.2rem 1.5rem;
+    display: inline-block;
+    position: relative;
+    transition: all 0.3s;
+    background: #3594cb;
+    color: #ddd;
+    box-shadow: 0 6px #22719f;
+}
+.run-next:hover { box-shadow: 0 4px #22719f; top: 2px; }
+.run-next:active { box-shadow: 0 0 #22719f; top: 6px; }
+
+#pattern { width: 30rem; }
+#units { width: 4rem; }
 
 .stats { display: flex; justify-content: space-between; }
 .stats aside { width: 50%; min-height: 10rem; }
 .stats aside:nth-child(1) { border-right: 1px solid var(--lc); }
-.stats h2 { font-size: 1.3rem; text-align: center; border-bottom: 1px solid var(--lc); }
+.stats h2 { font-size: 1.3rem; border-bottom: 1px solid var(--lc); }
+
+.leaderboard, .queue { margin: 1rem 0 0 2rem; columns: 3; }

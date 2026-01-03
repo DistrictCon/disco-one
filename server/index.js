@@ -9,7 +9,6 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const game = require('../routes/game')
 const user = require('../routes/user')
-const display = require('../routes/display')
 
 const PORT = process.env.PORT || 80
 
@@ -58,7 +57,6 @@ async function main() {
     /* ********** routes and middleware ********** */
     app.use('/', game)
     app.use('/user', user)
-    app.use('/display', display)
 
     // @TODO: admin route
     // @TODO: metro lines routes

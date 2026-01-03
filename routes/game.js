@@ -1,6 +1,6 @@
 const express = require('express')
 const AppError = require('../util/AppError')
-const { checkUserAuth, checkAPIAuth } = require('../util/middleware')
+const { checkUserAuth, checkAdminAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
 const { Submission, User } = require('../db/models/app-models')
 const { getConnection } = require('../util/database')
@@ -147,27 +147,35 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
 
 router.get('/queue', async (req, res, next) => {
     try {
+        const count = await Submission.count({
+            where: { executedAt: null }
+        })
         const queue = await Submission.findAll({
             where: { executedAt: null },
             order: [ ['createdAt', 'ASC'] ],
             include: { all: true, nested: true },
-            raw: true
+            raw: true,
+            limit: 10
         })
         
-        res.json(queue.map(sub => {
-            return {
-                pattern: sub.pattern.replaceAll(/[a-z0-9]+/ig, '*'),
-                username: sub['User.username'],
-                createdAt: sub.createdAt.getTime()
-            }
-        }))
+        res.json({
+            count,
+            queue: queue.map(sub => {
+                return {
+                    pattern: ''.padStart(sub.pattern.length, '*'),
+                    username: sub['User.username'],
+                    score: sub['User.score'],
+                    createdAt: sub.createdAt.getTime()
+                }
+            })
+        })
 
     } catch(err) {
         return next(err)
     }
 })
 
-router.post('/queue/run', checkAPIAuth, async (req, res, next) => {
+router.post('/queue/run', checkAdminAuth, async (req, res, next) => {
     let nextSub = null
     try {
         nextSub = await Submission.findAll({
@@ -183,7 +191,7 @@ router.post('/queue/run', checkAPIAuth, async (req, res, next) => {
 
     if (nextSub.length < 1) {
         res.status(204)
-        return res.json(null)
+        return res.json({ path: null })
     }
 
     let t = null
@@ -222,8 +230,11 @@ router.post('/queue/run', checkAPIAuth, async (req, res, next) => {
 router.get('/leaderboard', async (req, res, next) => {
 
     try {
+        const userCount = await User.count({
+            where: { isAdmin: { [Op.eq]: false } }
+        })
         const leaders = await User.findAll({
-            where: { score: { [Op.gt]: 0 } },
+            where: { score: { [Op.gt]: 0 }, isAdmin: { [Op.eq]: false } },
             order: [ ['score', 'DESC'] ],
             raw: true,
             limit: 20
@@ -235,18 +246,30 @@ router.get('/leaderboard', async (req, res, next) => {
         } })
         
         if (req.headers.accept === 'application/json') {
-            res.json(data)
+            res.json({
+                userCount,
+                leaders: data
+            })
         } else {
             res.render('leaderboard', {
                 page: 'leaderboard',
                 title: `${process.env.APP_NAME} LeaderBoard`,
-                leaders: data
+                leaders: data,
+                userCount
             })
         }
 
     } catch(err) {
         return next(err)
     }
+})
+
+router.get('/display', checkAdminAuth, (req, res, next) => {
+    res.render('display', {
+        page: 'display',
+        title: process.env.TITLE || 'The Game',
+        appName: process.env.APP_NAME || ''
+    })
 })
 
 
