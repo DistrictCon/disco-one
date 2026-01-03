@@ -5,7 +5,7 @@ const { checkUserAuth } = require('../util/middleware')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 
-router.get('/', checkAdminAuth, (req, res, next) => {
+router.get('/', checkAdminAuth, (req, res) => {
     res.render('display', {
         page: 'display',
         title: process.env.TITLE || 'The Game',

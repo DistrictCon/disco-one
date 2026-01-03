@@ -46,6 +46,8 @@ h1 img {
 }
 .light-mode .message { background-color: #444; color: #fff; }
 
+.hide { display: none; }
+
 .fine { color: #ccc; }
 .light-mode .fine { color: #666; }
 
@@ -135,3 +137,18 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game tr.pattern td { border-top: 1px solid var(--lc); padding: 0.25rem; }
 .page-game tr.pattern td:nth-child(1) { border: 1px solid var(--lc); text-align: center; }
 .page-game tr.hint td { padding: 0.5rem 0 1rem 0; }
+
+
+.page-admin details { margin: 1rem 0; }
+.page-admin details h3 { display: inline-block; }
+.page-admin h4 { font-weight: bold; }
+.page-admin .edit-user > * {
+    display: inline-block;
+    width: 49%;
+    min-width: 20rem;
+    vertical-align: top;
+}
+.page-admin .submissions { padding-left: 2rem; }
+.page-admin .submissions ul { padding-left: 1rem; }
+.page-admin .users td, .page-admin .users th { padding: 0.3rem 0.5rem; }
+.page-admin .users .actions span { cursor: pointer; margin-right: 1rem; }

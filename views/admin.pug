@@ -1,0 +1,57 @@
+extends partials/layout.pug
+
+block content
+
+    h2 Administration
+
+    //- TODO: validate all user scores
+
+    section.edit-user.hide
+        form(method='post', action='/user/edit')
+            h4 Edit User
+            input#user-id(type='hidden', name='id')
+            
+            div.field-group
+                label(for="username") Username: 
+                input#username(type="text", name="username", autocomplete="off", required)
+            
+            div.field-group
+                label(for="password") Password: 
+                input#password(type="password", name="password", autocomplete="off")
+            
+            div.field-group
+                label(for="is-admin") Admin? 
+                input#is-admin(type="checkbox", name="isAdmin", value="true")
+
+            aside.actions
+                input(type='submit', value='Save')
+        aside.submissions
+            h4 Submissions
+            ul
+
+
+    details(open)
+        summary
+            h3 All Users
+        
+        table.users
+            thead
+                tr
+                    th Username 
+                    th Score 
+                    th Submissions 
+                    td 
+            tbody
+                each user in users
+                    tr(data-user=user.id+'|'+user.username+'|'+user.isAdmin)
+                        td= user.username
+                            if user.isAdmin 
+                                |  (A)
+                        td= user.score
+                        td 
+                            | #{user.submissions[0]} / #{user.submissions[1]}
+                        td.actions
+                            span.edit ✎
+                            span.delete ❌
+
+    script(src='/admin-ui.js')

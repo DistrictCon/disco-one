@@ -1,7 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const { User } = require('../db/models/app-models')
+const { User, Submission } = require('../db/models/app-models')
+const { checkAdminAuth } = require('../util/middleware')
+const AppError = require('../util/AppError')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
+
+
+// TODO: allow users to change their password
+
 
 router.get('/', (req, res) => {
     return res.redirect('/')
@@ -75,5 +81,79 @@ router.get('/logout', (req, res) => {
         })
     })
 })
+
+router.post('/edit', checkAdminAuth, async (req, res) => {
+    const user = await User.findOne({
+        where: { id: req.body.id }
+    })
+    if (!user) {
+        req.session.message = 'Unable to find User record.'
+        return res.redirect('/admin')
+    }
+
+    try {
+        user.username = req.body.username
+        if (req.body.isAdmin === 'true') {
+            user.isAdmin = true
+        } else {
+            user.isAdmin = false
+        }
+        if (req.body.password.length > 0) {
+            user.password = User.hashPass(req.body.password)
+        }
+        
+        await user.save()
+
+        req.session.message = 'User data saved!'
+        res.redirect('/admin')
+
+    } catch(err) {
+        logger.warn('Unable to save User record: ' + err.message || err.toString())
+        req.session.message = 'Unable to save User record.'
+        return res.redirect('/admin')
+    }
+})
+
+router.get('/:id', checkAdminAuth, async (req, res) => {
+    const userData = await User.findOne({
+        where: { id: req.params.id },
+        attributes: ['id', 'username', 'score', 'isAdmin', 'createdAt'],
+        include: { all: true, nested: true }
+    })
+    res.json({
+        id: userData.id,
+        username: userData.username,
+        score: userData.score,
+        isAdmin: userData.isAdmin,
+        createdAt: userData.createdAt,
+        submissions: userData.Submissions.map(sub => {
+            return {
+                id: sub.id,
+                pattern: sub.pattern,
+                executedAt: sub.executedAt,
+                points: sub.getPoints()
+            }
+        })
+    })
+})
+
+router.delete('/:id', checkAdminAuth, async (req, res, next) => {
+    const user = await User.findOne({
+        where: { id: req.params.id }
+    })
+    if (!user) {
+        return next(new AppError('Unable to find User record for deletion.', 404))
+    }
+
+    try {
+        await user.destroy()
+        logger.info(`User record (${user.username}) deleted by ${req.session.user.username}`)
+        res.json({ user: user.username })
+
+    } catch(err) {
+        return next(new AppError('Unable to delete User record: ' + err.message || err.toString(), 500))
+    }
+})
+
 
 module.exports = router
