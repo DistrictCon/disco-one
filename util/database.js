@@ -8,7 +8,14 @@ module.exports = {
     getConnection: () => {
         if (connection) { return connection }
         connection = new Sequelize(process.env.DATABASE_URL, {
-            logging: m => logger.debug(m)
+            dialect: 'postgres',
+            logging: m => logger.debug(m),
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false 
+                }
+            }
         })
         return connection
     },
