@@ -6,10 +6,12 @@ Challenge repo for DistrictCon Year One
 1. Install dependencies (`npm install`)
 2. Install and Start PostgreSQL (on ubuntu it's `sudo service postgresql start`)
     * Connect to postgres as root: `sudo -u postgres psql`
+    * install the UUID extension:
+        - `CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;`
     * Create the database and user for local testing:
         - `CREATE USER [username] WITH PASSWORD '[password]';`
         - `CREATE DATABASE [dbname] OWNER [username];`
-        - `GRANT ALL PRIVILESES ON DATABASE [dbname] TO [username];` (Note: for local testing only!)
+        - `GRANT ALL PRIVILEGES ON DATABASE [dbname] TO [username];` (Note: for local testing only!)
     * Connect to DB as DB user: `psql -U [username] -d [dbname] -h localhost`
     * Execute SQL commands as needed, like seeing table details: `\d+ "[TableName]"`
 3. Load the table schema in the DB: `npm run db:init` (WARNING: this is DESTRUCTIVE action!)
