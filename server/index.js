@@ -32,7 +32,6 @@ async function main() {
         logger.error('Unable to connect to the database:', err)
         return Promise.reject(new AppError('Unable to connect to database.', 500))
     }
-    // TODO: close connection on server shutdown
 
 
     /* ********** session handling ********** */
@@ -90,15 +89,32 @@ async function main() {
     })
 
 
-    /* ********** app startup ********** */
-    app.listen(PORT, () => {
+    /* ************* app startup ************* */
+    const server = app.listen(PORT, () => {
         if (process.env.NODE_ENV === 'development') {
             logger.info(`${process.env.APP_NAME} is listening at https://localhost:${PORT}`)
         } else {
             logger.info(`${process.env.APP_NAME} is listening on port ${PORT}`)
         }
     })
-    /* ********************************* */
+    /* *************************************** */
+
+
+    /* ********** graceful shutdown ********** */
+    process.on('SIGTERM', shutdown)
+    process.on('SIGINT', shutdown)
+    function shutdown() {
+        console.log('Handling SIGINT/TERM...')
+        server.close(() => {
+            console.log('Express shutdown complete, closing DB connections...')
+            const db = getConnection()
+            db.close().then(() => {
+                console.log('DB connection closed, terminating.')
+                process.exit(0)
+            })
+        })
+    }
+    /* ************************************** */
 }
 
 
