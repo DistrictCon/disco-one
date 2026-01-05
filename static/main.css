@@ -18,6 +18,7 @@ header {
     z-index: 9;
 }
 h1 { text-align: center; }
+h1 a { text-decoration: none; color: var(--fc); }
 h1 .logo {
     display: inline-block;
     height: 1.5rem;

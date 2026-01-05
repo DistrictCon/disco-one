@@ -18,6 +18,9 @@ Challenge repo for DistrictCon Year One
 4. Start server cluster (`node .` or to watch for file changes `npm run watch`)
 5. Hit server at http://localhost:3000
 
+You can see all patterns in the database, limited to the most recent 20, using this query.
+
+`select "Users".username, pattern, resubmit, to_char("Submissions"."updatedAt", 'MM-DD HH24:MI:SS') as updated, to_char("Submissions"."executedAt", 'MM-DD HH24:MI:SS') as executed from "Submissions" inner join "Users" on "Submissions"."UserId" = "Users".id order by "Submissions"."updatedAt" desc limit 20;`
 
 You can hit the API endpoints using `fetch` in the browser. For example, to run the next pattern in the queue:
 

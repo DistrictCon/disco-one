@@ -19,7 +19,11 @@ block content
 
         if user.queued
             aside.in-queue
-                | You have a pattern in the queue: 
+                | You have a
+                if user.queued.resubmit
+                    strong
+                        |  resubmitted
+                |  pattern in the queue: 
                 span.queued-pattern= user.queued.pattern
                 |  (currently number #{user.queued.position} in the queue)
 

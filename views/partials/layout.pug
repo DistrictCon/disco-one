@@ -8,10 +8,12 @@ html(lang='en-US')
     body(class='page-'+page)
         header
             h1
-                | DisC
-                span.logo
-                    if user
-                        img(src='/disco-one-logo-small.png', alt='DistrictCon Year 1 logo', style='opacity:'+(user.progress / 100)+';')
+                a(href='/')
+                    | DisC
+                    span.logo
+                        if user
+                            img(src='/disco-one-logo-small.png', alt='DistrictCon Year 1 logo', style='opacity:'+(user.progress / 100)+';')
+                
 
             if user
                 section.sub-header

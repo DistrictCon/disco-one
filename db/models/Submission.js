@@ -10,10 +10,8 @@ const Submission = sequelize.define(
     {
         id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
         pattern: { type: DataTypes.STRING, allowNull: false },
-        executedAt: { type: DataTypes.DATE, allowNull: true }
-    },
-    {
-        updatedAt: false
+        executedAt: { type: DataTypes.DATE, allowNull: true },
+        resubmit: { type: DataTypes.BOOLEAN, allowNull: false , defaultValue: false }
     }
 )
 
@@ -33,7 +31,9 @@ Submission.prototype.getPatternInfo = function getPatternInfo() {
     return {
         pattern: this.pattern,
         createdAt: (new Date(this.createdAt)).getTime(),
+        updatedAt: (new Date(this.updatedAt)).getTime(),
         executedAt: (this.executedAt) ? (new Date(this.executedAt)).getTime() : null,
+        resubmit: this.resubmit,
         points: (patterns[this.pattern]) ? patterns[this.pattern].points : 0,
         hint: (patterns[this.pattern]) ? patterns[this.pattern].hint : null,
         badgePattern: (patterns[this.pattern]) ? patterns[this.pattern].badgePattern: null

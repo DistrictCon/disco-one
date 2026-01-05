@@ -1,7 +1,7 @@
 const express = require('express')
 const AppError = require('../util/AppError')
 const { checkUserAuth, checkAdminAuth } = require('../util/middleware')
-const { Op } = require('sequelize')
+const { DataTypes, Op } = require('sequelize')
 const { Submission, User } = require('../db/models/app-models')
 const { getConnection } = require('../util/database')
 const { PATTERN_REGEX } = require('../util/constants')
@@ -12,9 +12,13 @@ const router = express.Router()
 const LIGHTS_ON_PERCENT = 0.66
 
 router.get('/', async (req, res, next) => {
-    const page = (req.session?.user) ? 'game' : 'home'
-
-    res.setHeader('X-author', 'jakerella')
+    let page = 'home'
+    if (req.session?.user) {
+        page = 'game'
+        // TODO: put villain name in header?
+    } else {
+        res.setHeader('X-author', 'jakerella')
+    }
 
     const message = req.session.message || null
     req.session.message = null
@@ -29,15 +33,16 @@ router.get('/', async (req, res, next) => {
         if (req.session?.user) {
             user = await User.findOne({
                 where: { id: req.session.user.id },
+                attributes: ['id', 'username', 'score', 'isAdmin'],
                 include: Submission,
                 order: [
-                    [Submission, 'createdAt', 'DESC']
+                    [Submission, 'updatedAt', 'DESC']
                 ]
             })
 
             if (user) {
                 patterns = user.Submissions
-                    .filter(sub => sub.executedAt !== null && sub.isValid())
+                    .filter(sub => sub.isValid() && (sub.executedAt !== null || sub.resubmit))
                     .map(sub => sub.getPatternInfo())
                 failed = user.Submissions
                     .filter(s => s.executedAt !== null && !s.isValid())
@@ -48,10 +53,10 @@ router.get('/', async (req, res, next) => {
             if (queued) {
                 (await Submission.findAll({
                     where: { executedAt: null },
-                    order: [ ['createdAt', 'ASC'] ],
+                    order: [ ['updatedAt', 'ASC'] ],
                     raw: true
                 })).forEach((sub, i) => {
-                    if (sub.pattern === queued.pattern) {
+                    if (sub.pattern === queued.pattern && sub.UserId === queued.UserId) {
                         queuePos = i
                     }
                 })
@@ -76,7 +81,7 @@ router.get('/', async (req, res, next) => {
             progress: Math.round((user.score / (max * LIGHTS_ON_PERCENT)) * 100),
             isAdmin: user.isAdmin,
             patterns,
-            queued: (queued) ? { pattern: queued.pattern, position: queuePos + 1 } : null,
+            queued: (queued) ? { ...queued.getPatternInfo(), position: queuePos + 1 } : null,
             failed,
             mostRecent
         } : null
@@ -95,9 +100,6 @@ router.get('/', async (req, res, next) => {
 })
 
 router.post('/pattern', checkUserAuth, async (req, res) => {
-    
-    // TODO: allow pattern resubmit
-    
     const pattern = req.body?.pattern?.trim().toLowerCase() || null
     
     try {
@@ -114,20 +116,22 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
             }
         })
         if (otherSub?.executedAt === null) {
-            throw new AppError('You can only have one queued pattern at a time.', 400)
-        } else if (otherSub?.pattern === pattern) {
+            throw new AppError('You can only have one pattern in the queue at a time.', 400)
+        } else if (otherSub?.pattern === pattern && !otherSub?.isValid()) {
             throw new AppError('You have already tried that pattern!', 400)
-        }
+        } else if (otherSub?.pattern === pattern) {
+            otherSub.executedAt = null
+            otherSub.resubmit = true
+            await otherSub.save()
+            logger.debug(`User ${req.session.user.username} resubmitted a pattern: ${pattern}`)
 
-        const sub = await Submission.create({
-            pattern,
-            UserId: req.session.user.id
-        })
-        if (!sub) {
-            throw new AppError('No submission was returned from creation method.', 500)
+        } else {
+            await Submission.create({
+                pattern,
+                UserId: req.session.user.id
+            })
+            logger.debug(`Added new submission for User ${req.session.user.username}: ${pattern}`)
         }
-
-        logger.debug(`Added new submission for User ${req.session.user.username}: ${pattern}`)
 
         req.session.message = 'Your pattern has been queued to run, go check out the laser display in the VoV space!'
         res.redirect('/')
@@ -152,7 +156,7 @@ router.get('/queue', async (req, res, next) => {
         })
         const queue = await Submission.findAll({
             where: { executedAt: null },
-            order: [ ['createdAt', 'ASC'] ],
+            order: [ ['updatedAt', 'ASC'] ],
             include: { all: true, nested: true },
             raw: true,
             limit: 10
@@ -165,7 +169,7 @@ router.get('/queue', async (req, res, next) => {
                     pattern: ''.padStart(sub.pattern.length, '*'),
                     username: sub['User.username'],
                     score: sub['User.score'],
-                    createdAt: sub.createdAt.getTime()
+                    updatedAt: sub.updatedAt.getTime()
                 }
             })
         })
@@ -180,7 +184,7 @@ router.post('/queue/run', checkAdminAuth, async (req, res, next) => {
     try {
         nextSub = await Submission.findAll({
             where: { executedAt: null },
-            order: [ ['createdAt', 'ASC'] ],
+            order: [ ['updatedAt', 'ASC'] ],
             include: { all: true, nested: true },
             limit: 1
         })
