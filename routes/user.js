@@ -1,12 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const { User, Submission } = require('../db/models/app-models')
-const { checkAdminAuth } = require('../util/middleware')
+const { checkAdminAuth, checkUserAuth } = require('../util/middleware')
 const AppError = require('../util/AppError')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
-
-
-// TODO: allow users to change their password
 
 
 router.get('/', (req, res) => {
@@ -31,7 +28,7 @@ router.post('/login-register', async (req, res, next) => {
 
         if (!register && user && user.password === password) {
             message = 'You are now logged in.'
-            logger.debug(`User login: ${username}`)
+            logger.info(`User login by: ${username}`)
         } else if (register && !user) {
             user = await User.create({ username, password })
             message = 'Your account has been created and you are logged in!'
@@ -41,6 +38,7 @@ router.post('/login-register', async (req, res, next) => {
             message = 'Sorry, but that username has been taken.'
             logger.debug(`User attempted to use existing username: ${username}`)
         } else {
+            logger.info(`Failed user login (${(user) ? 'bad password' : 'bad username'}).`)
             user = null
             message = 'Sorry, but that username/password is not valid.'
         }
@@ -55,10 +53,8 @@ router.post('/login-register', async (req, res, next) => {
             req.session.user = {
                 id: user.id,
                 username: user.username,
-                score: user.score
-            }
-            if (user.isAdmin) {
-                req.session.user.isAdmin = true
+                score: user.score,
+                isAdmin: user.isAdmin
             }
         }
 
@@ -80,6 +76,51 @@ router.get('/logout', (req, res) => {
             res.redirect('/')
         })
     })
+})
+
+router.get('/reset-password', checkUserAuth, async (req, res) => {
+    const message = req.session.message || null
+    req.session.message = null
+
+    res.render('reset-password', {
+        page: 'reset-password',
+        message,
+        user: req.session.user,
+        title: process.env.TITLE || 'The Game',
+        appName: process.env.APP_NAME || ''
+    })
+})
+
+router.post('/reset-password', checkUserAuth, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.session.user.id },
+            attributes: ['id', 'username', 'password']
+        })
+
+        if (user.password !== User.hashPass(req.body['current-password'])) {
+            logger.info(`User (${user.username}) failed to enter current password when changing.`)
+            req.session.message = 'Sorry, but that is not the current password.'
+            return res.redirect('/user/reset-password')
+        }
+
+        if (req.body['current-password'] === req.body['new-password']) {
+            req.session.message = 'Looks like that is the same password!'
+            return res.redirect('/user/reset-password')
+        }
+
+        if (req.body['new-password']) {
+            user.password = User.hashPass(req.body['new-password'])
+            await user.save()
+            logger.info(`User (${user.username}) changed their password.`)
+            req.session.message = 'Your password has been changed!'
+            res.redirect('/')
+        }
+
+    } catch(err) {
+        logger.warn('Error while updating user password: ' + err.message | err.toString())
+        return next(err)
+    }
 })
 
 router.post('/edit', checkAdminAuth, async (req, res) => {

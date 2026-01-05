@@ -55,7 +55,7 @@ h1 img {
 
 .field-group { display: flex; justify-content: space-around; margin: 1rem 0; }
 .field-group label { padding-right: 1rem; width: calc(50% - 1rem); text-align: right; }
-.field-group input { width: 50%; }
+.field-group input, .field-group .value { width: 50%; display: inline-block; }
 
 form .actions { display: flex; justify-content: center; margin: 1rem 0; }
 
@@ -82,8 +82,12 @@ main {
     padding: 0 0.5rem;
 }
 
-footer { text-align: center; border-top: 1px solid #ccc; padding: 1rem; background: #222; }
+.error-help { text-align: center; margin: 2rem 1rem; }
+
+footer { text-align: center; border-top: 1px solid #ccc; padding: 0.5rem 1rem; background: #222; }
 .light-mode footer { border-top: 1px solid #333; background-color: #eee; }
+footer p { margin: 0.5rem 0; }
+footer a { color: var(--fc); text-decoration: none; border-bottom: 1px dashed var(--lc); }
 
 
 /* LOGIN / HOME PAGE */
