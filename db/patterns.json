@@ -1,4 +1,12 @@
 {
+    "1gg41094693z5oo792": {
+        "pattern": "1gg41094693z5oo792",
+        "points": 3,
+        "path": "G2-9-16-18-8-10-O-Z1-O2-14-7",
+        "hint": "Good job! You found a pattern and you're on your way to getting the lights back on. Be sure to check out your badge, and visit some of the tables around the venue!",
+        "badgePattern": "uuddlrlrba",
+        "note": "given when player registers"
+    },
     "rrzzrrrzrrzzrzzzrrr": {
         "pattern": "rrzzrrrzrrzzrzzzrrr",
         "points": 40,
@@ -25,19 +33,11 @@
     },
     "4rrr1z94bbbz1ggg093z4ooo1z94yyy737": {
         "pattern": "4rrr1z94bbbz1ggg093z4ooo1z94yyy737",
-        "points": 5,
+        "points": 8,
         "path": "R3-21-B-Z1-B3-G-Z1-G3-10-O-Z1-O3-23-Y-Z1-Y3-20-19-27-26",
         "hint": "TODO",
         "badgePattern": "TODO",
         "note": "printed material"
-    },
-    "1gg41094693z5oo792": {
-        "pattern": "1gg41094693z5oo792",
-        "points": 5,
-        "path": "G2-9-16-18-8-10-O-Z1-O2-14-7",
-        "hint": "TODO",
-        "badgePattern": "TODO",
-        "note": ""
     },
     "7r4r1r7b094b01b94g1g04g5o4o3o94y7y4y": {
         "pattern": "7r4r1r7b094b01b94g1g04g5o4o3o94y7y4y",

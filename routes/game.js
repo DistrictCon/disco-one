@@ -129,7 +129,7 @@ router.post('/pattern', checkUserAuth, async (req, res) => {
 
         logger.debug(`Added new submission for User ${req.session.user.username}: ${pattern}`)
 
-        req.session.message = 'Your pattern has been queued to run, go check out the badge LED table in the VoV space!'
+        req.session.message = 'Your pattern has been queued to run, go check out the laser display in the VoV space!'
         res.redirect('/')
 
     } catch(err) {

@@ -7,6 +7,15 @@ block content
                 label(for="pattern") Found a New Pattern? 
                 input#pattern(type="text", name="pattern", autocomplete="off", required)
                 input(type="submit", value="Submit")
+            
+            if !user.patterns.length
+                aside.welcome
+                    p
+                        | Welcome to the challenge! Find light patterns and then watch them 
+                        | light up the display in the Village of Villages.
+                    p
+                        | Here's a pattern to get your started:<br>
+                        pre 1gg41094693z5oo792
 
         if user.queued
             aside.in-queue
@@ -33,6 +42,7 @@ block content
                 each pattern in user.patterns
                     tr.pattern
                         td= pattern.points
+                            | w
                         td= pattern.pattern
                     tr.hint
                         td(colspan=2)
@@ -41,11 +51,12 @@ block content
         else
             p You have not found any patterns yet. Maybe check out the badge challenge table in the VoV space?
 
-    details
-        summary
-            h2 Failed Patterns
-        
-        ul
-            each pattern in user.failed
-                li= pattern.pattern
+    if user.failed.length
+        details
+            summary
+                h2 Failed Patterns
+            
+            ul
+                each pattern in user.failed
+                    li= pattern.pattern
 

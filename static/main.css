@@ -73,7 +73,12 @@ input[type="submit"] {
 input[type="submit"]:hover { box-shadow: 0 4px #555; top: 2px; }
 input[type="submit"]:active { box-shadow: 0 0 #555; top: 6px; }
 
-main { min-height: calc(100% - 2.5rem); padding: 0 0.5rem; }
+main {
+    min-height: calc(100% - 2.5rem);
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+}
 
 footer { text-align: center; border-top: 1px solid #ccc; padding: 1rem; background: #222; }
 .light-mode footer { border-top: 1px solid #333; background-color: #eee; }
@@ -84,7 +89,8 @@ footer { text-align: center; border-top: 1px solid #ccc; padding: 1rem; backgrou
 .login * { margin: 0.5rem 0; font-size: 1.3rem; }
 #register { position: relative; }
 #register::after { content: "yes"; position: absolute; right: 20%; color: var(--fc); }
-.page-home .fine { text-align: center; }
+.page-home p { margin: 0.75rem 0; text-align: center; font-size: 1.2rem; }
+.page-home .story { padding-bottom: 1rem; border-bottom: 1px solid var(--lc); }
 
 
 /* GAME PLAY PAGE HEADER & NAV */
@@ -129,6 +135,14 @@ nav a { color: var(--fc); text-decoration: none; }
 .new-pattern * { margin: 0.5rem 0; font-size: 1.3rem; }
 input#pattern { padding: 0.5rem 0.3rem; }
 
+.page-game .welcome {
+    border: 1px solid var(--lc);
+    text-align: center;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+.page-game .welcome p { font-weight: bold; }
+
 .last-submission { margin: 1rem 0; text-align: center; }
 
 .page-game details { margin: 1rem 0; }
@@ -138,6 +152,8 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game tr.pattern td:nth-child(1) { border: 1px solid var(--lc); text-align: center; }
 .page-game tr.hint td { padding: 0.5rem 0 1rem 0; }
 
+
+/* ADMIN PAGE CONTENT */
 
 .page-admin details { margin: 1rem 0; }
 .page-admin details h3 { display: inline-block; }
