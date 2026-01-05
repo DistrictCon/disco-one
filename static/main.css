@@ -153,6 +153,7 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game tr.pattern td { border-top: 1px solid var(--lc); padding: 0.25rem; }
 .page-game tr.pattern td:nth-child(1) { border: 1px solid var(--lc); text-align: center; }
 .page-game tr.hint td { padding: 0.5rem 0 1rem 0; }
+.page-game .failed { margin-left: 1rem; list-style: none; }
 
 
 /* ADMIN PAGE CONTENT */
