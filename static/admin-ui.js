@@ -2,6 +2,16 @@
 ;(() => {
     const $ = (q) => Array.from(document.querySelectorAll(q))
     
+    $('.validate-scores')[0].addEventListener('click', async () => {
+        const resp = await fetch('/admin/validate')
+        if (resp.status !== 200) {
+            $('.messages')[0].innerHTML += `<p class='message'>Error while validating scores: ${resp.status}</p>`
+            return
+        }
+        const counts = await resp.json()
+        $('.messages')[0].innerHTML += `<p class='message'>Validated all User scores (${counts.updated} of ${counts.total} modified).</p>`
+    })
+
     $('.users')[0].addEventListener('click', async (e) => {
         if (e.target.classList.contains('edit')) {
             const data = e.target.parentNode.parentNode.getAttribute('data-user').split('|')

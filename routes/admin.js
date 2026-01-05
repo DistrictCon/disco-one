@@ -36,5 +36,19 @@ router.get('/', checkAdminAuth, async (req, res) => {
     })
 })
 
+router.get('/validate', checkAdminAuth, async (req, res, next) => {
+    try {
+        const counts = await User.validateAllScores()
+
+        logger.info(`User ${req.session.user.username} just revalidated all User scores (modified ${counts.updated} out of ${counts.total} total).`)
+
+        res.json(counts)
+
+    } catch(err) {
+        logger.warn('Unable to validate all scores: ' + err.message || err.toString())
+        return next(err)
+    }
+})
+
 
 module.exports = router

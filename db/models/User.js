@@ -2,6 +2,7 @@ const crypto = require('crypto')
 const { DataTypes } = require('sequelize')
 const { getConnection } = require('../../util/database')
 const patterns = require('../patterns.json')
+const logger = require('../../util/logger')(process.env.LOG_LEVEL)
 
 const sequelize = getConnection()
 
@@ -27,12 +28,31 @@ User.cleanUsername = function cleanUsername(username) {
 }
 
 User.validateAllScores = async function validateAllScores() {
-    // TODO: go through all User records and validate all scores
-    //       this will potentially update all user records!
+    const users = await User.findAll({
+        attributes: ['id', 'username', 'score'],
+        include: { all: true, nested: true }
+    })
+
+    let updated = 0
+    for (let i=0; i<users.length; ++i) {
+        const checkScore = await users[i].checkScore(users[i].Submissions)
+        if (users[i].score !== checkScore) {
+            const oldScore = users[i].score
+            users[i].score = checkScore
+            await users[i].save()
+            logger.info(`Score for ${users[i].username} modified during revalidation (${oldScore} => ${checkScore})`)
+            updated++
+        }
+    }
+
+    return { total: users.length, updated }
 }
 
-User.prototype.checkScore = async function checkScore() {
-    let score = (await this.getSubmissions()).reduce((p, c) => {
+User.prototype.checkScore = async function checkScore(subs = null) {
+    if (!subs) {
+        subs = await this.getSubmissions()
+    }
+    let score = subs.reduce((p, c) => {
         if (c.executedAt && patterns[c.pattern]) {
             return p + patterns[c.pattern].points
         }

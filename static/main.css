@@ -15,6 +15,7 @@ header {
     top: 0;
     left: 0;
     background: var(--bg);
+    z-index: 9;
 }
 h1 { text-align: center; }
 h1 .logo {
@@ -57,7 +58,7 @@ h1 img {
 
 form .actions { display: flex; justify-content: center; margin: 1rem 0; }
 
-input[type="submit"] {
+.button, button, input[type="submit"] {
     border: none;
     font-size: 1.1em;
     border-radius: 0.4rem;
@@ -70,8 +71,8 @@ input[type="submit"] {
     color: #fff;
     box-shadow: 0 6px #555;
 }
-input[type="submit"]:hover { box-shadow: 0 4px #555; top: 2px; }
-input[type="submit"]:active { box-shadow: 0 0 #555; top: 6px; }
+.button:hover, button:hover, input[type="submit"]:hover { box-shadow: 0 4px #555; top: 2px; }
+.button:active, button:active, input[type="submit"]:active { box-shadow: 0 0 #555; top: 6px; }
 
 main {
     min-height: calc(100% - 2.5rem);
