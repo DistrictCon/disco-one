@@ -3,6 +3,7 @@ const { getConnection } = require('../../util/database')
 
 const patterns = require('../patterns.json')
 const colorPerpendiculars = { R: 21, G: 10, B: 5, O: 23, Y: 23 }
+const pointScale = [0, 5, 10, 15, 20, 25, 30, 40, 999]
 const sequelize = getConnection()
 
 const Submission = sequelize.define(
@@ -36,8 +37,18 @@ Submission.prototype.getPatternInfo = function getPatternInfo() {
         resubmit: this.resubmit,
         points: (patterns[this.pattern]) ? patterns[this.pattern].points : 0,
         hint: (patterns[this.pattern]) ? patterns[this.pattern].hint : null,
-        badgePattern: (patterns[this.pattern]) ? patterns[this.pattern].badgePattern: null
+        badgePattern: (patterns[this.pattern]) ? patterns[this.pattern].badgePattern: null,
+        scale: (patterns[this.pattern]) ? getPointScale(patterns[this.pattern].points) : 0
     }
+}
+
+function getPointScale(points=0) {
+    for (let i=0; i<pointScale.length; ++i) {
+        if (points < pointScale[i]) {
+            return i
+        }
+    }
+    return 1
 }
 
 Submission.prototype.getPath = function getPath() {

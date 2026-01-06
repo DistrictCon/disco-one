@@ -11,10 +11,11 @@ block content
             if !user.patterns.length
                 aside.welcome
                     p
-                        | Welcome to the challenge! Find light patterns and then watch them 
-                        | light up the display in the Village of Villages.
+                        | Welcome to the challenge! Find light patterns to add watts to 
+                        | the grid, then head over to the display in the Village of Villages
+                        | to see the pattern light up!
                     p
-                        | Here's a pattern to get your started:<br>
+                        | Here's one to get your started:<br>
                         pre 1gg41094693z5oo792
 
         if user.queued
@@ -42,16 +43,17 @@ block content
             h2 Found Patterns
         
         if user.patterns.length
-            table
+            table.found
                 each pattern in user.patterns
-                    tr.pattern
-                        td= pattern.points
-                            | w
-                        td= pattern.pattern
-                    tr.hint
-                        td(colspan=2)
-                            =pattern.hint
-                            |  (#{pattern.badgePattern})
+                    tr
+                        td.watts(class='scale-'+pattern.scale)
+                            span
+                                = pattern.points
+                                | w
+                        td.pattern= pattern.pattern
+                            details.pattern-message
+                                summary Message
+                                p=pattern.hint
         else
             p You have not found any patterns yet. Maybe check out the badge challenge table in the VoV space?
 

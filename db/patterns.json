@@ -4,7 +4,6 @@
         "points": 3,
         "path": "G2-9-16-18-8-10-O-Z1-O2-14-7",
         "hint": "Good job! You found a pattern and you're on your way to getting the lights back on. Be sure to check out your badge, and visit some of the tables around the venue!",
-        "badgePattern": "uuddlrlrba",
         "note": "given when player registers"
     },
     "rrzzrrrzrrzzrzzzrrr": {
@@ -12,7 +11,6 @@
         "points": 40,
         "path": "R2-1-Z2-R3-11-Z1-R2-21-Z2-R1-12-Z3-R3-2",
         "hint": "I love that song! Who plays it?",
-        "badgePattern": "lubaduba",
         "note": "badge disco balls"
     },
     "rrzrzrzrzrzrzrzrzrrzrzrrzrzrrzrrzrr": {
@@ -20,7 +18,6 @@
         "points": 15,
         "path": "R2-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R2-21-Z1-R2-21",
         "hint": "This is not the hint - TODO",
-        "badgePattern": "dadaurba",
         "note": "badge dada urka"
     },
     "rzrrrzzr": {
@@ -28,7 +25,6 @@
         "points": 50,
         "path": "R1-1-Z1-R3-21-Z2-R1-2",
         "hint": "TODO",
-        "badgePattern": "TODO",
         "note": "badge resistors"
     },
     "4rrr1z94bbbz1ggg093z4ooo1z94yyy737": {
@@ -36,7 +32,6 @@
         "points": 8,
         "path": "R3-21-B-Z1-B3-G-Z1-G3-10-O-Z1-O3-23-Y-Z1-Y3-20-19-27-26",
         "hint": "TODO",
-        "badgePattern": "TODO",
         "note": "printed material"
     },
     "7r4r1r7b094b01b94g1g04g5o4o3o94y7y4y": {
@@ -44,7 +39,6 @@
         "points": 10,
         "path": "R1-1-R1-21-R1-2-B1-29-B1-5-B1-22-G1-5-G1-10-G1-B-O1-14-O1-23-O1-10-Y1-20-Y1-23-Y1-27",
         "hint": "TODO",
-        "badgePattern": "TODO",
         "note": "dancing men cipher"
     },
     "95bbb10094693zz3ooo9647004700": {
@@ -52,7 +46,6 @@
         "points": 15,
         "path": "B3-15-18-8-10-O-Z2-O3-10-8-18-15-22-29",
         "hint": "Well done! That light sure is specific, I wonder what it's lighting up exactly?",
-        "badgePattern": "TODO",
         "note": "sponsor table puzzle"
     },
     "1gg065rr106oo5rr1bb06oo5rr1065oo": {
@@ -60,7 +53,6 @@
         "points": 25,
         "path": "G2-10-17-R2-11-12-O2-14-R2-11-B2-22-O2-14-R2-11-12-21-O2-14",
         "hint": "TODO",
-        "badgePattern": "TODO",
         "note": "website source puzzle"
     }
 }

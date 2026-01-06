@@ -27,7 +27,7 @@ router.post('/login-register', async (req, res, next) => {
         user = await User.findOne({ where: { username: req.body.username } })
 
         if (!register && user && user.password === password) {
-            message = 'You are now logged in.'
+            message = null
             logger.info(`User login by: ${username}`)
         } else if (register && !user) {
             user = await User.create({ username, password })
@@ -78,12 +78,12 @@ router.get('/logout', (req, res) => {
     })
 })
 
-router.get('/reset-password', checkUserAuth, async (req, res) => {
+router.get('/change-password', checkUserAuth, async (req, res) => {
     const message = req.session.message || null
     req.session.message = null
 
-    res.render('reset-password', {
-        page: 'reset-password',
+    res.render('change-password', {
+        page: 'change-password',
         message,
         user: req.session.user,
         title: process.env.TITLE || 'The Game',
@@ -91,7 +91,7 @@ router.get('/reset-password', checkUserAuth, async (req, res) => {
     })
 })
 
-router.post('/reset-password', checkUserAuth, async (req, res, next) => {
+router.post('/change-password', checkUserAuth, async (req, res, next) => {
     try {
         const user = await User.findOne({
             where: { id: req.session.user.id },
@@ -101,12 +101,12 @@ router.post('/reset-password', checkUserAuth, async (req, res, next) => {
         if (user.password !== User.hashPass(req.body['current-password'])) {
             logger.info(`User (${user.username}) failed to enter current password when changing.`)
             req.session.message = 'Sorry, but that is not the current password.'
-            return res.redirect('/user/reset-password')
+            return res.redirect('/user/change-password')
         }
 
         if (req.body['current-password'] === req.body['new-password']) {
             req.session.message = 'Looks like that is the same password!'
-            return res.redirect('/user/reset-password')
+            return res.redirect('/user/change-password')
         }
 
         if (req.body['new-password']) {

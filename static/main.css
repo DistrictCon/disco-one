@@ -3,7 +3,7 @@ html { --bg: #000; --fc: #eee; --lc: #eee; }
 html.light-mode { --bg: #fff; --fc: #000; --lc: #333; }
 
 /* BROWSER STYLE RESET */
-html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body{background:var(--bg);color:var(--fc);height:100%;}*,*:before,*:after{box-sizing:inherit;}body,h1,h2,h3,h4,h5,h6,p,ol,ul{margin:0;padding:0;font-weight:normal;}img{max-width:100%;height:auto;}
+html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body{background:var(--bg);color:var(--fc);height:100%;}*,*:before,*:after{box-sizing:inherit;}body,h1,h2,h3,h4,h5,h6,p,ol,ul{margin:0;padding:0;font-weight:normal;}p{margin:0.75rem 0;}ul{margin-left:1rem;}img{max-width:100%;height:auto;}
 
 /* GENERAL PAGE STYLES */
 
@@ -86,7 +86,6 @@ main {
 
 footer { text-align: center; border-top: 1px solid #ccc; padding: 0.5rem 1rem; background: #222; }
 .light-mode footer { border-top: 1px solid #333; background-color: #eee; }
-footer p { margin: 0.5rem 0; }
 footer a { color: var(--fc); text-decoration: none; border-bottom: 1px dashed var(--lc); }
 
 
@@ -95,7 +94,7 @@ footer a { color: var(--fc); text-decoration: none; border-bottom: 1px dashed va
 .login * { margin: 0.5rem 0; font-size: 1.3rem; }
 #register { position: relative; }
 #register::after { content: "yes"; position: absolute; right: 20%; color: var(--fc); }
-.page-home p { margin: 0.75rem 0; text-align: center; font-size: 1.2rem; }
+.page-home p { text-align: center; font-size: 1.2rem; }
 .page-home .story { padding-bottom: 1rem; border-bottom: 1px solid var(--lc); }
 
 
@@ -154,9 +153,30 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game details { margin: 1rem 0; }
 .page-game summary { margin-bottom: 0.5rem; }
 .page-game details h2 { display: inline-block }
-.page-game tr.pattern td { border-top: 1px solid var(--lc); padding: 0.25rem; }
-.page-game tr.pattern td:nth-child(1) { border: 1px solid var(--lc); text-align: center; }
-.page-game tr.hint td { padding: 0.5rem 0 1rem 0; }
+.page-game .found { width: 100%; border-spacing: 0; border-collapse: collapse; }
+.page-game .found td { border-top: 1px solid var(--lc); }
+.page-game .found .pattern { padding: 0.5rem; }
+.page-game .found .watts { vertical-align: top; width: 3.5rem; }
+.page-game .found .watts span {
+    display: inline-block;
+    width: 100%;
+    border: 1px solid var(--lc);
+    border-top: none;
+    text-align: center;
+    padding: 0.3rem 0;
+    height: 3rem;
+    line-height: 3rem;
+}
+.page-game .scale-1 span { box-shadow: inset 0 0 3px #ff9; }
+.page-game .scale-2 span { box-shadow: inset 0 0 6px #ff9; }
+.page-game .scale-3 span { box-shadow: inset 0 0 10px #ff9; }
+.page-game .scale-4 span { box-shadow: inset 0 0 14px #ff9; }
+.page-game .scale-5 span { box-shadow: inset 0 0 18px #ff9; }
+.page-game .scale-6 span { box-shadow: inset 0 0 22px #ff9; }
+.page-game .scale-7 span { box-shadow: inset 0 0 26px #ff9; }
+.page-game .scale-8 span { box-shadow: inset 0 0 30px #ff9; }
+.page-game .scale-9 span { box-shadow: inset 0 0 40px #ff9; }
+.page-game .found details { margin: 0.25rem 0; }
 .page-game .failed { margin-left: 1rem; list-style: none; }
 
 
