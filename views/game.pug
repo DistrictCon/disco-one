@@ -2,7 +2,16 @@ extends partials/layout.pug
 
 block content
     section.game-action
-        if !user.queued
+        if user.queued
+            aside.in-queue
+                | You have a
+                if user.queued.resubmit
+                    strong
+                        |  resubmitted
+                |  pattern in the queue: 
+                span.queued-pattern= user.queued.pattern
+                |  (currently number #{user.queued.position} in the queue)
+        else
             form.new-pattern(action="/pattern", method="post")
                 label(for="pattern") Found a New Pattern? 
                 input#pattern(type="text", name="pattern", autocomplete="off", required)
@@ -18,24 +27,17 @@ block content
                         | Here's one to get your started:<br>
                         pre 1gg41094693z5oo792
 
-        if user.queued
-            aside.in-queue
-                | You have a
-                if user.queued.resubmit
-                    strong
-                        |  resubmitted
-                |  pattern in the queue: 
-                span.queued-pattern= user.queued.pattern
-                |  (currently number #{user.queued.position} in the queue)
-
-        else if user.mostRecent
-            aside.last-submission
-                p
-                    | Your last submission was<br><strong>#{user.mostRecent.pattern}</strong><br>
+            if user.mostRecent
+                aside.last-submission
                     if user.mostRecent.hint
-                        | and was worth #{user.mostRecent.points} watts:<br><br>"#{user.mostRecent.hint}"
+                        p
+                            | Your last pattern was worth #{user.mostRecent.points} Watts!
+                        p.hint
+                            =user.mostRecent.hint
                     else
-                        | and was not valid.
+                        p Your last submission was not valid!
+                        p
+                            strong=user.mostRecent.pattern
 
 
     details(open)
