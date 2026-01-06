@@ -59,9 +59,7 @@ async function main() {
     app.use('/user', user)
     app.use('/admin', admin)
 
-    // @TODO: metro lines routes
-
-
+    
     app.use((req, res, next) => {
         const err = new Error('Sorry, but I could not find that page.')
         err.status = 404

@@ -10,7 +10,7 @@ svg { width: 100%; min-height: 400px; }
 .hide { display: none; }
 
 circle { stroke: none; }
-line.wall { stroke: #222; stroke-width: 2px; }
+line.wall { stroke: #191919; stroke-width: 2px; }
 line.edge { opacity: 0; }
 
 circle.red {

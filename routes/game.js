@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {
     let page = 'home'
     if (req.session?.user) {
         page = 'game'
-        // TODO: put villain name in header?
+        res.setHeader('X-hacked-by', 'B.v.B.')
     } else {
         res.setHeader('X-author', 'jakerella')
     }
