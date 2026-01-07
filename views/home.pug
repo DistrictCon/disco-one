@@ -16,6 +16,8 @@ block content
         p Login or Create a New Account:
         
         form.login(action="/user/login-register", method="post")
+            input(type="hidden", name="next", value=nextPage)
+
             div.field-group
                 label(for="username") Username: 
                 input#username(type="text", name="username", autocomplete="username", required)

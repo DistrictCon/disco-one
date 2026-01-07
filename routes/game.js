@@ -1,7 +1,7 @@
 const express = require('express')
 const AppError = require('../util/AppError')
 const { checkUserAuth, checkAdminAuth } = require('../util/middleware')
-const { DataTypes, Op } = require('sequelize')
+const { Op } = require('sequelize')
 const { Submission, User } = require('../db/models/app-models')
 const { getConnection } = require('../util/database')
 const { PATTERN_REGEX } = require('../util/constants')
@@ -13,11 +13,13 @@ const LIGHTS_ON_PERCENT = 0.66
 
 router.get('/', async (req, res, next) => {
     let page = 'home'
+    let nextPage = null
     if (req.session?.user) {
         page = 'game'
         res.setHeader('X-hacked-by', 'B.v.B.')
     } else {
         res.setHeader('X-author', 'jakerella')
+        nextPage = req.query.r || ''
     }
 
     const message = req.session.message || null
@@ -91,6 +93,7 @@ router.get('/', async (req, res, next) => {
             message,
             user: userData,
             maxScore: max,
+            nextPage,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
         })
@@ -99,55 +102,80 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-router.post('/pattern', checkUserAuth, async (req, res) => {
+router.post('/pattern', checkUserAuth, async (req, res, next) => {
     const pattern = req.body?.pattern?.trim().toLowerCase() || null
     
     try {
+        const message = await handlePattern(req.session.user, pattern)
+        req.session.message = message
+        return res.redirect('/')
+    } catch(err) {
+        if (err.status && err.status < 500) {
+            req.session.message = err.message
+            return res.redirect('/')
+        } else {
+            next(err)
+        }
+    }
+})
+
+router.get('/pattern/:pattern', checkUserAuth, async (req, res) => {
+    const pattern = req.params.pattern.trim().toLowerCase()
+    
+    try {
+        const message = await handlePattern(req.session.user, pattern)
+        req.session.message = message
+        return res.redirect('/')
+    } catch(err) {
+        if (err.status && err.status < 500) {
+            req.session.message = err.message
+            return res.redirect('/')
+        } else {
+            next(err)
+        }
+    }
+})
+
+async function handlePattern(user, pattern) {
+    try {
         if (!PATTERN_REGEX.test(pattern)) {
-            throw new AppError('That is not a valid pattern format.', 400)
+            return 'That is not a valid pattern format.'
         }
 
         const otherSub = await Submission.findOne({
             where: {
                 [Op.and]: {
-                    UserId: req.session.user.id,
+                    UserId: user.id,
                     [Op.or]: { executedAt: null, pattern }
                 }
             }
         })
         if (otherSub?.executedAt === null) {
-            throw new AppError('You can only have one pattern in the queue at a time.', 400)
+            return 'You can only have one pattern in the queue at a time.'
         } else if (otherSub?.pattern === pattern && !otherSub?.isValid()) {
-            throw new AppError('You have already tried that pattern!', 400)
+            return 'You have already tried that pattern!'
         } else if (otherSub?.pattern === pattern) {
             otherSub.executedAt = null
             otherSub.resubmit = true
             await otherSub.save()
-            logger.debug(`User ${req.session.user.username} resubmitted a pattern: ${pattern}`)
+            logger.debug(`User ${user.username} resubmitted a pattern: ${pattern}`)
+            return 'Your pattern has been resubmitted! Go check out the laser display to see it run.'
 
         } else {
             await Submission.create({
                 pattern,
-                UserId: req.session.user.id
+                UserId: user.id
             })
-            logger.debug(`Added new submission for User ${req.session.user.username}: ${pattern}`)
+            logger.debug(`Added new submission for User ${user.username}: ${pattern}`)
+            return 'Your pattern has been queued to run, go check out the laser display in the VoV space!'
         }
-
-        req.session.message = 'Your pattern has been queued to run, go check out the laser display in the VoV space!'
-        res.redirect('/')
 
     } catch(err) {
-        let message = 'There was a problem queueing your submission. Please try again!'
-        if (err.status === 400) {
-            message = err.message
-        } else {
-            logger.error(`Problem with submission for User: ${req.session.user.username} and Pattern: ${pattern}`)
-            logger.error(err)
-        }
-        req.session.message = message
-        res.redirect('/')
+        logger.error(`Problem with submission for User: ${user.username} and Pattern: ${pattern}`)
+        logger.error(err)
+        return 'There was a problem queueing your submission. Please try again!'
     }
-})
+}
 
 router.get('/queue', async (req, res, next) => {
     try {

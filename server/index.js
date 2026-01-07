@@ -72,6 +72,11 @@ async function main() {
         if (status > 499) {
             logger.error(`${err.message || err} ${err.stack.split('\n')[1]}`)
         }
+
+        if (status === 401) {
+            req.session.message = message
+            return res.redirect('/?r=' + encodeURIComponent(req.path))
+        }
         
         res.status(status)
         

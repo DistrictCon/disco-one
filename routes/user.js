@@ -23,15 +23,20 @@ router.post('/login-register', async (req, res, next) => {
     const password = User.hashPass(req.body.password)
     const register = req.body.register === 'true'
 
+    let loggedIn = false
+    const nextPage = (req.body.next) ? decodeURIComponent(req.body.next) : null
+
     if (username && username === req.body.username) {
         user = await User.findOne({ where: { username: req.body.username } })
 
         if (!register && user && user.password === password) {
             message = null
+            loggedIn = true
             logger.info(`User login by: ${username}`)
         } else if (register && !user) {
             user = await User.create({ username, password })
             message = 'Your account has been created and you are logged in!'
+            loggedIn = true
             logger.info(`A new user account has been registered: ${username}`)
         } else if (register && user) {
             user = null
@@ -61,7 +66,12 @@ router.post('/login-register', async (req, res, next) => {
         req.session.message = message
         req.session.save((err) => {
             if (err) { return next(err) }
-            res.redirect('/')
+
+            if (loggedIn && nextPage) {
+                res.redirect(nextPage || '/')
+            } else {
+                res.redirect('/')
+            }
         })
     })
 })
