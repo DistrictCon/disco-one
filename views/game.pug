@@ -40,6 +40,15 @@ block content
                             strong=user.mostRecent.pattern
 
 
+    if user.milestones.length
+        details(open)
+            summary
+                h2 Messages from Badgey
+
+            each message in user.milestones
+                p= message
+
+
     details(open)
         summary
             h2 Found Patterns

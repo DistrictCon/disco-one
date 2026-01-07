@@ -9,7 +9,16 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
 
-const LIGHTS_ON_PERCENT = 0.66
+const OVERCLOCK_PERCENT = 60
+const thresholds = [
+    { percent: 15, message: 'twenty five percent lights on' },
+    { percent: 30, message: 'fifty percent lights on' },
+    { percent: 45, message: 'seventy five percent lights on' },
+    { percent: 60, message: 'one hundred percent lights on' },
+    { percent: 75, message: 'lights overclocked 1' },
+    { percent: 90, message: 'lights overclocked 2' },
+    { percent: 99.9, message: 'disco blitz' }
+]
 
 router.get('/', async (req, res, next) => {
     let page = 'home'
@@ -65,7 +74,10 @@ router.get('/', async (req, res, next) => {
             }
         }
 
+        const maxScore = Submission.getMaxPoints()
         let mostRecent = null
+        let milestones = []
+        let progress = 0
         if (user && (patterns.length || failed.length)) {
             if (!failed.length) {
                 mostRecent = patterns[0]
@@ -74,13 +86,21 @@ router.get('/', async (req, res, next) => {
             } else {
                 mostRecent = (patterns[0].createdAt < failed[0].createdAt) ? failed[0] : patterns[0]
             }
+
+            progress = (user.score / maxScore) * 100
+            thresholds.forEach(t => {
+                if (progress > t.percent) {
+                    milestones.push(t.message)
+                }
+            })
         }
 
-        const max = Submission.getMaxPoints()
         const userData = (user) ? {
             username: user.username,
             score: user.score,
-            progress: Math.round((user.score / (max * LIGHTS_ON_PERCENT)) * 100),
+            progress: Math.round(progress),
+            overclock: (progress > OVERCLOCK_PERCENT) ? 'overclock' : '',
+            milestones,
             isAdmin: user.isAdmin,
             patterns,
             queued: (queued) ? { ...queued.getPatternInfo(), position: queuePos + 1 } : null,
@@ -92,7 +112,7 @@ router.get('/', async (req, res, next) => {
             page,
             message,
             user: userData,
-            maxScore: max,
+            maxScore,
             nextPage,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
