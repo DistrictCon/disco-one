@@ -12,6 +12,10 @@
         $('.messages')[0].innerHTML += `<p class='message'>Validated all User scores (${counts.updated} of ${counts.total} modified).</p>`
     })
 
+    $('.edit-user .close')[0].addEventListener('click', () => {
+        $('.edit-user')[0].classList.add('hide')
+    })
+
     $('.users')[0].addEventListener('click', async (e) => {
         if (e.target.classList.contains('edit')) {
             const data = e.target.parentNode.parentNode.getAttribute('data-user').split('|')

@@ -32,12 +32,13 @@ block content
 
             aside.actions
                 input(type='submit', value='Save')
+                input.button.close(type='button', value='Close')
         aside.submissions
             h4 Submissions
             ul
 
 
-    details(open)
+    details
         summary
             h3 All Users
 
@@ -47,7 +48,7 @@ block content
                     th Username 
                     th Score 
                     th Submissions 
-                    td 
+                    th Actions
             tbody
                 each user in users
                     tr(data-user=user.id+'|'+user.username+'|'+user.isAdmin)
@@ -60,5 +61,30 @@ block content
                         td.actions
                             span.edit ✎
                             span.delete ❌
+
+    details
+        summary
+            h3 All Puzzles 
+        
+        table.puzzles
+            thead 
+                tr 
+                    th Note
+                    th Points
+                    th Path
+            tbody
+                each puzzle in puzzles
+                    tr(data-pattern=puzzle.pattern)
+                        td= puzzle.note
+                        td= puzzle.points
+                        td
+                            if puzzle.path
+                                | Preset
+                            else
+                                | Auto
+                    tr.detail(data-pattern=puzzle.pattern)
+                        td(colspan=3)
+                            p= puzzle.pattern
+                            p= puzzle.hint
 
     script(src='/admin-ui.js')

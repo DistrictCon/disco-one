@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { Submission, User } = require('../db/models/app-models')
 const { checkAdminAuth } = require('../util/middleware')
+const patterns = require('../db/patterns.json')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 
@@ -26,6 +27,13 @@ router.get('/', checkAdminAuth, async (req, res) => {
     const message = req.session.message || null
     req.session.message = null
 
+    const puzzles = Object.keys(patterns).map(p => {
+        return {
+            pattern: p,
+            ...patterns[p]
+        }
+    })
+
     res.render('admin', {
         page: 'admin',
         title: process.env.TITLE || 'The Game',
@@ -33,7 +41,8 @@ router.get('/', checkAdminAuth, async (req, res) => {
         user: req.session.user,
         maxScore: Submission.getMaxPoints(),
         message,
-        users
+        users,
+        puzzles
     })
 })
 

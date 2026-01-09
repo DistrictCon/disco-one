@@ -232,6 +232,7 @@ input#pattern { padding: 0.5rem 0.3rem; }
 
 /* ADMIN PAGE CONTENT */
 
+.page-admin .validate-scores { margin-bottom: 1rem; }
 .page-admin details { margin: 1rem 0; }
 .page-admin details h3 { display: inline-block; }
 .page-admin h4 { font-weight: bold; }
@@ -245,3 +246,10 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-admin .submissions ul { padding-left: 1rem; }
 .page-admin .users td, .page-admin .users th { padding: 0.3rem 0.5rem; }
 .page-admin .users .actions span { cursor: pointer; margin-right: 1rem; }
+
+.page-admin .puzzles { margin-top: 1rem; border-collapse: collapse; }
+.page-admin .puzzles th:nth-child(1), .page-admin .puzzles tr.detail td:nth-child(1) { text-align: left; }
+.page-admin .puzzles thead th, .page-admin .puzzles tr.detail td {
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+}

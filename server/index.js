@@ -57,7 +57,7 @@ async function main() {
 
     /* ********** routes and middleware ********** */
     app.use('/', game)
-    app.use('/', metro)
+    app.use('/metro', metro)
     app.use('/user', user)
     app.use('/admin', admin)
 
