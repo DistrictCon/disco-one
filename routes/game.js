@@ -128,6 +128,7 @@ router.post('/pattern', checkUserAuth, async (req, res, next) => {
     try {
         const message = await handlePattern(req.session.user, pattern)
         req.session.message = message
+        // res.setHeader('X-pattern', '123456789')  // TODO: update
         return res.redirect('/')
     } catch(err) {
         if (err.status && err.status < 500) {
@@ -145,6 +146,7 @@ router.get('/pattern/:pattern', checkUserAuth, async (req, res) => {
     try {
         const message = await handlePattern(req.session.user, pattern)
         req.session.message = message
+        // res.setHeader('X-pattern', '123456789')  // TODO: update
         return res.redirect('/')
     } catch(err) {
         if (err.status && err.status < 500) {

@@ -1,8 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const AppError = require('../util/AppError')
-const { checkUserAuth } = require('../util/middleware')
-const logger = require('../util/logger')(process.env.LOG_LEVEL)
+const { checkAdminAuth } = require('../util/middleware')
 
 
 router.get('/', checkAdminAuth, (req, res) => {

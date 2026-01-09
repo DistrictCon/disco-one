@@ -4,7 +4,7 @@
     const MAP_DIMENSIONS = [60, 27]
     const DEFAULT_LIGHT_TIME_UNIT = 500
     let LIGHT_TIME_UNIT = DEFAULT_LIGHT_TIME_UNIT
-    const PAUSE_TIME_UNIT = 300
+    const PAUSE_TIME_UNIT = 150
     const LINE_SEGMENT_DELAY = 75
     const DISSIPATION_INTERVAL = 50
 
@@ -317,6 +317,7 @@
         pointMap[28] = [36 * unit, 8 * unit]
         pointMap[29] = [2 * unit, 23 * unit]
         pointMap[30] = [38 * unit, 17 * unit]
+        pointMap[31] = [27 * unit, 23 * unit]
 
         const walls = [
             [0.25, 0.5, 14, 0.5], [0.25, 0.5, 0.25, 21], [0.25, 21, 14, 21], [14, 0.5, 14, 21],

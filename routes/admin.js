@@ -31,6 +31,7 @@ router.get('/', checkAdminAuth, async (req, res) => {
         title: process.env.TITLE || 'The Game',
         appName: process.env.APP_NAME || '',
         user: req.session.user,
+        maxScore: Submission.getMaxPoints(),
         message,
         users
     })

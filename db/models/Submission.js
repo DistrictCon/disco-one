@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize')
 const { getConnection } = require('../../util/database')
-
+const { getPathPoints } = require('../../util/patterns')
 const patterns = require('../patterns.json')
+
 const colorPerpendiculars = { R: 21, G: 10, B: 5, O: 23, Y: 23 }
 const pointScale = [0, 5, 10, 15, 20, 25, 30, 40, 999]
 const sequelize = getConnection()
@@ -51,20 +52,36 @@ function getPointScale(points=0) {
     return 1
 }
 
+Submission.isValid = function isValid(pattern) {
+    return !!patterns[pattern]
+}
+
 Submission.prototype.getPath = function getPath() {
     if (patterns[this.pattern]) {
-        return patterns[this.pattern].path
+        if (patterns[this.pattern].path) {
+            // pre-defined (manual) path entry
+            return patterns[this.pattern].path
+        } else {
+            const points = getPathPoints(this.pattern.toUpperCase())
+            console.log(points)
+            if (!points) {
+                // Good pattern, but unable to generate path!
+                return Submission.getInvalidPath(this.pattern)
+            } else {
+                return points.join('-')
+            }
+        }
     } else {
-        // If this is an invalid path we'll show the first color found,
-        // but only the perpendicular path, then flash the edge lights as an error
-        let color = this.pattern.match(/([rgybo])/i)
-        color = ((color) ? color[1] : 'R').toUpperCase()
-        return `${color}1-${colorPerpendiculars[color]}-ER3`
+        // Unrecognized pattern
+        return Submission.getInvalidPath(this.pattern)
     }
 }
 
-Submission.isValid = function isValid(pattern) {
-    return !!patterns[pattern]
+Submission.getInvalidPath = function getInvalidPath(pattern) {
+    // Find first valid color and flash the perpendicular path, then flash the edge lights as an error
+    let color = pattern.match(/([rgybo])/i)
+    color = ((color) ? color[1] : 'R').toUpperCase()
+    return `${color}1-${colorPerpendiculars[color]}-ER3`
 }
 
 module.exports = Submission

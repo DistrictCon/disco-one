@@ -1,50 +1,74 @@
 {
-    "gg141094693zoo5792": {
+    "gg141094693zoo5793": {
         "points": 3,
-        "path": "G2-9-16-18-8-10-O-Z1-O2-14-7",
-        "hint": "add here",
-        "note": "given when player registers"
+        "path": null,
+        "hint": "Good job! You found a pattern and you're on your way to getting the lights back on. Be sure to check out your badge, and visit some of the tables around the venue!",
+        "note": "given when player signs up"
     },
-    "rrzzrrrzrrzzrzzzrrr": {
-        "points": 40,
-        "path": "R2-1-Z2-R3-11-Z1-R2-21-Z2-R1-12-Z3-R3-2",
-        "hint": "I love this song... but don't tell anyone. Can't remember who plays it, though.",
-        "note": "badge disco balls"
+    "bb194109570zgg9412475": {
+        "points": 5,
+        "path": null,
+        "hint": "add hint here",
+        "note": "Registration table"
+    },
+    "yyy79435704794zrrr373195": {
+        "points": 5,
+        "path": null,
+        "hint": "add hint here",
+        "note": "Roro's projection"
+    },
+    "rrr41zbbb94zggg1093zooo41zyyy94737": {
+        "points": 8,
+        "path": null,
+        "hint": "Gah! I thought I left that booklet on the metro. These lasers colors are damaging my eyes. No matter, I'll hide my keys more carefully next time, there's no easy path here!",
+        "note": "Printed materials"
+    },
+    "yyyy79459264794359395": {
+        "points": 10,
+        "path": null,
+        "hint": "add hint here",
+        "note": "Light mode"
+    },
+    "r7r4r1b70b940b1g94g10g4o5o4o3y94y7y4": {
+        "points": 10,
+        "path": null,
+        "hint": "add hint here",
+        "note": "Dancing man cipher (badge)"
     },
     "rrzrzrzrzrzrzrzrzrrzrzrrzrzrrzrrzrr": {
         "points": 15,
         "path": "R2-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R2-21-Z1-R2-21",
-        "hint": "add here",
-        "note": "badge dada urka"
+        "hint": "add hint here",
+        "note": "Dada Urka (badge)"
     },
-    "rzrrrzzr": {
-        "points": 50,
-        "path": "R1-1-Z1-R3-21-Z2-R1-2",
-        "hint": "add here",
-        "note": "badge resistors"
-    },
-    "rrr41zbbb94zggg1093zooo41zyyy94737": {
-        "points": 8,
-        "path": "R3-21-B-Z1-B3-G-Z1-G3-10-O-Z1-O3-23-Y-Z1-Y3-20-19-27-26",
-        "hint": "add here",
-        "note": "printed material"
-    },
-    "r7r4r1b70b940b1g94g10g4o5o4o3y94y7y4": {
-        "points": 10,
-        "path": "R1-1-R1-21-R1-2-B1-29-B1-5-B1-22-G1-5-G1-10-G1-B-O1-14-O1-23-O1-10-Y1-20-Y1-23-Y1-27",
-        "hint": "add here",
-        "note": "dancing men cipher"
-    },
-    "b94010294zzy7945793zzo3570594310": {
+    "y9474194zo39647094295zg94102793zb19419474zr742796947": {
         "points": 20,
-        "path": "B1-5-7-14-28-Z2-Y1-23-O-14-13-G-Z2-O1-10-17-15-B-G-13-30",
-        "hint": "add here",
-        "note": "VoV tables puzzle"
+        "path": null,
+        "hint": "add hint here",
+        "note": "Submission redirect header"
+    },
+    "b94010293zzy7945793zzo3570594310": {
+        "points": 20,
+        "path": null,
+        "hint": "add hint here",
+        "note": "VoV tables"
     },
     "gg106rr510oo6rr5bb10oo6rr5106oo5": {
         "points": 25,
-        "path": "G2-10-17-R2-11-12-O2-14-R2-11-B2-22-O2-14-R2-11-12-21-O2-14",
-        "hint": "add here",
-        "note": "website source puzzle"
+        "path": null,
+        "hint": "add hint here",
+        "note": "DisCo website HTML (in base64)"
+    },
+    "rrzzrrrzrrzzrzzzrrr": {
+        "points": 40,
+        "path": "R2-1-Z2-R3-11-Z1-R2-21-Z2-R1-12-Z3-R3-2",
+        "hint": "add hint here",
+        "note": "DisCo ball pattern (badges)"
+    },
+    "rzrrrzzr": {
+        "points": 40,
+        "path": "R1-1-Z1-R3-21-Z2-R1-2",
+        "hint": "add hint here",
+        "note": "Resistor puzzle (badge)"
     }
 }

@@ -2,10 +2,16 @@ extends partials/layout.pug
 
 block content
 
-    h2 Administration
+    h2 Game Administration
 
     button.validate-scores
         | Validate All Scores
+
+    section.stats 
+        h3
+            strong Stats
+        p Max Score: #{maxScore}
+        p Other stats...
 
     section.edit-user.hide
         form(method='post', action='/user/edit')
@@ -34,7 +40,7 @@ block content
     details(open)
         summary
             h3 All Users
-        
+
         table.users
             thead
                 tr
