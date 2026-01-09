@@ -10,8 +10,36 @@ svg { width: 100%; min-height: 400px; }
 .hide { display: none; }
 
 circle { stroke: none; }
+
 line.wall { stroke: #191919; stroke-width: 2px; }
+
 line.edge { opacity: 0; }
+line.edge.marquee {
+    --marquee: #f00;
+    --marquee-light: #f99;
+    stroke: var(--marquee);
+    opacity: 1;
+    stroke-width: 3px;
+    stroke-dasharray: 20, 20;
+    stroke-dashoffset: 0;
+    animation: marquee 1s linear 0s normal infinite;
+    transition: all 250ms;
+    filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 5px var(--marquee)) drop-shadow(0 0 8px var(--marquee));
+}
+@keyframes marquee {
+  0% { stroke-dashoffset: 0; --marquee: #f00; --marquee-light: #f99; }
+  10% { stroke-dashoffset: -4; }
+  20% { stroke-dashoffset: -8; --marquee: #f80; --marquee-light: #fb4; }
+  30% { stroke-dashoffset: -12; }
+  40% { stroke-dashoffset: -16; --marquee: #ff0; --marquee-light: #f99; }
+  50% { stroke-dashoffset: -20; }
+  60% { stroke-dashoffset: -24; }
+  70% { stroke-dashoffset: -28; --marquee: #0f0; --marquee-light: #f99; }
+  80% { stroke-dashoffset: -32; }
+  90% { stroke-dashoffset: -36; --marquee: #00f; --marquee-light: #f99; }
+  100% { stroke-dashoffset: -40; }
+}
+
 
 circle.red {
     fill: #f00;

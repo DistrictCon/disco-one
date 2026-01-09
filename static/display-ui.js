@@ -4,10 +4,13 @@
     const MAP_DIMENSIONS = [60, 27]
     const DEFAULT_LIGHT_TIME_UNIT = 500
     let LIGHT_TIME_UNIT = DEFAULT_LIGHT_TIME_UNIT
+    const EDGE_FLASH_DURATION = 400
     const PAUSE_TIME_UNIT = 150
     const LINE_SEGMENT_DELAY = 75
     const DISSIPATION_INTERVAL = 50
 
+    let SCREEN_SAVER = null
+    let screenSaverInterval = null
     let ACTIVE_PATTERN = null
     let LAST_PATTERN = null
 
@@ -25,6 +28,7 @@
     updateQueue()
 
     document.querySelector('.run-next').addEventListener('click', () => {
+        if (SCREEN_SAVER) { stopScreenSaver() }
         if (!ACTIVE_PATTERN) { runNext() }
     })
 
@@ -102,14 +106,14 @@
 
     async function parsePattern(pattern, hold=false, done=()=>{}) {
         if (ACTIVE_PATTERN) {
-            console.warn('There is already a pattern running!')
+            console.log('There is already a pattern running!')
             return
         }
 
         clearAllLines()
 
         if (!/^[RGBOY]\d\-[RBGOYZE\d\-]+\-(\d+|[RGBOY]|E[RGBOY]\d)$/.test(pattern)) {
-            return flashOutline('red', 2, 40)
+            return flashOutline('red', 2, EDGE_FLASH_DURATION, done)
         }
 
         toggleButtons('off')
@@ -148,7 +152,7 @@
         }
 
         if (edgeFlash) {
-            flashOutline(COLOR_MAP[edgeFlash[0]].name, edgeFlash[1], 30, () => {
+            flashOutline(COLOR_MAP[edgeFlash[0]].name, edgeFlash[1], EDGE_FLASH_DURATION, () => {
                 LAST_PATTERN = ACTIVE_PATTERN
                 ACTIVE_PATTERN = null
                 toggleButtons('on')
@@ -247,7 +251,7 @@
         return SVG.querySelector(query)
     }
 
-    function flashOutline(color='red', count=1, pulse=100, done=()=>{}) {
+    function flashOutline(color='red', count=1, pulse=500, done=()=>{}) {
         const edges = Array.from(SVG.querySelectorAll('line.edge'))
         edges.forEach(n => {
             n.classList.remove(...ALL_COLORS)
@@ -255,14 +259,14 @@
         })
 
         let opacity = 0
-        let change = 0.1
+        let change = 0.05
         let intHandle = setInterval(() => {
             opacity += change
             edges.forEach(n => n.style.opacity = opacity )
             
-            if (opacity > 0.95) {
+            if (opacity > 0.94) {
                 change = change * (-1)
-            } else if (opacity < 0.1) {
+            } else if (opacity < 0.05) {
                 count--
                 change = change * (-1)
             }
@@ -271,7 +275,7 @@
                 intHandle = null
                 done()
             }
-        }, pulse)
+        }, pulse / (1 / change))
     }
 
     function setMapLayout() {
@@ -363,15 +367,41 @@
                 console.warn('There is nor previous pattern to run!')
             }
         })
-        document.body.addEventListener('keyup', e => {
-            if (e.altKey && e.keyCode === 65) {
-                if (adminElem.classList.contains('hide')) {
-                    adminElem.classList.remove('hide')
+        document.body.addEventListener('keydown', e => {
+            if (e.altKey && e.code === 'KeyA') {
+                adminElem.classList.toggle('hide')
+            }
+            if (e.altKey && e.code === 'KeyS') {
+                if (SCREEN_SAVER) {
+                    stopScreenSaver()
                 } else {
-                    adminElem.classList.add('hide')
+                    console.debug('Screen saver starting...')
+                    SCREEN_SAVER = true
+                    runScreenSaver()
                 }
             }
         })
+    }
+
+    function stopScreenSaver() {
+        SCREEN_SAVER = false
+        clearTimeout(screenSaverInterval)
+        screenSaverInterval = null
+        clearAllLines()
+        Array.from(SVG.querySelectorAll('line.edge')).forEach(n => {
+            n.removeAttribute('class')
+            n.classList.add('edge')
+        })
+        console.debug('Screen saver stopped')
+    }
+
+    async function runScreenSaver() {
+        if (SCREEN_SAVER) {
+            // TODO: add more funky animations
+            Array.from(SVG.querySelectorAll('line.edge')).forEach(n => {
+                n.classList.add('marquee')
+            })
+        }
     }
 
     function toggleButtons(onOff='on') {
