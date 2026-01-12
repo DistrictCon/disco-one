@@ -293,8 +293,8 @@
 
         pointMap[1] = [1 * unit, 1 * unit]
         pointMap[2] = [13 * unit, 1 * unit]
-        pointMap[3] = [1 * unit, 5 * unit]
-        pointMap[4] = [13 * unit, 5 * unit]
+        pointMap[3] = [1 * unit, 6 * unit]
+        pointMap[4] = [13 * unit, 6 * unit]
         pointMap[5] = [16 * unit, 8 * unit]
         pointMap[6] = [20 * unit, 8 * unit]
         pointMap[7] = [24 * unit, 8 * unit]

@@ -2,73 +2,181 @@
     "gg141094693zoo5793": {
         "points": 3,
         "path": null,
-        "hint": "Good job! You found a pattern and you're on your way to getting the lights back on. Be sure to check out your badge, and visit some of the tables around the venue!",
-        "note": "given when player signs up"
+        "hint": "Oh, you think you can just turn the lights back on, eh? No chance! I've hidden all of the light patterns and you'll never find them. Well, except for this one. Not even your little DisCo ball badge can help you start the party now!",
+        "note": "_ given when player signs up"
+    },
+    "bb1945795921927403": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "armada sponsor table"
+    },
+    "r419510094670zg31953570594": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "binarly sponsor table"
+    },
+    "bb9510296737967945926934": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "bluesky sponsor table"
+    },
+    "oo579454194102964794": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "bugcrowd sponsor table"
+    },
+    "b1945zr1492zb94010zr41": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "hackerone sponsor table"
+    },
+    "r51zb1945zr140795zb9414747": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "interrupt sponsor table"
+    },
+    "r7409649219241zb1941949215934": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "iqt sponsor table"
+    },
+    "o59269454zb9401319593": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "johns hopkins sponsor table"
+    },
+    "b951029640zo4956704": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "magnet sponsor table"
+    },
+    "gg941514129429479567": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "nightwing sponsor table"
+    },
+    "g109647005zb793192192": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "twosix sponsor table"
+    },
+    "yy4795727943964700570": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "vigilant sponsor table"
+    },
+    "r74031zb1941935zg952095": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "vulncheck sponsor table"
+    },
+    "b951009459459364": {
+        "points": 3,
+        "path": null,
+        "hint": "add hint here",
+        "note": "zetier sponsor table"
     },
     "bb194109570zgg9412475": {
         "points": 5,
         "path": null,
-        "hint": "add hint here",
+        "hint": "Bah, that one was easy. You're welcome. But don't think you can just walk around to all the other tables and turn the lights on that way!",
         "note": "Registration table"
-    },
-    "yyy79435704794zrrr373195": {
-        "points": 5,
-        "path": null,
-        "hint": "add hint here",
-        "note": "Roro's projection"
     },
     "rrr41zbbb94zggg1093zooo41zyyy94737": {
         "points": 8,
         "path": null,
-        "hint": "Gah! I thought I left that booklet on the metro. These lasers colors are damaging my eyes. No matter, I'll hide my keys more carefully next time, there's no easy path here!",
+        "hint": "Gah! I thought I left that booklet on the /metro. These laser colors are damaging my eyes. No matter, I'll hide my keys more carefully next time, there's no easy path here!",
         "note": "Printed materials"
     },
-    "yyyy79459264794359395": {
+    "yyy79435704794zrrr373195": {
+        "points": 8,
+        "path": null,
+        "hint": "Lights everywhere! That projector has even more light in it than all of those silly villages combined!",
+        "note": "Roro's projection"
+    },
+    "yyyy79459364794359395": {
         "points": 10,
         "path": null,
-        "hint": "add hint here",
+        "hint": "Bwahaha! “Light mode”, huh? What a joke, but fine, leave your tiny light on. Just don't get aheader yourself, I still hold a lot of the light!",
         "note": "Light mode"
     },
-    "r7r4r1b70b940b1g94g10g4o5o4o3y94y7y4": {
+    "r41zb94zg1295zo41zyyy9469295740": {
         "points": 10,
         "path": null,
-        "hint": "add hint here",
-        "note": "Dancing man cipher (badge)"
+        "hint": "That's it, I'm firing my laser guy.",
+        "note": "Venue Location 21"
+    },
+    "o41493496zy94692705794zrrr37941924": {
+        "points": 10,
+        "path": null,
+        "hint": "Stop following those lasers! I control the light, you'll never collect enough watts to start the party.",
+        "note": "Venue Location 30"
+    },
+    "bb1941949649204957040": {
+        "points": 10,
+        "path": null,
+        "hint": "So what, you found a few of my hiding places. But while you've been running around I've gotten into the DisCo website, it'll be mine soon!",
+        "note": "Venue Location 31"
     },
     "rrzrzrzrzrzrzrzrzrrzrzrrzrzrrzrrzrr": {
-        "points": 15,
+        "points": 12,
         "path": "R2-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R1-21-Z1-R2-21-Z1-R2-21-Z1-R2-21",
-        "hint": "add hint here",
+        "hint": "So you found another one of my codes, eh? No matter, I have many more! Although the logostics of keeping them all straight is getting tricky. Maybe I should hide some data inside some files…",
         "note": "Dada Urka (badge)"
     },
-    "y9474194zo39647094295zg94102793zb19419474zr742796947": {
+    "r7r4r1b70b940b1g94g10g4o5o4o3y94y7y4": {
+        "points": 15,
+        "path": null,
+        "hint": "I hate the light, but I do love to dance! Too bad all those disco balls on the dance floor are like kryptonite, so many awful, shiny panels. Why can't all the panels be dark?!",
+        "note": "Dancing man cipher (badge)"
+    },
+    "y9474194zo39647094295zg94102792zb19419474zr742796947": {
         "points": 20,
         "path": null,
-        "hint": "add hint here",
+        "hint": "Blast, I thought I hid that one really well. Fine, maybe you've got some hacking skills after all, but it's gonna take a village to solve all of my puzzles!",
         "note": "Submission redirect header"
     },
-    "b94010293zzy7945793zzo3570594310": {
+    "b94010293zzy7945793zzooo3570594310": {
         "points": 20,
         "path": null,
-        "hint": "add hint here",
+        "hint": "Your village friends may have helped you, but not enough! Wait, where was that last laser pointing? Nevermind, ignore that!",
         "note": "VoV tables"
     },
     "gg106rr510oo6rr5bb10oo6rr5106oo5": {
         "points": 25,
         "path": null,
-        "hint": "add hint here",
-        "note": "DisCo website HTML (in base64)"
+        "hint": "✡︎□︎◆︎❒︎ ⬧︎♓︎⧫︎♏︎ ♒︎♋︎⬧︎ ♌︎♏︎♏︎■︎ ◻︎📁︎⬥︎■︎♏︎♎︎ ♌︎⍓︎ 👌︎♋︎❒︎□︎■︎ ❖︎□︎■︎ 👌︎●︎♋︎♍︎🙵□︎◆︎⧫︎✏︎ ✋︎ ♎︎□︎■︎❼︎⧫︎ ♏︎❖︎♏︎■︎ 🙵■︎□︎⬥︎ ⬥︎♒︎⍓︎ ✋︎❼︎❍︎ ⬥︎❒︎♓︎⧫︎♓︎■︎♑︎ ⧫︎♒︎♓︎⬧︎ ●︎□︎♑︎ ❍︎♏︎⬧︎⬧︎♋︎♑︎♏︎📪︎ ⧫︎♒︎♏︎❒︎♏︎❼︎⬧︎ ■︎□︎ ⬥︎♋︎⍓︎ ⍓︎□︎◆︎ ♍︎□︎◆︎●︎♎︎ ♐︎♓︎■︎♎︎ ⧫︎♒︎♏︎ ●︎□︎♑︎⬧︎✏︎",
+        "note": "Base64 in DisCo website HTML"
+    },
+    "o35705zb94952095": {
+        "points": 35,
+        "path": null,
+        "hint": "Okay, this is getting ridiculous. Why can't you just quit! Maybe I need to try a different encoding scheme. I better jot this down in the logs.",
+        "note": "sniffy spot logic analyzer"
     },
     "rrzzrrrzrrzzrzzzrrr": {
         "points": 40,
         "path": "R2-1-Z2-R3-11-Z1-R2-21-Z2-R1-12-Z3-R3-2",
-        "hint": "add hint here",
+        "hint": "I love this song... but don't tell anyone. Can't remember who plays it, though…?",
         "note": "DisCo ball pattern (badges)"
     },
     "rzrrrzzr": {
         "points": 40,
         "path": "R1-1-Z1-R3-21-Z2-R1-2",
-        "hint": "add hint here",
+        "hint": "HOW DO YOU KEEP DOING THIS?!? Is this a game to you?? What… is this a game? Am I in a game?!? Who made it??",
         "note": "Resistor puzzle (badge)"
     }
 }
