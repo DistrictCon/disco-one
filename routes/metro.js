@@ -13,6 +13,10 @@ const KEY_PARTS = {
 }
 
 
+router.get('/', (req, res, next) => {
+    return next(new AppError('No Color Found', 404))
+})
+
 router.get('/silver', (req, res, next) => {
     const key = Object.keys(KEY_PARTS)
         .sort((a, b) => (a < b) ? -1 : 1)
