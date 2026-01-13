@@ -11,7 +11,7 @@ svg { width: 100%; min-height: 400px; }
 
 circle { stroke: none; }
 
-line.wall { stroke: #191919; stroke-width: 2px; }
+line.wall { stroke: #333; stroke-width: 3px; }
 
 line.edge { opacity: 0; }
 line.edge.marquee {
@@ -46,6 +46,8 @@ line.edge.marquee {
   67% { --marquee: #00f; --marquee-light: #f99; }
   84% { --marquee: #ddd; --marquee-light: #999; }
 }
+
+line.audio-bar { stroke: #f00; }
 
 
 circle.red {

@@ -1,4 +1,6 @@
 const express = require('express')
+const fs = require('fs')
+const formatHTML = require('html')
 const AppError = require('../util/AppError')
 const { checkUserAuth, checkAdminAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
@@ -9,16 +11,17 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
 
-const OVERCLOCK_PERCENT = 60
+const OVERCLOCK_PERCENT = 70
 const thresholds = [
-    { percent: 15, message: 'twenty five percent lights on' },
-    { percent: 30, message: 'fifty percent lights on' },
-    { percent: 45, message: 'seventy five percent lights on' },
-    { percent: 60, message: 'one hundred percent lights on' },
-    { percent: 75, message: 'lights overclocked 1' },
-    { percent: 90, message: 'lights overclocked 2' },
-    { percent: 99.9, message: 'disco blitz' }
+    { percent: 15, message: 'Lumi at twenty five percent' },
+    { percent: 30, message: 'Lumi at fifty percent' },
+    { percent: 45, message: 'Lumi at seventy five percent' },
+    { percent: 60, message: 'Lumi powered up, party started, now we can defeat the Baron' },
+    { percent: 75, message: 'Baron diminished 33%' },
+    { percent: 90, message: 'Baron diminished 66%' },
+    { percent: 99.9, message: 'Baron defeated!' }
 ]
+const map = fs.readFileSync('./views/partials/map.txt').toString().split('\n').map(l => '        '+l).join('\n')
 
 router.get('/', async (req, res, next) => {
     let page = 'home'
@@ -116,6 +119,12 @@ router.get('/', async (req, res, next) => {
             nextPage,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
+        }, (err, html) => {
+            if (err) { return next(err) }
+            res.status(200)
+            let formattedHTML = formatHTML.prettyPrint(html, { indent_size: 4 })
+            formattedHTML = formattedHTML.replace('    </body>', '        <!--\n'+map+'\n        -->\n    </body>')
+            res.send(formattedHTML)
         })
     } catch(err) {
         return next(err)
@@ -128,7 +137,7 @@ router.post('/pattern', checkUserAuth, async (req, res, next) => {
     try {
         const message = await handlePattern(req.session.user, pattern)
         req.session.message = message
-        // res.setHeader('X-pattern', '123456789')  // TODO: update
+        res.setHeader('X-pattern', 'eTk0NzQxOTR6bzM5NjQ3MDk0Mjk1emc5NDEwMzc5M3piMTk0MTk0NzR6cjc0Mjc5Njk0Nw==')
         return res.redirect('/')
     } catch(err) {
         if (err.status && err.status < 500) {
@@ -146,7 +155,7 @@ router.get('/pattern/:pattern', checkUserAuth, async (req, res) => {
     try {
         const message = await handlePattern(req.session.user, pattern)
         req.session.message = message
-        // res.setHeader('X-pattern', '123456789')  // TODO: update
+        res.setHeader('X-pattern', 'eTk0NzQxOTR6bzM5NjQ3MDk0Mjk1emc5NDEwMzc5M3piMTk0MTk0NzR6cjc0Mjc5Njk0Nw==')
         return res.redirect('/')
     } catch(err) {
         if (err.status && err.status < 500) {

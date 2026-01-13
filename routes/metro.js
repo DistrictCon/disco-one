@@ -26,7 +26,7 @@ router.get('/silver', (req, res, next) => {
         return next(new AppError('Not Authorized', 403))
     }
     res.json({
-        pattern: '1234567890' // TODO: update
+        pattern: 'r5319510296zy47941694293zg396924956941'
     })
 })
 

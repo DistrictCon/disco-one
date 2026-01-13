@@ -12,12 +12,24 @@ const path = require('path')
 
 
 try {
+    const PATTERN_REGEX = /^[rgboyz0-79]+$/i
     const filename = process.argv[2] || '/mnt/c/Users/me/Downloads/patterns.tsv'
     const lines = fs.readFileSync(filename).toString().split('\n')
     const patterns = {}
+    console.log(`\nReading and filtering ${lines.length} lines...`)
     lines.filter(line => {
         const fields = line.split('\t')
-        return(Number(fields[0]) && fields[2] && fields[4])
+        const valid = (Number(fields[0]) && fields[2] && fields[4])
+        if (!valid) {
+            let reason = 'no hint'
+            if (!Number(fields[0])) {
+                reason = `bad points ("${fields[0]}")`
+            } else if (!PATTERN_REGEX.test(fields[2])) {
+                reason = `bad pattern (${fields[2] || 'blank'})`
+            }
+            console.log(`  invalid pattern: ${reason}`)
+        }
+        return valid
     })
     .forEach(line => {
         const fields = line.split('\t')
@@ -29,7 +41,8 @@ try {
         }
     })
     fs.writeFileSync(path.join(__dirname, 'db', 'patterns.json'), JSON.stringify(patterns, null, 4))
-    console.log(`Wrote ${Object.keys(patterns).length} patterns to file.\n`)
+    const count = Object.keys(patterns).length
+    console.log(`Wrote ${count} patterns to file.\n${lines.length - count} unusable lines.\n`)
 
 } catch(err) {
     console.error(err)

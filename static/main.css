@@ -7,7 +7,11 @@ html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body
 
 /* GENERAL PAGE STYLES */
 
-body { font-size: 1.2rem; padding: 7rem 0 2rem 0; }
+body {
+    font-family: helvetica, arial, sans-serif;
+    font-size: 1.2rem;
+    padding: 7rem 0 2rem 0;
+}
 
 header {
     position: fixed;
@@ -165,7 +169,7 @@ nav a { color: var(--font); text-decoration: none; }
 
 .game-action { margin: 1rem 0 2rem 0; }
 .game-action .in-queue { text-align: center; font-size: 1.3rem; }
-.game-action .queued-pattern { display: block; font-weight: bold; }
+.game-action .queued-pattern { display: block; font-weight: bold; word-wrap: break-word; }
 
 .new-pattern { display: flex; flex-direction: column; text-align: center; }
 .new-pattern * { margin: 0.5rem 0; font-size: 1.3rem; }
@@ -203,9 +207,9 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game details { margin: 1rem 0; }
 .page-game summary { margin-bottom: 0.5rem; }
 .page-game details h2 { display: inline-block }
-.page-game .found { width: 100%; border-spacing: 0; border-collapse: collapse; }
+.page-game .found { width: 100%; border-spacing: 0; border-collapse: collapse; table-layout: fixed; }
 .page-game .found td { border-top: 1px solid var(--line); }
-.page-game .found .pattern { padding: 0.5rem; }
+.page-game .found .pattern { padding: 0.5rem; word-wrap: break-word; }
 .page-game .found .watts { vertical-align: top; width: 3.5rem; }
 .page-game .found .watts span {
     display: inline-block;
@@ -227,7 +231,8 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game .scale-8 span { box-shadow: inset 0 0 30px #ff9; }
 .page-game .scale-9 span { box-shadow: inset 0 0 40px #ff9; }
 .page-game .found details { margin: 0.25rem 0; }
-.page-game .failed { margin-left: 1rem; list-style: none; }
+.page-game .failed { margin-left: 2rem; }
+.page-game .failed li { word-wrap: break-word; }
 
 
 /* ADMIN PAGE CONTENT */

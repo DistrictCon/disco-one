@@ -5,12 +5,14 @@
     const DEFAULT_LIGHT_TIME_UNIT = 500
     let LIGHT_TIME_UNIT = DEFAULT_LIGHT_TIME_UNIT
     const EDGE_FLASH_DURATION = 400
-    const PAUSE_TIME_UNIT = 150
+    const PAUSE_TIME_UNIT = 250
     const LINE_SEGMENT_DELAY = 75
     const DISSIPATION_INTERVAL = 50
+    const SCREEN_SAVER_TIMEOUT = 5000
 
     let SCREEN_SAVER = null
     let screenSaverInterval = null
+    let screenSaverMediaRecorder = null
     let ACTIVE_PATTERN = null
     let LAST_PATTERN = null
 
@@ -27,8 +29,8 @@
     updateLeaderboard()
     updateQueue()
 
-    document.querySelector('.run-next').addEventListener('click', () => {
-        if (SCREEN_SAVER) { stopScreenSaver() }
+    document.querySelector('.run-next').addEventListener('click', async () => {
+        if (SCREEN_SAVER) { await stopScreenSaver() }
         if (!ACTIVE_PATTERN) { runNext() }
     })
 
@@ -367,13 +369,13 @@
                 console.warn('There is nor previous pattern to run!')
             }
         })
-        document.body.addEventListener('keydown', e => {
+        document.body.addEventListener('keydown', async (e) => {
             if (e.altKey && e.code === 'KeyA') {
                 adminElem.classList.toggle('hide')
             }
             if (e.altKey && e.code === 'KeyS') {
                 if (SCREEN_SAVER) {
-                    stopScreenSaver()
+                    await stopScreenSaver()
                 } else {
                     console.debug('Screen saver starting...')
                     SCREEN_SAVER = true
@@ -383,24 +385,72 @@
         })
     }
 
-    function stopScreenSaver() {
+    async function stopScreenSaver() {
         SCREEN_SAVER = false
+        await clearScreenSaver()
+        console.debug('Screen saver stopped')
+    }
+
+    async function clearScreenSaver() {
         clearTimeout(screenSaverInterval)
+        clearInterval(screenSaverInterval)
         screenSaverInterval = null
         clearAllLines()
+
         Array.from(SVG.querySelectorAll('line.edge')).forEach(n => {
             n.removeAttribute('class')
             n.classList.add('edge')
         })
-        console.debug('Screen saver stopped')
+        Array.from(SVG.querySelectorAll('line.wall')).forEach(n => {
+            n.removeAttribute('class')
+            n.classList.add('wall')
+        })
+        if (screenSaverMediaRecorder) {
+            await screenSaverMediaRecorder.stop()
+            screenSaverMediaRecorder = null
+        }
     }
 
-    async function runScreenSaver() {
-        if (SCREEN_SAVER) {
-            // TODO: add more funky animations
+    const screenSavers = {
+        marquee: () => {
             Array.from(SVG.querySelectorAll('line.edge')).forEach(n => {
                 n.classList.add('marquee')
             })
+            screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
+        },
+        audio: async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+            screenSaverMediaRecorder = new MediaRecorder(stream)
+            const audioCtx = new AudioContext()
+            const analyser = audioCtx.createAnalyser()
+            audioCtx.createMediaStreamSource(stream).connect(analyser)
+
+            const walls = Array.from(SVG.querySelectorAll('line.wall'))
+            walls.forEach((w) => w.classList.add('red'))
+
+            screenSaverMediaRecorder.addEventListener('dataavailable', () => {
+                const bufferLength = analyser.frequencyBinCount
+                const dataArray = new Uint8Array(bufferLength)
+                analyser.getByteFrequencyData(dataArray)
+                let max = 0
+                dataArray.forEach((v) => { if (v > max) { max = v } })
+                walls.forEach(w => { w.style.opacity = Math.max(max / 256, 0.1) })
+            })
+            screenSaverMediaRecorder.start(100)
+            screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
+        },
+        // logo: () => {
+        //     TODO: float the logo in the middle (pulse opacity and size?)
+        //     screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
+        // },
+        // starbust lines from center out?
+        // forced perspective lines
+    }
+    async function runScreenSaver() {
+        clearScreenSaver()
+        if (SCREEN_SAVER) {
+            const options = Object.keys(screenSavers)
+            screenSavers[options[Math.floor(Math.random() * options.length)]]()
         }
     }
 
