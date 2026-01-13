@@ -28,15 +28,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="0.46043968"
-     inkscape:cx="1619.1046"
-     inkscape:cy="977.32672"
+     inkscape:zoom="0.23021984"
+     inkscape:cx="2667.016"
+     inkscape:cy="356.18129"
      inkscape:window-width="2221"
      inkscape:window-height="1370"
-     inkscape:window-x="3599"
-     inkscape:window-y="234"
+     inkscape:window-x="3436"
+     inkscape:window-y="246"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer2" />
   <g
      inkscape:groupmode="layer"
      inkscape:label="Map"
@@ -563,7 +563,8 @@
      inkscape:groupmode="layer"
      id="layer1"
      inkscape:label="Main Stage"
-     style="display:inline">
+     style="display:inline"
+     sodipodi:insensitive="true">
     <path
        style="fill:none;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
        d="M 740.70855,314.80113 H 1123.408 l -2.1718,385.90043 -846.26218,416.65314 429.9197,737.6288"
@@ -650,13 +651,13 @@
        inkscape:label="Up left" />
     <path
        style="fill:none;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 1822.4517,782.3734 1326.378,296.2461"
+       d="M 1822.4517,782.3734 3146.6579,1059.073"
        id="path12"
        inkscape:label="Out right"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
-       d="M 2029.2328,1078.6568 H 3148.0113"
+       d="m 2029.2328,1078.6568 1125.294,-10.8592"
        id="path13"
        inkscape:label="Middle out right"
        sodipodi:nodetypes="cc" />
@@ -673,7 +674,13 @@
        sodipodi:nodetypes="cc" />
     <path
        style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
-       d="M 2033.3124,1081.1359 2656.815,721.56069"
+       d="m 2030.0251,1085.9407 630.4282,308.9141"
+       id="path33-8-1"
+       inkscape:label="14 to 9"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+       d="M 2033.3124,1081.1359 2661.1587,715.04518"
        id="path33-8-3"
        inkscape:label="9 to 28"
        sodipodi:nodetypes="cc" />
@@ -682,6 +689,18 @@
        d="m 2660.3782,1396.5442 h 202.1517"
        id="path34"
        inkscape:label="Bottom right right" />
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+       d="M 1543.8273,1398.6063 1540.079,773.63035"
+       id="path33-8-2"
+       inkscape:label="13 to 6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+       d="M 1541.6146,1391.9438 1815.8615,771.31162"
+       id="path33-8-2-2"
+       inkscape:label="13 to 7"
+       sodipodi:nodetypes="cc" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -760,7 +779,7 @@
        inkscape:label="Orange down" />
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 3081.6562,845.64226 64.812,234.55774 -345.3457,497.1353"
+       d="m 3081.6562,845.64226 66.9838,217.18304 -347.5175,514.51"
        id="path26"
        inkscape:label="Orange down and right"
        sodipodi:nodetypes="ccc" />
@@ -799,9 +818,15 @@
      sodipodi:insensitive="true">
     <path
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
-       d="m 3143.3819,1080.2 388.872,-188.26346 1.5431,680.52596 -737.5736,5.1912"
+       d="m 3147.7256,1064.9971 384.5283,-173.06056 1.5431,680.52596 -737.5736,5.1912"
        id="path29"
        inkscape:label="loop"
        sodipodi:nodetypes="cccc" />
+    <path
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+       d="M 3531.2291,896.58701 3049.0812,1777.4355"
+       id="path25-8"
+       inkscape:label="8 to 23"
+       sodipodi:nodetypes="cc" />
   </g>
 </svg>
