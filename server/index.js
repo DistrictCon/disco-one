@@ -11,6 +11,7 @@ const game = require('../routes/game')
 const user = require('../routes/user')
 const admin = require('../routes/admin')
 const metro = require('../routes/metro')
+const logs = require('../routes/logs')
 
 const PORT = process.env.PORT || 80
 
@@ -60,6 +61,7 @@ async function main() {
     app.use('/metro', metro)
     app.use('/user', user)
     app.use('/admin', admin)
+    app.use('/logs', logs)
 
     
     app.use((req, res, next) => {

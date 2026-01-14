@@ -6,7 +6,7 @@ const { checkUserAuth, checkAdminAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
 const { Submission, User } = require('../db/models/app-models')
 const { getConnection } = require('../util/database')
-const { PATTERN_REGEX } = require('../util/constants')
+const { LOG_API_KEY, PATTERN_REGEX } = require('../util/constants')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
@@ -117,6 +117,7 @@ router.get('/', async (req, res, next) => {
             user: userData,
             maxScore,
             nextPage,
+            logApiKey: LOG_API_KEY,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
         }, (err, html) => {

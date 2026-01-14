@@ -1,9 +1,8 @@
 
-;(() => {
+;(async () => {
     const $ = (q) => Array.from(document.querySelectorAll(q))
     const CACHE_ID = 'disco1bc'
     let cache = JSON.parse(localStorage.getItem(CACHE_ID) || '{}')
-    console.log(cache)
     
     $('.messages')[0].addEventListener('click', e => {
         if (e.target.classList.contains('message')) {
@@ -29,6 +28,13 @@
     if (cache.mode) {
         $('html')[0].classList.add('light-mode')
     }
+
+    const message = JSON.stringify({ message: 'user hit on game page' })
+    await fetch('/logs', {
+        method: 'post',
+        body: message,
+        headers: { 'Content-length': message.length, 'Content-Type': 'application/json', Authorization: logKey }
+    })
 
     function saveCache() {
         localStorage.setItem(CACHE_ID, JSON.stringify(cache))
