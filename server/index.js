@@ -22,6 +22,7 @@ async function main() {
     app.use(express.static('static'))
     app.set('view engine', 'pug')
     app.set('x-powered-by', false)
+    app.use(express.json())
     app.use(express.urlencoded({ extended: false }))
 
 

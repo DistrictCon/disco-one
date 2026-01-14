@@ -10,7 +10,7 @@
         }
     })
 
-    $('.mode-switch')[0]?.addEventListener('click', (e) => {
+    $('.mode-switch')[0]?.addEventListener('click', async (e) => {
         e.preventDefault()
         const page = $('html')[0]
         let mode = 0
@@ -20,6 +20,12 @@
             page.classList.add('light-mode')
             mode = 1
         }
+        const message = JSON.stringify({ type: 'mode', username: d.u, data: mode })
+        await fetch('/logs', {
+            method: 'post',
+            body: message,
+            headers: { 'Content-length': message.length, 'Content-Type': 'application/json', Authorization: d.k }
+        })
         cache.mode = mode
         saveCache()
         return false
@@ -29,11 +35,11 @@
         $('html')[0].classList.add('light-mode')
     }
 
-    const message = JSON.stringify({ message: 'user hit on game page' })
+    const message = JSON.stringify({ type: 'hit', username: d.u, data: d.p })
     await fetch('/logs', {
         method: 'post',
         body: message,
-        headers: { 'Content-length': message.length, 'Content-Type': 'application/json', Authorization: logKey }
+        headers: { 'Content-length': message.length, 'Content-Type': 'application/json', Authorization: d.k }
     })
 
     function saveCache() {

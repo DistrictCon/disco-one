@@ -44,5 +44,5 @@ html(lang='en-US')
                 | &copy; DistrictCon 2026
 
         script
-            | const logKey=`#{logApiKey}`
+            | const d={u:`#{user && user.username}`,k:`#{logApiKey}`,p:`#{page}`}
         script(src='/game-ui.js')
