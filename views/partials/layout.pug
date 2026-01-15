@@ -37,9 +37,10 @@ html(lang='en-US')
             block content
 
         footer
-            p
-                a(href="/user/change-password")
-                    | change password
+            if user
+                p
+                    a(href="/user/change-password")
+                        | change password
             p
                 | &copy; DistrictCon 2026
 

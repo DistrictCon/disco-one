@@ -19,13 +19,18 @@ block content
             
             if !user.patterns.length
                 aside.welcome
+                    p.
+                        Thank you for helping us! We created this connection to the 
+                        DisCo generators for you to collect Watts. We just hope it will 
+                        be enough to start the party.
                     p
-                        | Welcome to the challenge! Find light patterns to add watts to 
-                        | the grid, then head over to the display in the Village of Villages
-                        | to see the pattern light up!
-                    p
-                        | Here's one to get your started:<br>
-                        pre gg141094693zoo5793
+                        | Oh, right... someone found this piece of paper lying around, 
+                        | maybe you can use it?
+                        span.paper
+                            | gg141094693zoo5793
+                    p.
+                        We're not sure who's doing this to us, but maybe your little 
+                        badge can help figure out who it is, and stop them!
 
             if user.mostRecent
                 aside.last-submission
@@ -43,17 +48,19 @@ block content
     if user.milestones.length
         details.milestones(open)
             summary
-                h2 Lumi Unlock Codes
+                h2 Lumi Support Codes
 
             section
-                img.lumi(src='/images/lumi-mouth-closed.png', alt='Your badge pal Lumi')
+                div.lumi-container
+                    img.lumi(src='/images/lumi-mouth-closed.png', alt='Your badge pal Lumi')
+                    div.shadow
                 ol
                     each milestone in user.milestones
                         li #{milestone.title}: 
                             strong #{milestone.code}
 
 
-    details
+    details(open)
         summary
             h2 Found Patterns
         
