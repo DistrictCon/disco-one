@@ -41,15 +41,19 @@ block content
 
 
     if user.milestones.length
-        details(open)
+        details.milestones(open)
             summary
-                h2 Messages from Lumi
+                h2 Lumi Unlock Codes
 
-            each message in user.milestones
-                p= message
+            section
+                img.lumi(src='/images/lumi-mouth-closed.png', alt='Your badge pal Lumi')
+                ol
+                    each milestone in user.milestones
+                        li #{milestone.title}: 
+                            strong #{milestone.code}
 
 
-    details(open)
+    details
         summary
             h2 Found Patterns
         

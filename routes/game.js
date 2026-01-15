@@ -12,14 +12,14 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 const router = express.Router()
 
 const OVERCLOCK_PERCENT = 70
-const thresholds = [
-    { percent: 15, message: 'Lumi at twenty five percent' },
-    { percent: 30, message: 'Lumi at fifty percent' },
-    { percent: 45, message: 'Lumi at seventy five percent' },
-    { percent: 60, message: 'Lumi powered up, party started, now we can defeat the Baron' },
-    { percent: 75, message: 'Baron diminished 33%' },
-    { percent: 90, message: 'Baron diminished 66%' },
-    { percent: 99.9, message: 'Baron defeated!' }
+const LUMI_THRESHOLDS = [
+    { percent: 15, title: 'The Baron', code: 'prismatic charging' },
+    { percent: 30, title: 'Charging', code: 'a little more' },
+    { percent: 45, title: 'Almost There', code: 'seventy five' },
+    { percent: 60, title: 'Powered Up', code: 'powered up' },
+    { percent: 75, title: 'Take Him Down', code: 'hit the baron' },
+    { percent: 90, title: 'One More Hit', code: 'on the ropes' },
+    { percent: 99.9, title: 'Baron No More', code: 'baron defeated' }
 ]
 const map = fs.readFileSync('./views/partials/map.txt').toString().split('\n').map(l => '        '+l).join('\n')
 
@@ -91,9 +91,9 @@ router.get('/', async (req, res, next) => {
             }
 
             progress = (user.score / maxScore) * 100
-            thresholds.forEach(t => {
-                if (progress > t.percent) {
-                    milestones.push(t.message)
+            LUMI_THRESHOLDS.forEach(milestone => {
+                if (progress > milestone.percent) {
+                    milestones.push({ code: milestone.code, title: milestone.title })
                 }
             })
         }

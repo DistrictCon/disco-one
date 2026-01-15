@@ -234,6 +234,27 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game .failed { margin-left: 2rem; }
 .page-game .failed li { word-wrap: break-word; }
 
+.page-game .milestones h2 { margin-bottom: 1rem; }
+.page-game .milestones section { display: flex; justify-content: space-between; }
+.page-game .milestones ol { width: 100%; margin-left: 3rem; }
+.page-game .milestones .lumi {
+    position: relative;
+    animation: bounce 2s linear 0s normal infinite;
+}
+@keyframes bounce {
+  0% { top: 0; transform: scale(1, 0.9); }
+  10% { top: 0; transform: scale(1, 0.92); }
+  20% { top: -2px; transform: scale(1, 0.97); }
+  30% { top: -6px; transform: scale(1); }
+  40% { top: -12px; }
+  50% { top: -13px; }
+  60% { top: -12px; }
+  70% { top: -9px; }
+  80% { top: -4px; }
+  90% { top: -2px; transform: scale(1, 0.95); }
+  100% { top: 0; transform: scale(1, 0.92); }
+}
+
 
 /* ADMIN PAGE CONTENT */
 
