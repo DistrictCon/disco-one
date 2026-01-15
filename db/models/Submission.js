@@ -63,9 +63,9 @@ Submission.prototype.getPath = function getPath() {
             return patterns[this.pattern].path
         } else {
             const points = getPathPoints(this.pattern.toUpperCase())
-            console.log(points)
             if (!points) {
                 // Good pattern, but unable to generate path!
+                logger.warn(`Unable to retrieve path for otherwise good pattern: ${pattern}`)
                 return Submission.getInvalidPath(this.pattern)
             } else {
                 return points.join('-')

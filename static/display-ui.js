@@ -49,7 +49,7 @@
             if (!data.path) {
                 return console.warn('No path in the data!', data)
             }
-            parsePattern(data.path, false, () => {
+            parsePath(data.path, false, () => {
                 document.querySelector('.last').classList.remove('hide')
                 document.querySelector('.last .username').innerText = data.username
                 document.querySelector('.last .result').innerText = (data.isValid) ? ` earned ${data.points} points!` : ' was not valid.'
@@ -106,7 +106,7 @@
         })
     }
 
-    async function parsePattern(pattern, hold=false, done=()=>{}) {
+    async function parsePath(pattern, hold=false, done=()=>{}) {
         if (ACTIVE_PATTERN) {
             console.log('There is already a pattern running!')
             return
@@ -356,7 +356,7 @@
             e.preventDefault()
             const units = Number(unitsElem.value)
             LIGHT_TIME_UNIT = (units) ? units : DEFAULT_LIGHT_TIME_UNIT
-            await parsePattern(patternElem.value, holdElem.checked === true)
+            await parsePath(patternElem.value, holdElem.checked === true)
             return false
         })
         document.getElementById('clear').addEventListener('click', () => {
@@ -364,7 +364,7 @@
         })
         document.getElementById('rerun').addEventListener('click', () => {
             if (LAST_PATTERN) {
-                parsePattern(LAST_PATTERN, holdElem.checked === true)
+                parsePath(LAST_PATTERN, holdElem.checked === true)
             } else {
                 console.warn('There is nor previous pattern to run!')
             }
