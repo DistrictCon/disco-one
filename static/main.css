@@ -316,11 +316,14 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-admin .users td, .page-admin .users th { padding: 0.3rem 0.5rem; }
 .page-admin .users .actions span { cursor: pointer; margin-right: 1rem; }
 
-.page-admin .puzzles { margin-top: 1rem; border-collapse: collapse; }
-.page-admin .puzzles th:nth-child(1), .page-admin .puzzles tr.detail td:nth-child(1) { text-align: left; }
-.page-admin .puzzles thead th, .page-admin .puzzles tr.detail td {
-    text-align: center;
+.page-admin .puzzles { margin-top: 1rem; border-collapse: collapse; table-layout: fixed; width: 100%; }
+.page-admin .puzzles th:nth-child(1) { width: 66%; }
+.page-admin .puzzles td { text-align: center; }
+.page-admin .puzzles th:nth-child(1), .page-admin .puzzles td:nth-child(1), .page-admin tr.detail td { text-align: left; }
+.page-admin .puzzles thead th, .page-admin tr.detail td {
     border-bottom: 1px solid var(--line);
+    word-wrap: break-word;
+    padding-bottom: 1rem;
 }
 
 
