@@ -38,7 +38,6 @@ Submission.prototype.getPatternInfo = function getPatternInfo() {
         resubmit: this.resubmit,
         points: (patterns[this.pattern]) ? patterns[this.pattern].points : 0,
         hint: (patterns[this.pattern]) ? patterns[this.pattern].hint : null,
-        badgePattern: (patterns[this.pattern]) ? patterns[this.pattern].badgePattern: null,
         scale: (patterns[this.pattern]) ? getPointScale(patterns[this.pattern].points) : 0
     }
 }

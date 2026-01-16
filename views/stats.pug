@@ -1,0 +1,13 @@
+extends partials/layout.pug
+
+block content
+    h2 Player Stats
+    
+    article
+        h3 Leaderboard (#{stats.totalUsers} total players)
+        ul
+            each leader in stats.leaderboard
+                if leader.username == user.username && leader.pos > (stats.leaderboardMax + 1)
+                    li
+                        | ...
+                li #{leader.pos}. #{leader.username} (#{leader.score})

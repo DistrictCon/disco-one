@@ -36,8 +36,8 @@ try {
         patterns[fields[2]] = {
             points: Number(fields[0]),
             path: fields[5]?.replace('\r', '') || null,
-            hint: fields[4].replace('\r', '').replaceAll('’', `'`),
-            note: fields[1]?.replace('\r', '').replaceAll('’', `'`) || ''
+            hint: fields[4].replace('\r', '').replaceAll('“', '\"').replaceAll('’', `'`),
+            note: fields[1]?.replace('\r', '').replaceAll('“', '\"').replaceAll('’', `'`) || ''
         }
     })
     fs.writeFileSync(path.join(__dirname, 'db', 'patterns.json'), JSON.stringify(patterns, null, 4))

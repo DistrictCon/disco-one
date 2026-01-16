@@ -1,10 +1,12 @@
 const express = require('express')
 const router = express.Router()
+const { Op } = require('sequelize')
 const { User, Submission } = require('../db/models/app-models')
 const { checkAdminAuth, checkUserAuth } = require('../util/middleware')
 const AppError = require('../util/AppError')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
+const LEADERBOARD_MAX = 2
 
 router.get('/', (req, res) => {
     return res.redirect('/')
@@ -85,6 +87,68 @@ router.get('/logout', (req, res) => {
             logger.debug(`User logout: ${username}`)
             res.redirect('/')
         })
+    })
+})
+
+router.get('/stats', checkUserAuth, async (req, res, next) => {
+    const message = req.session.message || null
+    req.session.message = null
+
+    let user = null
+    let patterns = { found: [], failed: [], queued: [] }
+    let userRank = []
+    try {
+        user = await User.findOne({
+            where: { id: req.session.user.id },
+            attributes: ['id', 'username', 'score', 'isAdmin'],
+            include: Submission,
+            order: [
+                [Submission, 'updatedAt', 'DESC']
+            ]
+        })
+
+        if (!user) {
+            return next(new AppError('Unable to retrieve user account', 400))
+        }
+
+        const subs = user.Submissions.map(sub => sub.getPatternInfo())
+        patterns.found = subs.filter(sub => sub.points && (sub.executedAt !== null || sub.resubmit))
+        patterns.failed = subs.filter(sub => sub.executedAt !== null && !sub.points)
+        patterns.queued = subs.filter(sub => sub.executedAt === null)
+
+        userRank = await User.findAll({
+            where: { isAdmin: { [Op.eq]: false } },
+            attributes: ['username', 'score'],
+            order: [ ['score', 'DESC'] ],
+            raw: true
+        })
+
+    } catch(err) {
+        return next(err)
+    }
+
+    const leaderboard = userRank
+        .map((u, i) => { return { username: u.username, score: u.score, pos: (i+1) } })
+        .filter((u, i) => i < LEADERBOARD_MAX || u.username === user.username)
+    
+    const stats = {
+        counts: { found: patterns.found.length, failed: patterns.failed.length, queued: patterns.queued.length },
+        leaderboard,
+        totalUsers: userRank.length,
+        leaderboardMax: LEADERBOARD_MAX
+    }
+
+    /**
+     * - time to each pattern (from user reg) vs global
+     */
+
+    res.render('stats', {
+        page: 'stats',
+        message,
+        stats,
+        user: req.session.user,
+        title: process.env.TITLE || 'The Game',
+        appName: process.env.APP_NAME || ''
     })
 })
 

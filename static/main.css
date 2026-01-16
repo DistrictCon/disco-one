@@ -128,13 +128,18 @@ footer a { color: var(--font); text-decoration: none; border-bottom: 1px dashed 
 /* GAME PLAY PAGE HEADER & NAV */
 
 .sub-header { display: flex; justify-content: space-between; padding: 1rem; }
-
-nav ul { display: flex; justify-content: flex-end; list-style: none; }
-
+.sub-header .stats::before { content: "╷"; position: relative; left: 0.4rem; bottom: -0.1rem; }
+.sub-header .stats::after {
+    content: "─";
+    display: inline-block;
+    position: relative;
+    bottom: -0.25rem;
+    left: -0.3rem;
+    transform: rotate(90deg);
+}
+nav ul { display: flex; justify-content: flex-end; list-style: none; line-height: 2rem; }
 nav li { margin-left: 1rem; }
-
 nav a { color: var(--font); text-decoration: none; }
-
 .mode-switch::after { content: "☀"; }
 .light-mode .mode-switch::after { content: "☾"; }
 
