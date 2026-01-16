@@ -42,6 +42,7 @@
     }
 
     async function sendLog(type, data) {
+        if (!d.k) { return }
         const message = JSON.stringify({ type, username: d.u, data })
         await fetch('/logs', {
             method: 'post',

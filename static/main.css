@@ -80,7 +80,7 @@ form .actions { display: flex; justify-content: center; margin: 1rem 0; }
 .button:active, button:active, input[type="submit"]:active { box-shadow: 0 0 #555; top: 6px; }
 
 main {
-    min-height: calc(100% - 2.5rem);
+    min-height: calc(100% - 4rem);
     max-width: 50rem;
     margin: 0 auto;
     padding: 0 0.5rem;
@@ -102,12 +102,13 @@ main {
         linear-gradient(90deg, transparent 1.7rem, #abced4 1.7rem, #abced4 1.85rem, transparent 1.85rem),
         linear-gradient(#ccc .1em, transparent .1em);
     background-size: 100% 0.7em;
+    -webkit-mask: conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/8px 100%;
     corner-top-left-shape: squircle;
-    border-top-left-radius: 1.1rem;
+    border-top-left-radius: 1.2rem;
     corner-top-right-shape: scoop;
-    border-top-right-radius: 0.2rem;
+    border-top-right-radius: 0.4rem;
     corner-bottom-right-shape: bevel;
-    border-bottom-right-radius: 2.5rem;
+    border-bottom-right-radius: 2rem;
 }
 
 footer { text-align: center; border-top: 1px solid #ccc; padding: 0.5rem 1rem; background: #222; }
@@ -316,3 +317,7 @@ input#pattern { padding: 0.5rem 0.3rem; }
     text-align: center;
     border-bottom: 1px solid var(--line);
 }
+
+
+.page-help h3 { display: inline-block; }
+.page-help details { margin: 1.5rem 0; }

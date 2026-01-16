@@ -37,8 +37,11 @@ html(lang='en-US')
             block content
 
         footer
-            if user
-                p
+            p
+                a(href="/rules")
+                    | the rules
+                if user
+                    =" | "
                     a(href="/user/change-password")
                         | change password
             p

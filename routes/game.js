@@ -11,15 +11,18 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
 
-const OVERCLOCK_PERCENT = 70
+const AUTHORS = ['jakerella', 'BigTaro', 'RoRo', 'ZeeTwii']
+
+const OVERCLOCK_PERCENT = 40
 const LUMI_THRESHOLDS = [
-    { percent: 15, title: 'The Baron', code: 'prismatic charging' },
-    { percent: 30, title: 'Charging', code: 'a little more' },
-    { percent: 45, title: 'Almost There', code: 'seventy five' },
-    { percent: 60, title: 'Powered Up', code: 'powered up' },
-    { percent: 75, title: 'Take Him Down', code: 'hit the baron' },
-    { percent: 90, title: 'One More Hit', code: 'on the ropes' },
-    { percent: 99.9, title: 'Baron No More', code: 'baron defeated' }
+    { percent: 5, title: 'The Baron', code: 'prismatic charging' },
+    { percent: 15, title: 'The Siphon', code: 'suck it out' },
+    { percent: 30, title: 'Blackouts', code: 'heart of darkness' },
+    { percent: 50, title: 'The Defeated?', code: 'down but not out' },
+    { percent: 65, title: 'Mech Preparation', code: 'mechanized siphonry' },
+    { percent: 75, title: 'Alternative Source', code: 'by another name' },
+    { percent: 85, title: 'The Ultimate Siphon', code: 'baron no more' },
+    { percent: 95, title: 'The True Ending', code: 'disco inferno' }
 ]
 const map = fs.readFileSync('./views/partials/map.txt').toString().split('\n').map(l => '        '+l).join('\n')
 
@@ -28,9 +31,9 @@ router.get('/', async (req, res, next) => {
     let nextPage = null
     if (req.session?.user) {
         page = 'game'
-        res.setHeader('X-hacked-by', 'B.v.B.')
+        res.setHeader('X-author', AUTHORS[Math.floor(Math.random() * AUTHORS.length)])
     } else {
-        res.setHeader('X-author', 'jakerella')
+        res.setHeader('X-hacked-by', 'B.v.B.')
         nextPage = req.query.r || ''
     }
 
@@ -130,6 +133,34 @@ router.get('/', async (req, res, next) => {
     } catch(err) {
         return next(err)
     }
+})
+
+router.get('/help', (req, res) => {
+    const message = req.session.message || null
+    req.session.message = null
+
+    res.render('help', {
+        page: 'help',
+        message,
+        user: req.session.user,
+        logApiKey: LOG_API_KEY,
+        title: process.env.TITLE || 'The Game',
+        appName: process.env.APP_NAME || ''
+    })
+})
+
+router.get('/rules', (req, res) => {
+    const message = req.session.message || null
+    req.session.message = null
+
+    res.render('rules', {
+        page: 'rules',
+        message,
+        user: req.session.user,
+        logApiKey: LOG_API_KEY,
+        title: process.env.TITLE || 'The Game',
+        appName: process.env.APP_NAME || ''
+    })
 })
 
 router.post('/pattern', checkUserAuth, async (req, res, next) => {
@@ -328,9 +359,14 @@ router.get('/leaderboard', async (req, res, next) => {
     }
 })
 
-router.get('/display', checkAdminAuth, (req, res, next) => {
+router.get('/display', checkAdminAuth, (req, res) => {
+    const message = req.session.message || null
+    req.session.message = null
+
     res.render('display', {
         page: 'display',
+        message,
+        user: req.session.user,
         title: process.env.TITLE || 'The Game',
         appName: process.env.APP_NAME || ''
     })

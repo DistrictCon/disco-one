@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
     res.end(LOG_FILE)
 })
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
     if (req.headers.authorization !== LOG_API_KEY) {
         return next(new AppError('Sorry, but you need a valid API key to post logs', 403))
     }
