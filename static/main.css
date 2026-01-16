@@ -211,7 +211,7 @@ input#pattern { padding: 0.5rem 0.3rem; }
 }
 .page-game .welcome p { font-weight: bold; }
 
-.last-submission { margin: 1rem 0; text-align: center; }
+.last-submission { margin: 1rem 0; text-align: center; word-wrap: break-word; }
 .last-submission .hint {
     position: relative;
     border-radius: 1rem;
