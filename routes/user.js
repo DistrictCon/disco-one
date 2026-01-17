@@ -6,7 +6,11 @@ const { checkAdminAuth, checkUserAuth } = require('../util/middleware')
 const AppError = require('../util/AppError')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
-const LEADERBOARD_MAX = 2
+
+const LEADERBOARD_MAX = 20
+const STATS_CACHE_TIMEOUT = 30 * 1000
+let globalStatsCache = null
+
 
 router.get('/', (req, res) => {
     return res.redirect('/')
@@ -95,8 +99,10 @@ router.get('/stats', checkUserAuth, async (req, res, next) => {
     req.session.message = null
 
     let user = null
-    let patterns = { found: [], failed: [], queued: [] }
-    let userRank = []
+    let patterns = { found: [], failed: [], queued: [], globalCount: {} }
+    let leaders = []
+    let globalCounts = {}
+    
     try {
         user = await User.findOne({
             where: { id: req.session.user.id },
@@ -116,31 +122,37 @@ router.get('/stats', checkUserAuth, async (req, res, next) => {
         patterns.failed = subs.filter(sub => sub.executedAt !== null && !sub.points)
         patterns.queued = subs.filter(sub => sub.executedAt === null)
 
-        userRank = await User.findAll({
+        leaders = await User.findAll({
             where: { isAdmin: { [Op.eq]: false } },
             attributes: ['username', 'score'],
             order: [ ['score', 'DESC'] ],
             raw: true
         })
 
+        globalCounts = await getGlobalStats()
+        patterns.globalCount = patterns.found.map(sub => {
+            return { pattern: sub.pattern, count: globalCounts.countsByPattern[sub.pattern] }
+        })
+        
     } catch(err) {
         return next(err)
     }
 
-    const leaderboard = userRank
+    const leaderboard = leaders
         .map((u, i) => { return { username: u.username, score: u.score, pos: (i+1) } })
         .filter((u, i) => i < LEADERBOARD_MAX || u.username === user.username)
     
     const stats = {
-        counts: { found: patterns.found.length, failed: patterns.failed.length, queued: patterns.queued.length },
+        userCounts: {
+            found: patterns.found.length,
+            failed: patterns.failed.length,
+            queued: patterns.queued.length
+        },
+        globalCounts: {...globalCounts, patterns: patterns.globalCount},
         leaderboard,
-        totalUsers: userRank.length,
+        totalUsers: leaders.length,
         leaderboardMax: LEADERBOARD_MAX
     }
-
-    /**
-     * - time to each pattern (from user reg) vs global
-     */
 
     res.render('stats', {
         page: 'stats',
@@ -151,6 +163,35 @@ router.get('/stats', checkUserAuth, async (req, res, next) => {
         appName: process.env.APP_NAME || ''
     })
 })
+
+async function getGlobalStats() {
+    if (globalStatsCache?.timeout > Date.now()) {
+        console.log('\nUSING CACHED STATS\n')
+        return globalStatsCache
+    }
+
+    globalStatsCache = {}
+    globalStatsCache.foundByUser = await Submission.count({
+        where: { executedAt: { [Op.ne]: null }, valid: true },
+        group: ['UserId']
+    })
+    globalStatsCache.failedByUser = await Submission.count({
+        where: { executedAt: { [Op.ne]: null }, valid: false },
+        group: ['UserId']
+    })
+    globalStatsCache.avgFound = Math.round((globalStatsCache.foundByUser.reduce((p, c) => c.count + p, 0) / globalStatsCache.foundByUser.length) * 10) / 10
+    globalStatsCache.avgFailed = Math.round((globalStatsCache.failedByUser.reduce((p, c) => c.count + p, 0) / globalStatsCache.failedByUser.length) * 10) / 10
+
+    globalStatsCache.countsByPattern = {}
+    ;(await Submission.count({
+        where: { executedAt: { [Op.ne]: null }, valid: true },
+        group: ['pattern']
+    })).forEach(sub => { globalStatsCache.countsByPattern[sub.pattern] = sub.count })
+
+    globalStatsCache.timeout = Date.now() + STATS_CACHE_TIMEOUT
+
+    return globalStatsCache
+}
 
 router.get('/change-password', checkUserAuth, async (req, res) => {
     const message = req.session.message || null

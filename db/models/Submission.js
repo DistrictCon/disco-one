@@ -13,7 +13,8 @@ const Submission = sequelize.define(
         id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
         pattern: { type: DataTypes.STRING, allowNull: false },
         executedAt: { type: DataTypes.DATE, allowNull: true },
-        resubmit: { type: DataTypes.BOOLEAN, allowNull: false , defaultValue: false }
+        resubmit: { type: DataTypes.BOOLEAN, allowNull: false , defaultValue: false },
+        valid: { type: DataTypes.BOOLEAN, allowNull: false , defaultValue: false }
     }
 )
 

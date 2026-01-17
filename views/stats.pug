@@ -3,11 +3,31 @@ extends partials/layout.pug
 block content
     h2 Player Stats
     
-    article
-        h3 Leaderboard (#{stats.totalUsers} total players)
-        ul
-            each leader in stats.leaderboard
-                if leader.username == user.username && leader.pos > (stats.leaderboardMax + 1)
-                    li
-                        | ...
-                li #{leader.pos}. #{leader.username} (#{leader.score})
+    h3 Leaderboard (#{stats.totalUsers} total players)
+
+    ul.leaderboard
+        each leader in stats.leaderboard
+            if leader.username == user.username && leader.pos > (stats.leaderboardMax + 1)
+                li
+                    | ...
+            li 
+                if leader.username == user.username
+                    strong #{leader.pos}. #{leader.username} (#{leader.score})
+                else
+                    | #{leader.pos}. #{leader.username} (#{leader.score})
+
+    h3 Pattern Stats 
+    
+    p
+        | You have found #{stats.userCounts.found} valid patterns, submitted 
+        | #{stats.userCounts.failed} invalid patterns, and currently have 
+        | #{stats.userCounts.queued} patterns queued to run.
+    p 
+        | On average, players who have found at least 1 pattern have found 
+        | an average of #{stats.globalCounts.avgFound} and have submitted an average 
+        | of #{stats.globalCounts.avgFailed} failed patterns.
+
+    ul.pattern-count
+        each pattern in stats.globalCounts.patterns
+            li
+                | #{pattern.count-1} others found #{pattern.pattern}

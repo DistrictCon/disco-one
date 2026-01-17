@@ -299,6 +299,12 @@ input#pattern { padding: 0.5rem 0.3rem; }
 }
 
 
+/* USER STATS PAGE CONTENT */
+
+.page-stats h3 { margin: 1rem 0; }
+.page-stats .leaderboard { list-style: none; margin-left: 2rem; }
+
+
 /* ADMIN PAGE CONTENT */
 
 .page-admin .validate-scores { margin-bottom: 1rem; }
@@ -326,6 +332,8 @@ input#pattern { padding: 0.5rem 0.3rem; }
     padding-bottom: 1rem;
 }
 
+
+/* HELP PAGE CONTENT */
 
 .page-help h3 { display: inline-block; }
 .page-help details { margin: 1.5rem 0; }
