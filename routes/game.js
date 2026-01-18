@@ -12,6 +12,7 @@ const logger = require('../util/logger')(process.env.LOG_LEVEL)
 const router = express.Router()
 
 const AUTHORS = ['jakerella', 'BigTaro', 'RoRo', 'ZeeTwii']
+const MAX_QUEUE = 5
 
 const OVERCLOCK_PERCENT = 40
 const LUMI_THRESHOLDS = [
@@ -25,6 +26,7 @@ const LUMI_THRESHOLDS = [
     { percent: 95, title: 'The True Ending', code: 'disco inferno' }
 ]
 const map = fs.readFileSync('./views/partials/map.txt').toString().split('\n').map(l => '        '+l).join('\n')
+
 
 router.get('/', async (req, res, next) => {
     let page = 'home'
@@ -42,7 +44,6 @@ router.get('/', async (req, res, next) => {
 
     try {
         let user = null
-        let patterns = []
         let failed = []
         let queued = null
         let queuePos = null
@@ -58,24 +59,23 @@ router.get('/', async (req, res, next) => {
             })
 
             if (user) {
-                patterns = user.Submissions
-                    .filter(sub => sub.isValid() && (sub.executedAt !== null || sub.resubmit))
-                    .map(sub => sub.getPatternInfo())
-                failed = user.Submissions
-                    .filter(s => s.executedAt !== null && !s.isValid())
-                    .map(sub => sub.getPatternInfo())
-                queued = user.Submissions.filter(s => s.executedAt === null)[0]
+                const patterns = user.Submissions.map(sub => sub.getPatternInfo())
+                found = patterns.filter(sub => sub.points && (sub.executedAt !== null || sub.resubmit))
+                failed = patterns.filter(sub => sub.executedAt !== null && !sub.points)
+                queued = patterns.filter(sub => sub.executedAt === null)
             }
-
+            
             if (queued) {
                 (await Submission.findAll({
                     where: { executedAt: null },
                     order: [ ['updatedAt', 'ASC'] ],
                     raw: true
-                })).forEach((sub, i) => {
-                    if (sub.pattern === queued.pattern && sub.UserId === queued.UserId) {
-                        queuePos = i
-                    }
+                })).forEach((other, i) => {
+                    queued.forEach(sub => {
+                        if (other.pattern === sub.pattern && other.UserId === sub.UserId) {
+                            sub.position = i+1
+                        }
+                    })
                 })
             }
         }
@@ -84,13 +84,13 @@ router.get('/', async (req, res, next) => {
         let mostRecent = null
         let milestones = []
         let progress = 0
-        if (user && (patterns.length || failed.length)) {
+        if (user && (found.length || failed.length)) {
             if (!failed.length) {
-                mostRecent = patterns[0]
-            } else if (!patterns.length) {
+                mostRecent = found[0]
+            } else if (!found.length) {
                 mostRecent = failed[0]
             } else {
-                mostRecent = (patterns[0].createdAt < failed[0].createdAt) ? failed[0] : patterns[0]
+                mostRecent = (found[0].createdAt < failed[0].createdAt) ? failed[0] : found[0]
             }
 
             progress = (user.score / maxScore) * 100
@@ -108,8 +108,8 @@ router.get('/', async (req, res, next) => {
             overclock: (progress > OVERCLOCK_PERCENT) ? 'overclock' : '',
             milestones,
             isAdmin: user.isAdmin,
-            patterns,
-            queued: (queued) ? { ...queued.getPatternInfo(), position: queuePos + 1 } : null,
+            found,
+            queued: (queued) ? queued.sort((a, b) => a.position - b.position) : null,
             failed,
             mostRecent
         } : null
@@ -118,6 +118,7 @@ router.get('/', async (req, res, next) => {
             page,
             message,
             user: userData,
+            maxQueue: MAX_QUEUE,
             maxScore,
             nextPage,
             logApiKey: LOG_API_KEY,
@@ -206,18 +207,14 @@ async function handlePattern(user, pattern) {
         }
 
         const otherSub = await Submission.findOne({
-            where: {
-                [Op.and]: {
-                    UserId: user.id,
-                    [Op.or]: { executedAt: null, pattern }
-                }
-            }
+            where: { UserId: user.id, pattern }
         })
-        if (otherSub?.executedAt === null) {
-            return 'You can only have one pattern in the queue at a time.'
-        } else if (otherSub?.pattern === pattern && !otherSub?.isValid()) {
+
+        if (otherSub && otherSub.executedAt === null) {
+            return 'You have already submitted that pattern to the queue!'
+        } else if (otherSub && !otherSub.isValid()) {
             return 'You have already tried that pattern!'
-        } else if (otherSub?.pattern === pattern) {
+        } else if (otherSub) {
             otherSub.executedAt = null
             otherSub.resubmit = true
             await otherSub.save()
@@ -227,7 +224,8 @@ async function handlePattern(user, pattern) {
         } else {
             await Submission.create({
                 pattern,
-                UserId: user.id
+                UserId: user.id,
+                valid: Submission.isValid(pattern)
             })
             logger.debug(`Added new submission for User ${user.username}: ${pattern}`)
             return 'Your pattern has been queued to run, go check out the laser display in the VoV space!'

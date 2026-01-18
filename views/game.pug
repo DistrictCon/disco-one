@@ -2,41 +2,50 @@ extends partials/layout.pug
 
 block content
     section.game-action
-        if user.queued
-            aside.in-queue
-                | You have a
-                if user.queued.resubmit
-                    strong
-                        |  resubmitted
-                |  pattern in the queue: 
-                span.queued-pattern= user.queued.pattern
-                |  (currently number #{user.queued.position} in the queue)
-        else
+        
+        if user.queued.length < maxQueue
             form.new-pattern(action="/pattern", method="post")
                 label(for="pattern") Found a New Pattern? 
                 input#pattern(type="text", name="pattern", autocomplete="off", required)
                 input(type="submit", value="Submit")
+        else
+            p
+                | You have #{user.queued.length} patterns in the queue. Please wait for 
+                | those to run before submitting another!
+        
+        if user.queued.length
+            aside.queued
+                h3 Queued Patterns:
+                ul
+                    each sub in user.queued
+                        li.in-queue
+                            span.queued-pattern= sub.pattern 
+                            |  (
+                            if sub.resubmit
+                                | resubmitted, 
+                            | ##{sub.position} in queue)
             
-            if !user.patterns.length
-                aside.welcome
+        else if !user.found.length
+            aside.welcome
+                div.lumi-container
+                    img.lumi(src='/images/lumi-mouth-closed.png', alt='Your badge pal Lumi')
+                    div.shadow
+                div
                     p.
-                        Thank you for helping us! We created this connection to the 
-                        DisCo generators for you to collect Watts. We just hope it will 
-                        be enough to start the party.
+                        Thank you for helping! I created this connection to the DisCo power generators for you 
+                        to collect Watts. I just hope it will be enough to start the party...
                     p
-                        | Oh, right... someone found this piece of paper lying around, 
-                        | maybe you can use it?
+                        | Oh, right, I found this piece of paper lying around, maybe you can use it?
                         span.paper
                             | gg141094693zoo5793
                     p.
-                        We're not sure who's doing this to us, but maybe your little 
-                        badge can help figure out who it is, and stop them!
-
+                        I'm not sure who's doing this, but we can work together to figure it out and stop them!
+        else
             if user.mostRecent
                 aside.last-submission
                     if user.mostRecent.hint
                         p
-                            | Your last pattern was worth #{user.mostRecent.points} Watts!
+                            | Your last pattern run was worth #{user.mostRecent.points} Watts!
                         p.hint
                             =user.mostRecent.hint
                     else
@@ -64,19 +73,19 @@ block content
         summary
             h2 Found Patterns
         
-        if user.patterns.length
+        if user.found.length
             table.found
-                each pattern in user.patterns
+                each submission in user.found
                     tr
-                        td.watts(class='scale-'+pattern.scale)
+                        td.watts(class='scale-'+submission.scale)
                             span
-                                = pattern.points
+                                = submission.points
                                 | w
                         td.pattern
-                            =pattern.pattern
+                            =submission.pattern
                             details.pattern-message
                                 summary Message
-                                p=pattern.hint
+                                p=submission.hint
         else
             p You have not found any patterns yet. Maybe check out the badge challenge table in the VoV space?
 
@@ -86,6 +95,6 @@ block content
                 h2 Failed Patterns
             
             ul.failed
-                each pattern in user.failed
-                    li= pattern.pattern
+                each submission in user.failed
+                    li= submission.pattern
 

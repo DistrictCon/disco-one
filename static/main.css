@@ -196,7 +196,9 @@ nav a { color: var(--font); text-decoration: none; }
 /* GAME PLAY PAGE MAIN CONTENT */
 
 .game-action { margin: 1rem 0 2rem 0; }
-.game-action .in-queue { text-align: center; font-size: 1.3rem; }
+.game-action .queued { margin: 1.5rem 0; }
+.game-action .queued h3 { margin: 1rem 0; font-weight: bold; }
+.game-action .in-queue { font-size: 1.3rem; }
 .game-action .queued-pattern { display: block; font-weight: bold; word-wrap: break-word; }
 
 .new-pattern { display: flex; flex-direction: column; text-align: center; }
@@ -205,10 +207,10 @@ input#pattern { padding: 0.5rem 0.3rem; }
 
 .page-game .welcome {
     border: 1px solid var(--line);
-    text-align: center;
     padding: 1rem;
     margin-top: 1rem;
 }
+.page-game .welcome .lumi-container { float: left; margin: 1rem; }
 .page-game .welcome p { font-weight: bold; }
 
 .last-submission { margin: 1rem 0; text-align: center; word-wrap: break-word; }
@@ -265,7 +267,8 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game .milestones h2 { margin-bottom: 1rem; }
 .page-game .milestones section { display: flex; justify-content: space-between; }
 .page-game .milestones ol { width: calc(100% - 3rem); margin-left: 3rem; }
-.page-game .milestones .lumi {
+
+.page-game .lumi {
     position: relative;
     animation: bounce 2s linear 0s normal infinite;
 }

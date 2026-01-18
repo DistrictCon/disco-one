@@ -37,6 +37,7 @@ Submission.prototype.getPatternInfo = function getPatternInfo() {
         updatedAt: (new Date(this.updatedAt)).getTime(),
         executedAt: (this.executedAt) ? (new Date(this.executedAt)).getTime() : null,
         resubmit: this.resubmit,
+        UserId: this.UserId,
         points: (patterns[this.pattern]) ? patterns[this.pattern].points : 0,
         hint: (patterns[this.pattern]) ? patterns[this.pattern].hint : null,
         scale: (patterns[this.pattern]) ? getPointScale(patterns[this.pattern].points) : 0
