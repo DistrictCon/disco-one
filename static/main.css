@@ -1,16 +1,19 @@
 /* COMMON VARS */
-html { --bg: #000; --font: #eee; --line: #eee; --altbg: #ccc; --altfont: #000; }
-html.light-mode { --bg: #fff; --font: #000; --line: #333; --altbg: #555; --altfont: #fff; }
+html { --bg: #000; --font: #eee; --line: #eee; --pagebg: #222; --altbg: #ccc; --altfont: #000; }
+html.light-mode { --bg: #fff; --font: #000; --line: #333; --pagebg: #eee; --altbg: #555; --altfont: #fff; }
 
 /* BROWSER STYLE RESET */
 html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body{background:var(--bg);color:var(--font);height:100%;}*,*:before,*:after{box-sizing:inherit;}body,h1,h2,h3,h4,h5,h6,p,ol,ul{margin:0;padding:0;font-weight:normal;}p{margin:0.75rem 0;}ul{margin-left:1rem;}img{max-width:100%;height:auto;}
 
 /* GENERAL PAGE STYLES */
 
+html { background-color: var(--pagebg); }
 body {
     font-family: helvetica, arial, sans-serif;
     font-size: 1.2rem;
     padding: 7rem 0 2rem 0;
+    height: calc(100% - 5rem);
+    background-color: var(--pagebg);
 }
 
 header {
@@ -18,7 +21,7 @@ header {
     width: 100%;
     top: 0;
     left: 0;
-    background: var(--bg);
+    background-color: var(--bg);
     z-index: 9;
 }
 h1 { text-align: center; }
@@ -80,10 +83,11 @@ form .actions { display: flex; justify-content: center; margin: 1rem 0; }
 .button:active, button:active, input[type="submit"]:active { box-shadow: 0 0 #555; top: 6px; }
 
 main {
-    min-height: calc(100% - 4rem);
+    min-height: 100%;
     max-width: 50rem;
     margin: 0 auto;
     padding: 0 0.5rem;
+    background-color: var(--bg);
 }
 
 .error-help { text-align: center; margin: 2rem 1rem; }
@@ -111,8 +115,8 @@ main {
     border-bottom-right-radius: 2rem;
 }
 
-footer { text-align: center; border-top: 1px solid #ccc; padding: 0.5rem 1rem; background: #222; }
-.light-mode footer { border-top: 1px solid #333; background-color: #eee; }
+footer { text-align: center; border-top: 1px solid #ccc; padding: 0.5rem 1rem; background: var(--pagebg); }
+.light-mode footer { border-top: 1px solid #333; background-color: var(--pagebg); }
 footer a { color: var(--font); text-decoration: none; border-bottom: 1px dashed var(--line); }
 
 

@@ -90,6 +90,7 @@ async function main() {
         } else {
             res.render('error', {
                 page: 'error',
+                user: req.session?.user || null,
                 title: `${process.env.APP_NAME} Error`,
                 message
             })
