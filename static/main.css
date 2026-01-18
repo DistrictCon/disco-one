@@ -86,7 +86,7 @@ main {
     min-height: 100%;
     max-width: 50rem;
     margin: 0 auto;
-    padding: 0 0.5rem;
+    padding: 1rem 0.5rem 0 0.5rem;
     background-color: var(--bg);
 }
 
@@ -199,7 +199,7 @@ nav a { color: var(--font); text-decoration: none; }
 
 /* GAME PLAY PAGE MAIN CONTENT */
 
-.game-action { margin: 1rem 0 2rem 0; }
+.game-action { margin-bottom: 2rem; }
 .game-action .queued { margin: 1.5rem 0; }
 .game-action .queued h3 { margin: 1rem 0; font-weight: bold; }
 .game-action .in-queue { font-size: 1.3rem; }
