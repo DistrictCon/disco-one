@@ -7,11 +7,39 @@ block content
     button.validate-scores
         | Validate All Scores
 
-    section.stats 
-        h3
-            strong Stats
-        p Max Score: #{maxScore}
-        p Other stats...
+    details.stats(open)
+        summary 
+            h3 Stats
+        section
+            ul
+                li Max score: #{stats.maxScore} (overclock at #{stats.overclockScore})
+                li Non-admin users: #{stats.nonAdminUsers}
+                li #{stats.foundPatternCount} patterns found of #{puzzles.length} total
+                li #{stats.avgFound} patterns found per user on average, #{stats.avgFailed} failed
+                li #{stats.zeroPoints} users with 0 points; #{stats.starterOnly} with starter only
+                li Patterns wait an average of #{stats.averageWait}s to run
+
+            aside.statsByHour
+                h4 Stats By Hour
+                div.legend
+                    div
+                        label New Users this hour
+                            figure.users
+                    div
+                        label Found Patterns this hour
+                            figure.patterns
+                ul
+                    each point in stats.byHourValues
+                        li
+                            h5.label #{point.hour}
+                            div
+                                figure.bar.users(data-value=point.users, title=point.users+' new users')
+                                    label.value= point.users
+                                figure.bar.patterns(data-value=point.patterns, title=point.patterns+' patterns found')
+                                    label.value= point.patterns
+                script
+                    | const countChartExtremes = !{stats.chartExtremes}
+
 
     section.edit-user.hide
         form(method='post', action='/user/edit')
@@ -36,7 +64,6 @@ block content
         aside.submissions
             h4 Submissions
             ul
-
 
     details
         summary
@@ -70,12 +97,20 @@ block content
             thead 
                 tr 
                     th Note
-                    th Points
+                    th Found
+                    th Time
+                    th Watts
                     th Path
             tbody
                 each puzzle in puzzles
                     tr(data-pattern=puzzle.pattern)
                         td= puzzle.note
+                        td= puzzle.found
+                        td 
+                            if puzzle.avgFindTime
+                                | #{puzzle.avgFindTime}h
+                            else 
+                                | n/a
                         td= puzzle.points
                         td
                             if puzzle.path
@@ -83,7 +118,7 @@ block content
                             else
                                 | Auto
                     tr.detail(data-pattern=puzzle.pattern)
-                        td(colspan=3)
+                        td(colspan=5)
                             p= puzzle.pattern
                             p= puzzle.hint
 

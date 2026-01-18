@@ -62,6 +62,16 @@
         }
     })
 
-    
+    const maxWidth = $('main')[0].clientWidth - 150
+    $('.statsByHour .bar.users').forEach(bar => {
+        const value = Number(bar.getAttribute('data-value'))
+        const w = (value / countChartExtremes.maxUsers) * maxWidth
+        bar.setAttribute('style', `width: ${w}px`)
+    })
+    $('.statsByHour .bar.patterns').forEach(bar => {
+        const value = Number(bar.getAttribute('data-value'))
+        const w = (value / countChartExtremes.maxPatterns) * maxWidth
+        bar.setAttribute('style', `width: ${w}px`)
+    })
 
 })();

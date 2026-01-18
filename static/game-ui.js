@@ -55,6 +55,13 @@
         localStorage.setItem(CACHE_ID, JSON.stringify(cache))
     }
 
+    $('.last-submission .hint').forEach(n => {
+        const link = n.innerHTML.match(/(https:\/\/[^ "\n]+)/)
+        if (link) {
+            n.innerHTML = n.innerHTML.replace(link[1], `<a href='${link[1]}' target='_blank'>${link[1]}</a>`)
+        }
+    })
+
     if (cache.mode) {
         $('html')[0].classList.add('light-mode')
     }

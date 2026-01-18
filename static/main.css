@@ -316,8 +316,30 @@ input#pattern { padding: 0.5rem 0.3rem; }
 
 .page-admin .validate-scores { margin-bottom: 1rem; }
 .page-admin details { margin: 1rem 0; }
+.page-admin h3 { font-weight: bold; margin-bottom: 1rem; }
 .page-admin details h3 { display: inline-block; }
 .page-admin h4 { font-weight: bold; }
+
+.statsByHour { margin: 1rem 0; }
+.statsByHour .legend { padding: 0.5rem; border: 1px solid var(--line); }
+.statsByHour .legend figure { width: 1rem; height: 1rem; display: inline-block; margin: 0 0 0 1rem; }
+.statsByHour h4 { margin-bottom: 0.5rem; }
+.statsByHour ul { list-style: none; margin: 0; }
+.statsByHour li { display: flex; margin: 0.5rem 0; justify-content: flex-start; align-items: end; }
+.statsByHour h5 { font-size: 1.1rem; margin-top: 0.5rem; width: 6rem; }
+.statsByHour .bar {
+    margin: 0;
+    width: 0;
+    height: 0.5rem;
+    position: relative;
+    margin-bottom: 0.2rem;
+}
+.statsByHour .users { background-color: #090; }
+.statsByHour .patterns { background-color: #00c; }
+.statsByHour .bar[data-value='0'] .value { display: none; }
+.statsByHour .bar.users .value { position: absolute; right: -1rem; top: -0.7rem; }
+.statsByHour .bar.patterns .value { position: absolute; right: -1rem; bottom: -0.7rem; }
+
 .page-admin .edit-user > * {
     display: inline-block;
     width: 49%;
@@ -330,7 +352,7 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-admin .users .actions span { cursor: pointer; margin-right: 1rem; }
 
 .page-admin .puzzles { margin-top: 1rem; border-collapse: collapse; table-layout: fixed; width: 100%; }
-.page-admin .puzzles th:nth-child(1) { width: 66%; }
+.page-admin .puzzles th:nth-child(1) { width: 45%; }
 .page-admin .puzzles td { text-align: center; }
 .page-admin .puzzles th:nth-child(1), .page-admin .puzzles td:nth-child(1), .page-admin tr.detail td { text-align: left; }
 .page-admin .puzzles thead th, .page-admin tr.detail td {

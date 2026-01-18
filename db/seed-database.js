@@ -102,13 +102,18 @@ if (require.main !== module) {
                             logger.warn(`unable calculate time diff for row ${j}, ${fields[fi]}: ${v}`)
                             return 'NOW()'
                         }
-                        let d = null
-                        if (dir === '+') {
-                            d = associatedUser.createTime.getTime() + amount
+                        if (tableName === "Users") {
+                            d = Date.now() + amount
+                            return `'${(new Date(d)).toISOString()}'`
                         } else {
-                            d = associatedUser.createTime.getTime() - amount
+                            let d = null
+                            if (dir === '+') {
+                                d = associatedUser.createTime.getTime() + amount
+                            } else {
+                                d = associatedUser.createTime.getTime() - amount
+                            }
+                            return `'${(new Date(d)).toISOString()}'`
                         }
-                        return `'${(new Date(d)).toISOString()}'`
                     }
                 } else {
                     return `'${v}'`

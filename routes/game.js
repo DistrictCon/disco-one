@@ -6,7 +6,7 @@ const { checkUserAuth, checkAdminAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
 const { Submission, User } = require('../db/models/app-models')
 const { getConnection } = require('../util/database')
-const { LOG_API_KEY, PATTERN_REGEX } = require('../util/constants')
+const { LOG_API_KEY, OVERCLOCK_PERCENT, PATTERN_REGEX, STARTER_PATTERN } = require('../util/constants')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
@@ -14,7 +14,6 @@ const router = express.Router()
 const AUTHORS = ['jakerella', 'BigTaro', 'RoRo', 'ZeeTwii']
 const MAX_QUEUE = 5
 
-const OVERCLOCK_PERCENT = 40
 const LUMI_THRESHOLDS = [
     { percent: 5, title: 'The Baron', code: 'prismatic charging' },
     { percent: 15, title: 'The Siphon', code: 'suck it out' },
@@ -122,13 +121,14 @@ router.get('/', async (req, res, next) => {
             maxScore,
             nextPage,
             logApiKey: LOG_API_KEY,
+            starterPattern: STARTER_PATTERN,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
         }, (err, html) => {
             if (err) { return next(err) }
             res.status(200)
             let formattedHTML = formatHTML.prettyPrint(html, { indent_size: 4 })
-            formattedHTML = formattedHTML.replace('    </body>', '        <!--\n'+map+'\n        -->\n    </body>')
+            formattedHTML = formattedHTML.replace('    </body>', '        <div><span><!--\n'+map+'\n        -->\n        </span></div>    </body>')
             res.send(formattedHTML)
         })
     } catch(err) {

@@ -172,7 +172,7 @@ async function getGlobalStats() {
 
     globalStatsCache = {}
     globalStatsCache.foundByUser = await Submission.count({
-        where: { executedAt: { [Op.ne]: null }, valid: true },
+        where: { [Op.or]: { executedAt: { [Op.ne]: null }, resubmit: true }, valid: true },
         group: ['UserId']
     })
     globalStatsCache.failedByUser = await Submission.count({
