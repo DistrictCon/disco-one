@@ -24,8 +24,8 @@ block content
         | #{stats.userCounts.queued} patterns queued to run.
     p 
         | On average, players who have found at least 1 pattern have found 
-        | an average of #{stats.globalCounts.avgFound} and have submitted an average 
-        | of #{stats.globalCounts.avgFailed} failed patterns.
+        | #{stats.globalCounts.avgFound} patterns and have submitted 
+        | #{stats.globalCounts.avgFailed} failed patterns.
 
     ul.pattern-count
         each pattern in stats.globalCounts.patterns

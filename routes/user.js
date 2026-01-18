@@ -179,14 +179,16 @@ async function getGlobalStats() {
         where: { executedAt: { [Op.ne]: null }, valid: false },
         group: ['UserId']
     })
-    globalStatsCache.avgFound = Math.round((globalStatsCache.foundByUser.reduce((p, c) => c.count + p, 0) / globalStatsCache.foundByUser.length) * 10) / 10
-    globalStatsCache.avgFailed = Math.round((globalStatsCache.failedByUser.reduce((p, c) => c.count + p, 0) / globalStatsCache.failedByUser.length) * 10) / 10
+    globalStatsCache.avgFound = Math.round((globalStatsCache.foundByUser.reduce((p, c) => c.count + p, 0) / globalStatsCache.foundByUser.length) * 10) / 10 || 0
+    globalStatsCache.avgFailed = Math.round((globalStatsCache.failedByUser.reduce((p, c) => c.count + p, 0) / globalStatsCache.failedByUser.length) * 10) / 10 || 0
 
     globalStatsCache.countsByPattern = {}
     ;(await Submission.count({
-        where: { executedAt: { [Op.ne]: null }, valid: true },
+        where: { [Op.or]: { executedAt: { [Op.ne]: null }, resubmit: true }, valid: true },
         group: ['pattern']
     })).forEach(sub => { globalStatsCache.countsByPattern[sub.pattern] = sub.count })
+
+    console.log(globalStatsCache.countsByPattern)
 
     globalStatsCache.timeout = Date.now() + STATS_CACHE_TIMEOUT
 
