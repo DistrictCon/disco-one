@@ -8,7 +8,7 @@
     const PAUSE_TIME_UNIT = 250
     const LINE_SEGMENT_DELAY = 75
     const DISSIPATION_INTERVAL = 50
-    const SCREEN_SAVER_TIMEOUT = 5000
+    const SCREEN_SAVER_TIMEOUT = 10 * 1000
 
     let SCREEN_SAVER = null
     let screenSaverInterval = null
@@ -193,7 +193,7 @@
     function addSegment(color, start, end) {
         return new Promise((resolve, _) => {
             const segId = `line-${Date.now()}`
-            const segment = addElem(`<line id='${segId}' class='${color}' x1='${start[0]}' y1='${start[1]}' x2='${end[0]}' y2='${end[1]}'></line>`)
+            addElem(`<line id='${segId}' class='${color}' x1='${start[0]}' y1='${start[1]}' x2='${end[0]}' y2='${end[1]}'></line>`)
             setTimeout(() => { resolve(segId) }, LINE_SEGMENT_DELAY)
         })
     }
@@ -377,7 +377,6 @@
                 if (SCREEN_SAVER) {
                     await stopScreenSaver()
                 } else {
-                    console.debug('Screen saver starting...')
                     SCREEN_SAVER = true
                     runScreenSaver()
                 }
@@ -388,7 +387,6 @@
     async function stopScreenSaver() {
         SCREEN_SAVER = false
         await clearScreenSaver()
-        console.debug('Screen saver stopped')
     }
 
     async function clearScreenSaver() {
@@ -409,6 +407,7 @@
             await screenSaverMediaRecorder.stop()
             screenSaverMediaRecorder = null
         }
+        document.querySelector('.screen-saver').innerHTML = ''
     }
 
     const screenSavers = {
@@ -439,12 +438,50 @@
             screenSaverMediaRecorder.start(100)
             screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
         },
-        // logo: () => {
-        //     TODO: float the logo in the middle (pulse opacity and size?)
-        //     screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
-        // },
-        // starbust lines from center out?
-        // forced perspective lines
+        logo: () => {
+            document.querySelector('.screen-saver').innerHTML = `<img class='disco-logo' src='/images/disco-one-logo-bw.png'>`
+            screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
+        },
+        starburst: () => {
+            let side = 'top'
+            let x = 0
+            let y = 0
+            screenSaverInterval = setInterval(() => {
+                const color = ALL_COLORS[Math.floor(Math.random() * ALL_COLORS.length)]
+                addElem(`<line class='${color}' x1='${x}' y1='${y}' x2='${SVG.clientWidth / 2}' y2='${SVG.clientHeight / 2}'></line>`)
+                if (side === 'top') {
+                    x += (SVG.clientWidth / 10)
+                    if (x >= SVG.clientWidth) {
+                        x = SVG.clientWidth
+                        y = 0
+                        side = 'right'
+                    }
+                } else if (side === 'right') {
+                    y += (SVG.clientHeight / 10)
+                    if (y >= SVG.clientHeight) {
+                        x = SVG.clientWidth
+                        y = SVG.clientHeight
+                        side = 'bottom'
+                    }
+                } else if (side === 'bottom') {
+                    x -= (SVG.clientWidth / 10)
+                    if (x <= 0) {
+                        x = 0
+                        y = SVG.clientHeight
+                        side = 'left'
+                    }
+                } else if (side === 'left') {
+                    y -= (SVG.clientHeight / 10)
+                    if (y <= 0) {
+                        x = 0
+                        y = 0
+                        side = 'top'
+                        clearAllLines()
+                    }
+                }
+            }, 150)
+        }
+        // forced perspective lines?
     }
     async function runScreenSaver() {
         clearScreenSaver()
