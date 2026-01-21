@@ -27,7 +27,12 @@ block content
         | #{stats.globalCounts.avgFound} patterns and have submitted 
         | #{stats.globalCounts.avgFailed} failed patterns.
 
-    ul.pattern-count
-        each pattern in stats.globalCounts.patterns
-            li
-                | #{pattern.count-1} others found #{pattern.pattern}
+    aside.pattern-count
+        h4 Your Patterns:
+
+        ul
+            each pattern in stats.globalCounts.patterns
+                li
+                    strong= pattern.pattern
+                    <br>
+                    | (#{pattern.count-1} others have found this)

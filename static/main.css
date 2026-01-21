@@ -311,6 +311,9 @@ input#pattern { padding: 0.5rem 0.3rem; }
 
 .page-stats h3 { margin: 1rem 0; }
 .page-stats .leaderboard { list-style: none; margin-left: 2rem; }
+.page-stats .pattern-count { margin: 1rem 0; }
+.page-stats .pattern-count h4 { font-weight: bold; margin-bottom: 1rem; }
+.page-stats .pattern-count li { word-wrap: break-word; }
 
 
 /* ADMIN PAGE CONTENT */
@@ -349,8 +352,8 @@ input#pattern { padding: 0.5rem 0.3rem; }
 }
 .page-admin .submissions { padding-left: 2rem; }
 .page-admin .submissions ul { padding-left: 1rem; }
-.page-admin .users td, .page-admin .users th { padding: 0.3rem 0.5rem; }
-.page-admin .users .actions span { cursor: pointer; margin-right: 1rem; }
+.page-admin .all-users td, .page-admin .all-users th { padding: 0.3rem 0.5rem; }
+.page-admin .all-users .actions span { cursor: pointer; margin-right: 1rem; }
 
 .page-admin .puzzles { margin-top: 1rem; border-collapse: collapse; table-layout: fixed; width: 100%; }
 .page-admin .puzzles th:nth-child(1) { width: 45%; }

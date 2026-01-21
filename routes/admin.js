@@ -73,6 +73,8 @@ router.get('/', checkAdminAuth, async (req, res) => {
 
         const time = now.split(/[\-\:]/)
 
+
+        // TODO: adjust for timezone (-4 hours)
         const hourDisplay = `${time[0]}/${time[1]} ${time[2]}:00`
         byHourValues.push({ hour: hourDisplay, users, patterns })
         

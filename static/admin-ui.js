@@ -16,10 +16,11 @@
         $('.edit-user')[0].classList.add('hide')
     })
 
-    $('.users')[0].addEventListener('click', async (e) => {
+    $('.all-users')[0].addEventListener('click', async (e) => {
         if (e.target.classList.contains('edit')) {
             const data = e.target.parentNode.parentNode.getAttribute('data-user').split('|')
             if (data && data.length === 3) {
+                console.log('editing user:', data)
                 $('.edit-user')[0].classList.remove('hide')
                 $('#user-id')[0].value = data[0]
                 $('#username')[0].value = data[1]

@@ -7,7 +7,7 @@ block content
     button.validate-scores
         | Validate All Scores
 
-    details.stats(open)
+    details
         summary 
             h3 Stats
         section
@@ -65,11 +65,11 @@ block content
             h4 Submissions
             ul
 
-    details
+    details.all-users
         summary
             h3 All Users
 
-        table.users
+        table
             thead
                 tr
                     th Username 
@@ -89,7 +89,7 @@ block content
                             span.edit ✎
                             span.delete ❌
 
-    details
+    details.all-puzzles
         summary
             h3 All Puzzles 
         
