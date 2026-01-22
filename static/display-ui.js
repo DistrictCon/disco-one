@@ -395,19 +395,24 @@
         screenSaverInterval = null
         clearAllLines()
 
-        Array.from(SVG.querySelectorAll('line.edge')).forEach(n => {
-            n.removeAttribute('class')
-            n.classList.add('edge')
-        })
-        Array.from(SVG.querySelectorAll('line.wall')).forEach(n => {
-            n.removeAttribute('class')
-            n.classList.add('wall')
-        })
         if (screenSaverMediaRecorder) {
             await screenSaverMediaRecorder.stop()
             screenSaverMediaRecorder = null
         }
         document.querySelector('.screen-saver').innerHTML = ''
+
+        setTimeout(() => {
+            Array.from(SVG.querySelectorAll('line.edge')).forEach(n => {
+                n.removeAttribute('class')
+                n.classList.add('edge')
+                n.removeAttribute('style')
+            })
+            Array.from(SVG.querySelectorAll('line.wall')).forEach(n => {
+                n.removeAttribute('class')
+                n.classList.add('wall')
+                n.removeAttribute('style')
+            })
+        })
     }
 
     const screenSavers = {
@@ -481,7 +486,6 @@
                 }
             }, 150)
         }
-        // forced perspective lines?
     }
     async function runScreenSaver() {
         clearScreenSaver()
