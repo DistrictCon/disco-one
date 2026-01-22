@@ -14,7 +14,7 @@ const BAR_HEIGHT_MIN = 3
 
 router.get('/', checkAdminAuth, async (req, res) => {
     const userData = await User.findAll({
-        attributes: ['id', 'username', 'score', 'isAdmin'],
+        attributes: ['id', 'username', 'email', 'score', 'isAdmin'],
         order: [ ['username', 'ASC'] ],
         include: { all: true, nested: true }
     })
@@ -24,6 +24,7 @@ router.get('/', checkAdminAuth, async (req, res) => {
         return {
             id: user.id,
             username: user.username,
+            email: user.email,
             score: user.score,
             submissions: [ validSubmissions, user.Submissions.length - validSubmissions ],
             isAdmin: user.isAdmin
@@ -163,7 +164,7 @@ router.get('/', checkAdminAuth, async (req, res) => {
         appName: process.env.APP_NAME || '',
         user: req.session.user,
         message,
-        users,
+        users: users.sort((a, b) => b.score - a.score),
         puzzles,
         stats
     })

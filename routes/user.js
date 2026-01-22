@@ -26,6 +26,7 @@ router.post('/login-register', async (req, res, next) => {
     let message = null
 
     const username = User.cleanUsername(req.body.username)
+    const email = req.body.email
     const password = User.hashPass(req.body.password)
     const register = req.body.register === 'true'
 
@@ -40,10 +41,14 @@ router.post('/login-register', async (req, res, next) => {
             loggedIn = true
             logger.info(`User login by: ${username}`)
         } else if (register && !user) {
-            user = await User.create({ username, password })
-            message = 'Your account has been created and you are logged in!'
-            loggedIn = true
-            logger.info(`A new user account has been registered: ${username}`)
+            if (/^[^@\s]+@[a-z0-9\-\.]+/i.test(email)) {
+                user = await User.create({ username, email, password })
+                message = 'Your account has been created and you are logged in!'
+                loggedIn = true
+                logger.info(`A new user account has been registered: ${username}`)
+            } else {
+                message = 'Please enter a valid email address'
+            }
         } else if (register && user) {
             user = null
             message = 'Sorry, but that username has been taken.'
@@ -251,6 +256,7 @@ router.post('/edit', checkAdminAuth, async (req, res) => {
 
     try {
         user.username = req.body.username
+        user.email = req.body.email
         if (req.body.isAdmin === 'true') {
             user.isAdmin = true
         } else {

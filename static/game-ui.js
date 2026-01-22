@@ -28,6 +28,14 @@
             return false
         })
 
+        $('#register')[0]?.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                $('#email')[0].removeAttribute('disabled')
+            } else {
+                $('#email')[0].setAttribute('disabled', 'disabled')
+            }
+        })
+
         if (lumi) { setTimeout(randomLumi, Math.ceil(Math.random() * 7000) + 2000) }
     }
 

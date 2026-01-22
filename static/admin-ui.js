@@ -24,7 +24,8 @@
                 $('.edit-user')[0].classList.remove('hide')
                 $('#user-id')[0].value = data[0]
                 $('#username')[0].value = data[1]
-                if (data[2] === 'true') {
+                $('#email')[0].value = data[2]
+                if (data[3] === 'true') {
                     $('#is-admin')[0].setAttribute('checked', 'checked')
                 } else {
                     $('#is-admin')[0].removeAttribute('checked')
