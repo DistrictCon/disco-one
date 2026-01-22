@@ -19,7 +19,7 @@
     $('.all-users')[0].addEventListener('click', async (e) => {
         if (e.target.classList.contains('edit')) {
             const data = e.target.parentNode.parentNode.getAttribute('data-user').split('|')
-            if (data && data.length === 3) {
+            if (data && data.length === 4) {
                 console.log('editing user:', data)
                 $('.edit-user')[0].classList.remove('hide')
                 $('#user-id')[0].value = data[0]
@@ -48,7 +48,7 @@
             const row = e.target.parentNode.parentNode
             const data = row.getAttribute('data-user').split('|')
             console.log('DELETING', data)
-            if (data && data.length === 3) {
+            if (data && data.length === 4) {
                 if (confirm('Are you sure you want to permanently delete this user?\n\nThis will also delete any submissions they have!')) {
                     const resp = await fetch('/user/'+data[0], {
                         method: 'delete'
