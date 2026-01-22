@@ -36,69 +36,73 @@ router.get('/', checkAdminAuth, async (req, res) => {
 
 
     const byHourData = {}
+    const byHourValues = []
+    let chartExtremes = null
+    let patternsByHour = []
+
     const usersByHour = await sequelize.query(
         `SELECT count(id), to_char("createdAt", 'MM-DD:HH24') as createhour 
         FROM "Users" WHERE "isAdmin" = false 
         GROUP BY createhour ORDER BY createhour`, {
         type: QueryTypes.SELECT,
     })
-    usersByHour.forEach(entry => {
-        if (!byHourData[entry.createhour]) { byHourData[entry.createhour] = {} }
-        byHourData[entry.createhour].users = entry.count
-    })
-    const patternsByHour = await sequelize.query(
-        `SELECT count("Submissions".id), to_char("Submissions"."createdAt", 'MM-DD:HH24') as createhour 
-        FROM "Submissions" LEFT OUTER JOIN "Users" ON "Users".id = "Submissions"."UserId" 
-        WHERE valid = true and "Users"."isAdmin" = false 
-        GROUP BY createhour ORDER BY createhour`, {
-        type: QueryTypes.SELECT,
-    })
-    patternsByHour.forEach(entry => {
-        if (!byHourData[entry.createhour]) { byHourData[entry.createhour] = {} }
-        byHourData[entry.createhour].patterns = entry.count
-    })
-    
-    const chartExtremes = { minUsers: 9999, maxUsers: 0, minPatterns: 9999, maxPatterns: 0 }
-    const byHourValues = []
-    const start = usersByHour[0].createhour
-    const end = (patternsByHour.length) ? patternsByHour[patternsByHour.length-1].createhour : start
-    let now = start
-    while (now <= end) {
-        const users = Number(byHourData[now]?.users) || 0
-        const patterns = Number(byHourData[now]?.patterns) || 0
-
-        if (users < chartExtremes.minUsers) { chartExtremes.minUsers = users }
-        if (users > chartExtremes.maxUsers) { chartExtremes.maxUsers = users }
-        if (patterns < chartExtremes.minPatterns) { chartExtremes.minPatterns = patterns }
-        if (patterns > chartExtremes.maxPatterns) { chartExtremes.maxPatterns = patterns }
-
-        const time = now.split(/[\-\:]/)
-
-
-        // TODO: adjust for timezone (-4 hours)
-        const hourDisplay = `${time[0]}/${time[1]} ${time[2]}:00`
-        byHourValues.push({ hour: hourDisplay, users, patterns })
+    if (usersByHour.length) {
+        usersByHour.forEach(entry => {
+            if (!byHourData[entry.createhour]) { byHourData[entry.createhour] = {} }
+            byHourData[entry.createhour].users = entry.count
+        })
+        patternsByHour = await sequelize.query(
+            `SELECT count("Submissions".id), to_char("Submissions"."createdAt", 'MM-DD:HH24') as createhour 
+            FROM "Submissions" LEFT OUTER JOIN "Users" ON "Users".id = "Submissions"."UserId" 
+            WHERE valid = true and "Users"."isAdmin" = false 
+            GROUP BY createhour ORDER BY createhour`, {
+            type: QueryTypes.SELECT,
+        })
+        patternsByHour.forEach(entry => {
+            if (!byHourData[entry.createhour]) { byHourData[entry.createhour] = {} }
+            byHourData[entry.createhour].patterns = entry.count
+        })
         
-        let nextHour = Number(time[2]) + 1
-        let nextDay = Number(time[1])
-        let nextMonth = Number(time[0])
-        if (nextHour > 23) {
-            nextDay++
-            nextHour = 0
-        }
-        if ([1, 3, 5, 7, 8, 10, 12].includes(Number(time[0])) && nextDay > 31) {
-            nextDay = 1
-            nextMonth++
-        } else if ([4, 6, 9, 11].includes(Number(time[0])) && nextDay > 30) {
-            nextDay = 1
-            nextMonth++
-        } else if (nextDay > 28) {
-            nextDay = 1
-            nextMonth++
-        }
-        now = `${(''+nextMonth).padStart(2, '0')}-${(''+nextDay).padStart(2, '0')}:${(''+nextHour).padStart(2, '0')}`
-    }
+        chartExtremes = { minUsers: 9999, maxUsers: 0, minPatterns: 9999, maxPatterns: 0 }
+        const start = usersByHour[0].createhour
+        const end = (patternsByHour.length) ? patternsByHour[patternsByHour.length-1].createhour : start
+        let now = start
+        while (now <= end) {
+            const users = Number(byHourData[now]?.users) || 0
+            const patterns = Number(byHourData[now]?.patterns) || 0
 
+            if (users < chartExtremes.minUsers) { chartExtremes.minUsers = users }
+            if (users > chartExtremes.maxUsers) { chartExtremes.maxUsers = users }
+            if (patterns < chartExtremes.minPatterns) { chartExtremes.minPatterns = patterns }
+            if (patterns > chartExtremes.maxPatterns) { chartExtremes.maxPatterns = patterns }
+
+            const time = now.split(/[\-\:]/)
+
+
+            // TODO: adjust for timezone (-4 hours)
+            const hourDisplay = `${time[0]}/${time[1]} ${time[2]}:00`
+            byHourValues.push({ hour: hourDisplay, users, patterns })
+            
+            let nextHour = Number(time[2]) + 1
+            let nextDay = Number(time[1])
+            let nextMonth = Number(time[0])
+            if (nextHour > 23) {
+                nextDay++
+                nextHour = 0
+            }
+            if ([1, 3, 5, 7, 8, 10, 12].includes(Number(time[0])) && nextDay > 31) {
+                nextDay = 1
+                nextMonth++
+            } else if ([4, 6, 9, 11].includes(Number(time[0])) && nextDay > 30) {
+                nextDay = 1
+                nextMonth++
+            } else if (nextDay > 28) {
+                nextDay = 1
+                nextMonth++
+            }
+            now = `${(''+nextMonth).padStart(2, '0')}-${(''+nextDay).padStart(2, '0')}:${(''+nextHour).padStart(2, '0')}`
+        }
+    }
 
     const countsByPattern = {}
     ;(await Submission.count({
@@ -153,7 +157,7 @@ router.get('/', checkAdminAuth, async (req, res) => {
         starterOnly: await User.count({ where: { score: patterns[STARTER_PATTERN].points } }),
         averageWait,
         byHourValues,
-        chartExtremes: JSON.stringify(chartExtremes),
+        chartExtremes: JSON.stringify((chartExtremes) ? chartExtremes : {minUsers:0,maxUsers:0,minPatterns:0,maxPatterns:0}),
         usersByHour: usersByHour.map(stat => { return { count: Number(stat.count), hour: stat.createhour } }),
         patternsByHour: patternsByHour.map(stat => { return { count: Number(stat.count), hour: stat.createhour } })
     }
