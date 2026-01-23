@@ -149,7 +149,7 @@ router.get('/', checkAdminAuth, async (req, res) => {
 
     const stats = {
         maxScore,
-        overclockScore: maxScore * (OVERCLOCK_PERCENT / 100),
+        overclockScore: Math.round(maxScore * (OVERCLOCK_PERCENT / 100)),
         nonAdminUsers: allUsers.length,
         foundPatternCount: Object.keys(countsByPattern).length,
         avgFound: Math.round((foundByUser.reduce((p, c) => c.count + p, 0) / foundByUser.length) * 10) / 10 || 0,
