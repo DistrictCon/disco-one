@@ -107,7 +107,7 @@ router.get('/', checkAdminAuth, async (req, res) => {
 
     const countsByPattern = {}
     ;(await Submission.count({
-        where: { [Op.or]: { executedAt: { [Op.ne]: null }, resubmit: true }, valid: true },
+        where: { valid: true },
         group: ['pattern']
     })).forEach(sub => { countsByPattern[sub.pattern] = sub.count })
 
@@ -115,7 +115,7 @@ router.get('/', checkAdminAuth, async (req, res) => {
     ;(await sequelize.query(
         `SELECT pattern, AVG(EXTRACT(EPOCH FROM ("Submissions"."createdAt" - "Users"."createdAt")) / 3600) as avgfindtime 
         FROM "Submissions" LEFT OUTER JOIN "Users" ON "Users".id = "Submissions"."UserId" 
-        WHERE "executedAt" is not null AND "valid" is true
+        WHERE "valid" is true
         GROUP BY pattern ORDER BY avgFindTime`, {
         type: QueryTypes.SELECT,
     })).forEach(entry => findTimes[entry.pattern] = Math.round(entry.avgfindtime * 10) / 10 )
@@ -133,11 +133,11 @@ router.get('/', checkAdminAuth, async (req, res) => {
 
     const allUsers = await User.findAll({ where: { isAdmin: false } })
     const foundByUser = await Submission.count({
-        where: { [Op.or]: { executedAt: { [Op.ne]: null }, resubmit: true }, valid: true },
+        where: { valid: true },
         group: ['UserId']
     })
     const failedByUser = await Submission.count({
-        where: { executedAt: { [Op.ne]: null }, valid: false },
+        where: { valid: false },
         group: ['UserId']
     })
     
