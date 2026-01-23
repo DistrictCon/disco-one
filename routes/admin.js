@@ -106,10 +106,18 @@ router.get('/', checkAdminAuth, async (req, res) => {
     }
 
     const countsByPattern = {}
-    ;(await Submission.count({
-        where: { valid: true },
-        group: ['pattern']
+    ;(await sequelize.query(
+        `SELECT count("Submissions".id), pattern 
+        FROM "Submissions" LEFT OUTER JOIN "Users" ON "Users".id = "Submissions"."UserId" 
+        WHERE valid = true and "Users"."isAdmin" = false 
+        GROUP BY pattern`, {
+        type: QueryTypes.SELECT,
     })).forEach(sub => { countsByPattern[sub.pattern] = sub.count })
+    // ;(await Submission.count({
+    //     where: { valid: true },
+    //     group: ['pattern']
+    // })).forEach(sub => { countsByPattern[sub.pattern] = sub.count })
+
 
     const findTimes = {}
     ;(await sequelize.query(
