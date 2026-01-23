@@ -30,13 +30,16 @@ block content
                             figure.patterns
                 ul
                     each point in stats.byHourValues
-                        li
-                            h5.label #{point.hour}
-                            div
-                                figure.bar.users(data-value=point.users, title=point.users+' new users')
-                                    label.value= point.users
-                                figure.bar.patterns(data-value=point.patterns, title=point.patterns+' patterns found')
-                                    label.value= point.patterns
+                        if point.users == 0 && point.patterns == 0
+                            li(data-hour=point.hour).zero-stats-row
+                        else
+                            li
+                                h5.label= point.hour
+                                div
+                                    figure.bar.users(data-value=point.users, title=point.users+' new users')
+                                        label.value= point.users
+                                    figure.bar.patterns(data-value=point.patterns, title=point.patterns+' patterns found')
+                                        label.value= point.patterns
                 script
                     | const countChartExtremes = !{stats.chartExtremes}
 

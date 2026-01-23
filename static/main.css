@@ -343,6 +343,9 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .statsByHour .bar[data-value='0'] .value { display: none; }
 .statsByHour .bar.users .value { position: absolute; right: -1rem; top: -0.7rem; }
 .statsByHour .bar.patterns .value { position: absolute; right: -1rem; bottom: -0.7rem; }
+.statsByHour .zero-stats-row { display: none; }
+.statsByHour .zero-stats-row.zero-stats-range { display: block; }
+.statsByHour .zero-stats-range h5 { width: 15rem; margin-top: 1rem; }
 
 .page-admin .edit-user > * {
     display: inline-block;

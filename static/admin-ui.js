@@ -76,4 +76,24 @@
         bar.setAttribute('style', `width: ${w}px`)
     })
 
+    let startHour = null
+    let holdStartEl = null
+    let endHour = null
+    $('.statsByHour li').forEach((n) => {
+        if (n.classList.contains('zero-stats-row')) {
+            if (!startHour) {
+                startHour = n.getAttribute('data-hour')
+                holdStartEl = n
+            }
+            const hour = n.getAttribute('data-hour')
+            if (hour !== startHour) { endHour = hour }
+        } else if (startHour) {
+            holdStartEl.classList.add('zero-stats-range')
+            holdStartEl.innerHTML = `<h5 class='label'>${startHour} - ${endHour} (0)</h5>`
+            startHour = null
+            holdStartEl = null
+            endHour = null
+        }
+    })
+
 })();
