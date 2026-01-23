@@ -1,5 +1,5 @@
 const express = require('express')
-const router = express.Router()
+const moment = require('moment')
 const { getConnection } = require('../util/database')
 const { Submission, User } = require('../db/models/app-models')
 const { Op, QueryTypes } = require('sequelize')
@@ -9,8 +9,9 @@ const patterns = require('../db/patterns.json')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 const sequelize = getConnection()
 
-const CHART_MAX = 100
-const BAR_HEIGHT_MIN = 3
+const router = express.Router()
+
+const TZ_OFFSET = -4
 
 router.get('/', checkAdminAuth, async (req, res) => {
     const userData = await User.findAll({
@@ -41,31 +42,33 @@ router.get('/', checkAdminAuth, async (req, res) => {
     let patternsByHour = []
 
     const usersByHour = await sequelize.query(
-        `SELECT count(id), to_char("createdAt", 'MM-DD:HH24') as createhour 
+        `SELECT count(id), to_char("createdAt", 'YYYY-MM-DD HH24:00') as createhour 
         FROM "Users" WHERE "isAdmin" = false 
         GROUP BY createhour ORDER BY createhour`, {
         type: QueryTypes.SELECT,
     })
     if (usersByHour.length) {
         usersByHour.forEach(entry => {
-            if (!byHourData[entry.createhour]) { byHourData[entry.createhour] = {} }
-            byHourData[entry.createhour].users = entry.count
+            entry.adjustedCreateHour = moment(entry.createhour).add(TZ_OFFSET, 'hours').format('MM-DD:HH')
+            if (!byHourData[entry.adjustedCreateHour]) { byHourData[entry.adjustedCreateHour] = {} }
+            byHourData[entry.adjustedCreateHour].users = entry.count
         })
         patternsByHour = await sequelize.query(
-            `SELECT count("Submissions".id), to_char("Submissions"."createdAt", 'MM-DD:HH24') as createhour 
+            `SELECT count("Submissions".id), to_char("Submissions"."createdAt", 'YYYY-MM-DD HH24:00') as createhour 
             FROM "Submissions" LEFT OUTER JOIN "Users" ON "Users".id = "Submissions"."UserId" 
             WHERE valid = true and "Users"."isAdmin" = false 
             GROUP BY createhour ORDER BY createhour`, {
             type: QueryTypes.SELECT,
         })
         patternsByHour.forEach(entry => {
-            if (!byHourData[entry.createhour]) { byHourData[entry.createhour] = {} }
-            byHourData[entry.createhour].patterns = entry.count
+            entry.adjustedCreateHour = moment(entry.createhour).add(TZ_OFFSET, 'hours').format('MM-DD:HH')
+            if (!byHourData[entry.adjustedCreateHour]) { byHourData[entry.adjustedCreateHour] = {} }
+            byHourData[entry.adjustedCreateHour].patterns = entry.count
         })
         
         chartExtremes = { minUsers: 9999, maxUsers: 0, minPatterns: 9999, maxPatterns: 0 }
-        const start = usersByHour[0].createhour
-        const end = (patternsByHour.length) ? patternsByHour[patternsByHour.length-1].createhour : start
+        const start = usersByHour[0].adjustedCreateHour
+        const end = (patternsByHour.length) ? patternsByHour[patternsByHour.length-1].adjustedCreateHour : start
         let now = start
         while (now <= end) {
             const users = Number(byHourData[now]?.users) || 0
@@ -78,8 +81,6 @@ router.get('/', checkAdminAuth, async (req, res) => {
 
             const time = now.split(/[\-\:]/)
 
-
-            // TODO: adjust for timezone (-4 hours)
             const hourDisplay = `${time[0]}/${time[1]} ${time[2]}:00`
             byHourValues.push({ hour: hourDisplay, users, patterns })
             
@@ -158,8 +159,8 @@ router.get('/', checkAdminAuth, async (req, res) => {
         averageWait,
         byHourValues,
         chartExtremes: JSON.stringify((chartExtremes) ? chartExtremes : {minUsers:0,maxUsers:0,minPatterns:0,maxPatterns:0}),
-        usersByHour: usersByHour.map(stat => { return { count: Number(stat.count), hour: stat.createhour } }),
-        patternsByHour: patternsByHour.map(stat => { return { count: Number(stat.count), hour: stat.createhour } })
+        usersByHour: usersByHour.map(stat => { return { count: Number(stat.count), hour: stat.adjustedCreateHour } }),
+        patternsByHour: patternsByHour.map(stat => { return { count: Number(stat.count), hour: stat.adjustedCreateHour } })
     }
 
     res.render('admin', {
