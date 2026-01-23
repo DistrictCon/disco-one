@@ -89,7 +89,7 @@
             if (hour !== startHour) { endHour = hour }
         } else if (startHour) {
             holdStartEl.classList.add('zero-stats-range')
-            holdStartEl.innerHTML = `<h5 class='label'>${startHour} - ${endHour} (0)</h5>`
+            holdStartEl.innerHTML = `<h5 class='label'>${startHour}${(endHour) ? ' - '+endHour : ''} (0)</h5>`
             startHour = null
             holdStartEl = null
             endHour = null
