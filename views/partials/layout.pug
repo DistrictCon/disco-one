@@ -26,6 +26,11 @@ html(lang='en-US')
                         | #{user.username} (#{user.score} watts)
                     nav
                         ul 
+                            if user.isAdmin
+                                li
+                                    a(href="/display") Display
+                                li
+                                    a(href="/admin") Admin
                             li 
                                 a(href="/user/logout") Logout
                             li
