@@ -57,6 +57,24 @@ async function main() {
     app.use(session(sessionOptions))
 
 
+    /* ************** IP BLOCKING **************** */
+    let blockedIPs = []
+    try { blockedIPs = JSON.parse('["'+process.env.BLOCKED_IPS.split(',').join('", "')+'"]') } catch(_) {}
+    logger.info('BLOCKING IPs: '+JSON.stringify(blockedIPs))
+    app.use((req, res, next) => {
+        const headerIP = req.headers['X-Forwarded-For'] || 
+            req.headers['X-Forwarded'] || 
+            req.headers['Forwarded-For'] || 
+            req.headers['Forwarded']
+        const clientIP = (headerIP) ? headerIP.split(',')[0].trim() : (req.socket.remoteAddress || req.ip)
+        console.log(clientIP)
+        if (blockedIPs.includes(clientIP)) {
+            return res.status(418).end('Nope')
+        } else {
+            return next()
+        }
+    })
+
     /* ********** routes and middleware ********** */
     app.use('/', game)
     app.use('/metro', metro)
