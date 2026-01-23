@@ -219,7 +219,7 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game .welcome p { font-weight: bold; }
 
 .last-submission { margin: 1rem 0; text-align: center; word-wrap: break-word; }
-.last-submission .hint {
+.hint {
     position: relative;
     border-radius: 1rem;
     padding: 1rem;
@@ -227,16 +227,16 @@ input#pattern { padding: 0.5rem 0.3rem; }
     color: var(--altfont);
     margin-bottom: 3rem;
 }
-.last-submission .hint::after {
+.hint::after {
     content: " ";
     display: block;
-    width: 2rem;
+    width: 1.5rem;
     height: 2rem;
     background-color: var(--altbg);
-    border-radius: 0 0 100% 0;
+    border-radius: 0 0 0 100%;
     position: absolute;
     bottom: -1.9rem;
-    left: 2rem;
+    right: 1.5rem;
 }
 
 .page-game details { margin: 1rem 0; }

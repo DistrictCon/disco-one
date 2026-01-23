@@ -78,13 +78,13 @@ block content
                     tr
                         td.watts(class='scale-'+submission.scale)
                             span
-                                = submission.points
+                                =submission.points
                                 | w
                         td.pattern
                             =submission.pattern
                             details.pattern-message
                                 summary Message
-                                p=submission.hint
+                                p.hint= submission.hint
         else
             p You have not found any patterns yet. Maybe check out the badge challenge table in the VoV space?
 
