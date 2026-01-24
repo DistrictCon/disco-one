@@ -8,7 +8,7 @@
     const PAUSE_TIME_UNIT = 250
     const LINE_SEGMENT_DELAY = 75
     const DISSIPATION_INTERVAL = 50
-    const SCREEN_SAVER_TIMEOUT = 10 * 1000
+    const SCREEN_SAVER_TIMEOUT = 5 * 1000
 
     let SCREEN_SAVER = null
     let screenSaverInterval = null
@@ -417,12 +417,17 @@
 
     const screenSavers = {
         marquee: () => {
+            console.log('marquee')
             Array.from(SVG.querySelectorAll('line.edge')).forEach(n => {
                 n.classList.add('marquee')
             })
-            screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
+            screenSaverInterval = setTimeout(() => {
+                clearScreenSaver()
+                setTimeout(runScreenSaver, 0)
+            }, SCREEN_SAVER_TIMEOUT)
         },
         audio: async () => {
+            console.log('audio')
             const stream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
             screenSaverMediaRecorder = new MediaRecorder(stream)
             const audioCtx = new AudioContext()
@@ -441,13 +446,21 @@
                 walls.forEach(w => { w.style.opacity = Math.max(max / 256, 0.1) })
             })
             screenSaverMediaRecorder.start(100)
-            screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
+            screenSaverInterval = setTimeout(() => {
+                clearScreenSaver()
+                setTimeout(runScreenSaver, 0)
+            }, SCREEN_SAVER_TIMEOUT)
         },
         logo: () => {
+            console.log('logo')
             document.querySelector('.screen-saver').innerHTML = `<img class='disco-logo' src='/images/disco-one-logo-bw.png'>`
-            screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
+            screenSaverInterval = setTimeout(() => {
+                clearScreenSaver()
+                setTimeout(runScreenSaver, 0)
+            }, SCREEN_SAVER_TIMEOUT)
         },
         starburst: () => {
+            console.log('starburst')
             let side = 'top'
             let x = 0
             let y = 0
@@ -481,14 +494,15 @@
                         x = 0
                         y = 0
                         side = 'top'
-                        clearAllLines()
+                        clearScreenSaver()
+                        screenSaverInterval = setTimeout(runScreenSaver, SCREEN_SAVER_TIMEOUT)
                     }
                 }
             }, 150)
         }
     }
     async function runScreenSaver() {
-        clearScreenSaver()
+
         if (SCREEN_SAVER) {
             const options = Object.keys(screenSavers)
             screenSavers[options[Math.floor(Math.random() * options.length)]]()
