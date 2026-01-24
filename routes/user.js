@@ -163,7 +163,7 @@ router.get('/stats', checkUserAuth, async (req, res, next) => {
         page: 'stats',
         message,
         stats,
-        user: req.session.user,
+        user,
         title: process.env.TITLE || 'The Game',
         appName: process.env.APP_NAME || ''
     })
