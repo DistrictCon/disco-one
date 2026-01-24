@@ -18,9 +18,9 @@ const LUMI_THRESHOLDS = [
     { percent: 5, title: 'The Baron', code: 'prismatic charging' },
     { percent: 15, title: 'The Siphon', code: 'suck it out' },
     { percent: 30, title: 'Blackouts', code: 'heart of darkness' },
-    { percent: 50, title: 'The Defeated?', code: 'down but not out' },
-    { percent: 65, title: 'Mech Preparation', code: 'mechanized siphonry' },
-    { percent: 75, title: 'Alternative Source', code: 'by another name' },
+    { percent: 35, title: 'The Defeated?', code: 'down but not out' },
+    { percent: 55, title: 'Mech Preparation', code: 'mechanized siphonry' },
+    { percent: 70, title: 'Alternative Source', code: 'by another name' },
     { percent: 85, title: 'The Ultimate Siphon', code: 'baron no more' },
     { percent: 95, title: 'The True Ending', code: 'disco inferno' }
 ]
