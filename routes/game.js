@@ -206,6 +206,13 @@ async function handlePattern(user, pattern) {
             return 'That is not a valid pattern format.'
         }
 
+        const count = await Submission.count({
+            where: { UserId: user.id, executedAt: null }
+        })
+        if (count >= MAX_QUEUE) {
+            return `Sorry, but you can only have ${MAX_QUEUE} patterns in the queue.`
+        }
+
         const otherSub = await Submission.findOne({
             where: { UserId: user.id, pattern }
         })

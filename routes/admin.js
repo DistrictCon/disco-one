@@ -113,10 +113,6 @@ router.get('/', checkAdminAuth, async (req, res) => {
         GROUP BY pattern`, {
         type: QueryTypes.SELECT,
     })).forEach(sub => { countsByPattern[sub.pattern] = sub.count })
-    // ;(await Submission.count({
-    //     where: { valid: true },
-    //     group: ['pattern']
-    // })).forEach(sub => { countsByPattern[sub.pattern] = sub.count })
 
 
     const findTimes = {}
