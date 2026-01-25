@@ -56,7 +56,7 @@ block content
     if user.milestones.length
         details.milestones(open)
             summary
-                h2 Lumi Support Codes
+                h2 Lumi Battery Packs
 
             section
                 div.lumi-container
@@ -66,6 +66,14 @@ block content
                     each milestone in user.milestones
                         li #{milestone.title}: 
                             strong #{milestone.code}
+    else
+        details
+            summary
+                h2 Lumi Battery Packs
+
+            section
+                p 
+                    | You don't have enough watts to unlock a battery pack yet.
 
 
     details(open)
