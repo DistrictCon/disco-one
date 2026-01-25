@@ -10,6 +10,7 @@
     const DISSIPATION_INTERVAL = 50
     const SCREEN_SAVER_TIMEOUT = 5 * 1000
 
+    let AUTO_RUN = false
     let SCREEN_SAVER = null
     let screenSaverInterval = null
     let screenSaverMediaRecorder = null
@@ -57,6 +58,9 @@
                     updateLeaderboard()
                 }
                 updateQueue()
+                if (AUTO_RUN) {
+                    setTimeout(runNext, 1000)
+                }
             })
 
         } else {
@@ -380,6 +384,10 @@
                     SCREEN_SAVER = true
                     runScreenSaver()
                 }
+            }
+            if (e.altKey && e.code === 'KeyR') {
+                AUTO_RUN = !AUTO_RUN
+                document.querySelector('.run-next').innerText = 'Run Next' + ((AUTO_RUN) ? ' (A)' : '')
             }
         })
     }
