@@ -222,26 +222,26 @@ async function handlePattern(user, pattern) {
         } else if (otherSub && !otherSub.isValid()) {
             return 'You have already tried that pattern!'
         } else if (otherSub) {
-            otherSub.executedAt = null
             otherSub.resubmit = true
             await otherSub.save()
             logger.debug(`User ${user.username} resubmitted a pattern: ${pattern}`)
-            return 'Your pattern has been resubmitted! Go check out the laser display to see it run.'
+            return 'Your pattern was resubmitted! It is still ' + ((otherSub.valid) ? `worth ${otherSub.getPoints()} watts` : 'invalid') + '.'
 
         } else {
             await Submission.create({
                 pattern,
                 UserId: user.id,
-                valid: Submission.isValid(pattern)
+                valid: Submission.isValid(pattern),
+                executedAt: (new Date()).toISOString()
             })
             logger.debug(`Added new submission for User ${user.username}: ${pattern}`)
-            return 'Your pattern has been queued to run, go check out the laser display in the VoV space!'
+            return 'Your pattern was submitted!'
         }
 
     } catch(err) {
         logger.error(`Problem with submission for User: ${user.username} and Pattern: ${pattern}`)
         logger.error(err)
-        return 'There was a problem queueing your submission. Please try again!'
+        return 'There was a problem submitting your pattern. Please try again!'
     }
 }
 
