@@ -1,0 +1,20 @@
+doctype html
+html(lang='en-US')
+    head
+        meta(charset='UTF-8')
+        meta(http-equiv='content-type', content='text/html; charset=utf-8')
+        title= title
+        meta(name='description', content='A little game.')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        link(rel='stylesheet', href='/display.css')
+    
+    body(class='page-'+page)
+        button.close Close
+        aside.message
+        svg#display
+
+        script
+            | window.PATTERN='#{pattern}'
+            | window.PATTERN_POINTS='#{points}'
+            | window.LASER_PATH='#{path}'
+        script(src='/display-user.js')

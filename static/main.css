@@ -245,6 +245,8 @@ input#pattern { padding: 0.5rem 0.3rem; }
 .page-game .found { width: 100%; border-spacing: 0; border-collapse: collapse; table-layout: fixed; }
 .page-game .found td { border-top: 1px solid var(--line); }
 .page-game .found .pattern { padding: 0.5rem; word-wrap: break-word; }
+.page-game .found .pattern p { margin: 0; }
+.page-game .found .pattern a { color: var(--font); text-decoration: underline; }
 .page-game .found .watts { vertical-align: top; width: 3.5rem; }
 .page-game .found .watts span {
     display: inline-block;

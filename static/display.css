@@ -5,6 +5,10 @@ html { --bg: #000; --fc: #ccc; --lc: #ccc; }
 html{background:var(--bg);box-sizing:border-box;font-size:16px;height:100%;}body{background:var(--bg);color:var(--fc);height:100%;}*,*:before,*:after{box-sizing:inherit;}body,h1,h2,h3,h4,h5,h6,p,ol,ul{margin:0;padding:0;font-weight:normal;}img{max-width:100%;height:auto;}
 
 body { overflow: hidden; font-size: 1.3rem; }
+
+.message { height: 2rem; padding: 1rem; }
+.message p { text-align: center; color: var(--fc) }
+
 svg { width: 100%; min-height: 400px; }
 
 .hide { display: none; }
@@ -131,7 +135,13 @@ line.yellow {
 .meta header { display: flex; justify-content: flex-end; margin-bottom: 1rem; }
 .meta .last { width: 40rem; margin-right: 2rem; }
 
-.run-next {
+button.close {
+    display: block;
+    float: right;
+    margin: 1rem 1rem 0 0;
+}
+
+button {
     display: inline-block;
     border: none;
     font-size: 1.2rem;
@@ -145,8 +155,8 @@ line.yellow {
     color: #ddd;
     box-shadow: 0 6px #22719f;
 }
-.run-next:hover { box-shadow: 0 4px #22719f; top: 2px; }
-.run-next:active { box-shadow: 0 0 #22719f; top: 6px; }
+button:hover { box-shadow: 0 4px #22719f; top: 2px; }
+button:active { box-shadow: 0 0 #22719f; top: 6px; }
 
 #pattern { width: 30rem; }
 #units { width: 4rem; }

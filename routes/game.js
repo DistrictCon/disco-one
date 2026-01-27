@@ -245,6 +245,43 @@ async function handlePattern(user, pattern) {
     }
 }
 
+router.get('/pattern/:pattern/display', checkUserAuth, async (req, res) => {
+    const pattern = req.params.pattern.trim().toLowerCase()
+    
+    try {
+        const sub = await Submission.findOne({
+            where: { UserId: req.session.user.id, valid: true, pattern }
+        })
+
+        if (!sub) {
+            req.session.message = 'Sorry, that is not one of your valid patterns.'
+            return res.redirect('/')
+        }
+
+        const message = req.session.message || null
+        req.session.message = null
+
+        res.render('display-user', {
+            page: 'display-user',
+            message,
+            user: req.session.user,
+            pattern: sub.pattern,
+            points: sub.getPoints(),
+            path: sub.getPath(),
+            title: process.env.TITLE || 'The Game',
+            appName: process.env.APP_NAME || ''
+        })
+        
+    } catch(err) {
+        if (err.status && err.status < 500) {
+            req.session.message = err.message
+            return res.redirect('/')
+        } else {
+            next(err)
+        }
+    }
+})
+
 router.get('/queue', async (req, res, next) => {
     try {
         const count = await Submission.count({

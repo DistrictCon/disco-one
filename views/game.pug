@@ -89,7 +89,11 @@ block content
                                 =submission.points
                                 | w
                         td.pattern
-                            =submission.pattern
+                            p
+                                =submission.pattern
+                                |  (
+                                a(href='/pattern/'+submission.pattern+'/display', target='_blank') see display
+                                | )
                             details.pattern-message
                                 summary Message
                                 p.hint= submission.hint
