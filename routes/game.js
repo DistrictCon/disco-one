@@ -201,6 +201,7 @@ router.get('/pattern/:pattern', checkUserAuth, async (req, res) => {
 })
 
 async function handlePattern(user, pattern) {
+    let t = null
     try {
         if (!PATTERN_REGEX.test(pattern)) {
             return 'That is not a valid pattern format.'
@@ -228,17 +229,29 @@ async function handlePattern(user, pattern) {
             return 'Your pattern was resubmitted! It is still ' + ((otherSub.valid) ? `worth ${otherSub.getPoints()} watts` : 'invalid') + '.'
 
         } else {
+            const dbUser = await User.findOne({ where: { id: user.id } })
+            const sequelize = getConnection()
+            t = await sequelize.transaction()
             await Submission.create({
                 pattern,
                 UserId: user.id,
                 valid: Submission.isValid(pattern),
                 executedAt: (new Date()).toISOString()
-            })
+            }, { transaction: t })
+            if (Submission.isValid(pattern)) {
+                dbUser.score += Submission.getPoints(pattern)
+                await dbUser.save({ transaction: t })
+            }
+
+            // TODO: test out transaction logic!
+            await t.commit()
+
             logger.debug(`Added new submission for User ${user.username}: ${pattern}`)
             return 'Your pattern was submitted!'
         }
 
     } catch(err) {
+        if (t) { await t.rollback() }
         logger.error(`Problem with submission for User: ${user.username} and Pattern: ${pattern}`)
         logger.error(err)
         return 'There was a problem submitting your pattern. Please try again!'

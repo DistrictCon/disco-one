@@ -57,6 +57,10 @@ Submission.isValid = function isValid(pattern) {
     return !!patterns[pattern]
 }
 
+Submission.getPoints = function getPoints(pattern) {
+    return (patterns[pattern]) ? patterns[pattern].points : 0
+}
+
 Submission.prototype.getPath = function getPath() {
     if (patterns[this.pattern]) {
         if (patterns[this.pattern].path) {
