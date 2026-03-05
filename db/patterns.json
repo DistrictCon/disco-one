@@ -89,41 +89,11 @@
         "hint": "What's this? A note? \"We're Zetier. We do vulnerability research. Sometimes on each other. Join us to sheep colleagues. https://bit.ly/zetier-disco \"",
         "note": "zetier sponsor table"
     },
-    "bb194109570zgg9412475": {
-        "points": 5,
-        "path": null,
-        "hint": "Bah, that one was easy. You're welcome. But don't think you can just walk around to all the other tables and turn the lights on that way!",
-        "note": "Registration table"
-    },
-    "rrr41zbbb94zggg1093zooo41zyyy94737": {
-        "points": 8,
-        "path": null,
-        "hint": "Gah! I thought I left that booklet on the /metro. These laser colors are damaging my eyes. No matter, I'll hide my keys more carefully next time, there's no easy path here!",
-        "note": "Printed materials"
-    },
     "yyyy79459364794359395": {
         "points": 10,
         "path": null,
         "hint": "Bwahaha! \"Light mode”, huh? What a joke, but fine, leave your tiny light on. Just don't get aheader yourself, I still hold a lot of the light!",
         "note": "Light mode"
-    },
-    "r41zb94zg1295zo41zyyy9469295740": {
-        "points": 10,
-        "path": null,
-        "hint": "That's it, I'm firing my laser guy.",
-        "note": "Venue Location 21"
-    },
-    "o41493496zy94692705794zrrr37941924": {
-        "points": 10,
-        "path": null,
-        "hint": "Stop following those lasers! I control the light, you'll never collect enough watts to start the party.",
-        "note": "Venue Location 30"
-    },
-    "bb1941949649204957040": {
-        "points": 10,
-        "path": null,
-        "hint": "So what, you found a few of my hiding places. But while you've been running around I've gotten into the DisCo website, it'll be mine soon!",
-        "note": "Venue Location 31"
     },
     "rrzrzrzrzrzrzrzrzrrzrzrrzrzrrzrrzrr": {
         "points": 12,
@@ -160,12 +130,6 @@
         "path": null,
         "hint": "Your village friends may have helped you, but not enough! Wait, where was that last laser pointing? Nevermind, ignore that!",
         "note": "VoV tables"
-    },
-    "rrrr14927427310941029427941479547959359460957040": {
-        "points": 25,
-        "path": null,
-        "hint": "Blast! I thought my normal look would blend in with a bunch of hackers. I bet that little badge, Lumi, helped you, didn't she? Where did you even find her? Who would make such a thing?!",
-        "note": "Baron von Blackout QR"
     },
     "gg106rr510oo6rr5bb10oo6rr5106oo5": {
         "points": 25,
@@ -208,23 +172,5 @@
         "path": "R1-1-Z1-R3-21-Z2-R1-2",
         "hint": "HOW DO YOU KEEP DOING THIS?!? Is this a game to you?? Wait… is this a game? Am I in a game?!? Who made it??",
         "note": "Resistor puzzle (badge)"
-    },
-    "rr710747zyy94714071947zbb940107041zgg9410704174": {
-        "points": 50,
-        "path": null,
-        "hint": "That's him! Lumi's creator. I'll deal with him later, but I think I'm drawing too much attention here at the DisCo… I thought this outfit would blend right in with hackers!",
-        "note": "Jeff's"
-    },
-    "gg944396295zrr71074170zo494594zbb94012095": {
-        "points": 50,
-        "path": null,
-        "hint": "The DisCo CEO is unreasonable! She won't even keep the lights down just a little bit! No matter, her henchmen could still help me, like that game maker. I bet I could trade with him for some dimming…",
-        "note": "Winn's"
-    },
-    "rr710747zyy479414zgg49401063zrr1407941zbb94952409407zoo494594": {
-        "points": 50,
-        "path": null,
-        "hint": "So you found the game maker, eh? I tried to trade the name of the CEO with him to keep the lights off, but apparently he already knew the DisCo CEO. She's the one that's really trying to keep the lights on!",
-        "note": "Jordan's code"
     }
 }
