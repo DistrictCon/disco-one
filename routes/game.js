@@ -32,9 +32,9 @@ router.get('/', async (req, res, next) => {
     let nextPage = null
     if (req.session?.user) {
         page = 'game'
-        res.setHeader('X-author', AUTHORS[Math.floor(Math.random() * AUTHORS.length)])
+        res.setHeader('X-secret', 'bb194109570zgg9412475')
     } else {
-        res.setHeader('X-hacked-by', 'B.v.B.')
+        res.setHeader('X-p0wned-by', 'BvB')
         nextPage = req.query.r || ''
     }
 

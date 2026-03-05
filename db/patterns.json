@@ -5,6 +5,12 @@
         "hint": "Oh, you think you can just turn the lights back on, eh? No chance! I've hidden all of the light patterns and you'll never find them. Well, except for this one. Not even your little DisCo ball badge can help you start the party now!",
         "note": "_ given when player signs up"
     },
+    "bb194109570zgg9412475": {
+        "points": 10,
+        "path": null,
+        "hint": "Some hint to another challenge",
+        "note": "Basic Site Header"
+    },
     "bb1945795921927403": {
         "points": 3,
         "path": null,
