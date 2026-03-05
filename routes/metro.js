@@ -1,29 +1,21 @@
 const express = require('express')
 const AppError = require('../util/AppError')
+const { API_KEY } = require('../util/constants')
 const router = express.Router()
 
-const GARBAGE_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789-.|'
-const GARBAGE_SIZE = [300, 800]
-const KEY_PARTS = {
-    blue: '7ce33c5',
-    green: 'f6a094',
-    orange: '618bfa',
-    red: 'c432bb',
-    yellow: 'cae0801'
-}
+const KEY_PARTS = API_KEY.split('-')
+const COLORS = [ 'blue', 'green', 'orange', 'red', 'yellow' ]
 
 
 router.get('/', (req, res, next) => {
-    return next(new AppError('No Color Found', 404))
+    return next(new AppError('Color Not Found', 404))
 })
 
 router.get('/silver', (req, res, next) => {
-    const key = Object.keys(KEY_PARTS)
-        .sort((a, b) => (a < b) ? -1 : 1)
-        .reduce((p, c) => { return p + KEY_PARTS[c] }, '')
-    console.log(key, req.headers.authorization)
-    if (req.headers.authorization !== key) {
-        return next(new AppError('Not Authorized', 403))
+    if (req.headers.authorization !== API_KEY && 
+        req.headers.authorization !== API_KEY.replaceAll('-', '')
+    ) {
+        return next(new AppError('Not Authorized', 401))
     }
     res.json({
         pattern: 'r5319510296zy47941694293zg396924956941'
@@ -31,29 +23,17 @@ router.get('/silver', (req, res, next) => {
 })
 
 router.get('/:color', (req, res, next) => {
-    if (!KEY_PARTS[req.params.color]) {
-        return next(new AppError('Not Found', 404))
+    if (!COLORS.includes(req.params.color)) {
+        return next(new AppError('Color Not Found', 404))
     }
 
-    const garbage = []
-    const size = Math.floor(Math.random() * (GARBAGE_SIZE[1] - GARBAGE_SIZE[0])) + GARBAGE_SIZE[0]
-    for (let i=0; i<size; ++i) {
-        garbage.push(generateGarbage())
-    }
-    garbage[Math.floor(Math.random() * garbage.length)] = '|key:'+KEY_PARTS[req.params.color]+'|'
-    
+    const index = COLORS.indexOf(req.params.color)
     res.status(206)
-    res.end(garbage.join(''))
+    res.json({
+        index,
+        part: KEY_PARTS[index]
+    })
 })
-
-function generateGarbage() {
-    const size = Math.floor((Math.random() * 15) + 5)
-    const garbage = []
-    for (let i=0; i<size; ++i) {
-        garbage.push(GARBAGE_CHARS[Math.floor(Math.random() * GARBAGE_CHARS.length)])
-    }
-    return garbage.join('')
-}
 
 
 module.exports = router

@@ -2,7 +2,7 @@ const express = require('express')
 const fs = require('fs')
 const path = require('path')
 const AppError = require('../util/AppError')
-const { LOG_API_KEY } = require('../util/constants')
+const { API_KEY } = require('../util/constants')
 const router = express.Router()
 
 const LOG_FILE = fs.readFileSync(path.join(__dirname, '..', 'server', 'disco.log')).toString()
@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res, next) => {
-    if (req.headers.authorization !== LOG_API_KEY) {
+    if (req.headers.authorization !== API_KEY) {
         return next(new AppError('Sorry, but you need a valid API key to post logs', 403))
     }
     

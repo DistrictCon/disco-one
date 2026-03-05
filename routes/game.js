@@ -6,7 +6,7 @@ const { checkUserAuth, checkAdminAuth } = require('../util/middleware')
 const { Op } = require('sequelize')
 const { Submission, User } = require('../db/models/app-models')
 const { getConnection } = require('../util/database')
-const { LOG_API_KEY, OVERCLOCK_PERCENT, PATTERN_REGEX, STARTER_PATTERN } = require('../util/constants')
+const { API_KEY, OVERCLOCK_PERCENT, PATTERN_REGEX, STARTER_PATTERN } = require('../util/constants')
 const logger = require('../util/logger')(process.env.LOG_LEVEL)
 
 const router = express.Router()
@@ -120,7 +120,7 @@ router.get('/', async (req, res, next) => {
             maxQueue: MAX_QUEUE,
             maxScore,
             nextPage,
-            logApiKey: LOG_API_KEY,
+            logApiKey: API_KEY,
             starterPattern: STARTER_PATTERN,
             title: process.env.TITLE || 'The Game',
             appName: process.env.APP_NAME || ''
@@ -144,7 +144,7 @@ router.get('/help', (req, res) => {
         page: 'help',
         message,
         user: req.session.user,
-        logApiKey: LOG_API_KEY,
+        logApiKey: API_KEY,
         title: process.env.TITLE || 'The Game',
         appName: process.env.APP_NAME || ''
     })
@@ -158,7 +158,7 @@ router.get('/rules', (req, res) => {
         page: 'rules',
         message,
         user: req.session.user,
-        logApiKey: LOG_API_KEY,
+        logApiKey: API_KEY,
         title: process.env.TITLE || 'The Game',
         appName: process.env.APP_NAME || ''
     })
