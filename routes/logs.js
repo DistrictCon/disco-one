@@ -7,10 +7,7 @@ const router = express.Router()
 
 const LOG_FILE = fs.readFileSync(path.join(__dirname, '..', 'server', 'disco.log')).toString()
 
-router.get('/', (req, res, next) => {
-    if (req.headers.authorization !== LOG_API_KEY) {
-        return next(new AppError('Sorry, but you need a valid API key to access logs', 403))
-    }
+router.get('/', (req, res) => {
     res.setHeader('Content-disposition', 'attachment; filename=disco.log')
     res.setHeader('Content-type', 'text/plain')
     res.end(LOG_FILE)
