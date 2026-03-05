@@ -150,27 +150,13 @@ router.get('/help', (req, res) => {
     })
 })
 
-router.get('/rules', (req, res) => {
-    const message = req.session.message || null
-    req.session.message = null
-
-    res.render('rules', {
-        page: 'rules',
-        message,
-        user: req.session.user,
-        logApiKey: API_KEY,
-        title: process.env.TITLE || 'The Game',
-        appName: process.env.APP_NAME || ''
-    })
-})
-
 router.post('/pattern', checkUserAuth, async (req, res, next) => {
     const pattern = req.body?.pattern?.trim().toLowerCase() || null
     
     try {
         const message = await handlePattern(req.session.user, pattern)
         req.session.message = message
-        res.setHeader('X-pattern', 'eTk0NzQxOTR6bzM5NjQ3MDk0Mjk1emc5NDEwMzc5M3piMTk0MTk0NzR6cjc0Mjc5Njk0Nw==')
+        res.setHeader('X-pattern', 'y9474194zo39647094295zg94103793zb19419474zr742796947')
         return res.redirect('/')
     } catch(err) {
         if (err.status && err.status < 500) {
@@ -188,7 +174,7 @@ router.get('/pattern/:pattern', checkUserAuth, async (req, res) => {
     try {
         const message = await handlePattern(req.session.user, pattern)
         req.session.message = message
-        res.setHeader('X-pattern', 'eTk0NzQxOTR6bzM5NjQ3MDk0Mjk1emc5NDEwMzc5M3piMTk0MTk0NzR6cjc0Mjc5Njk0Nw==')
+        res.setHeader('X-pattern', 'y9474194zo39647094295zg94103793zb19419474zr742796947')
         return res.redirect('/')
     } catch(err) {
         if (err.status && err.status < 500) {

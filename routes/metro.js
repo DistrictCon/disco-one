@@ -15,7 +15,7 @@ router.get('/silver', (req, res, next) => {
     if (req.headers.authorization !== API_KEY && 
         req.headers.authorization !== API_KEY.replaceAll('-', '')
     ) {
-        return next(new AppError('Not Authorized', 401))
+        return next(new AppError('No "Authorization" key', 401))
     }
     res.json({
         pattern: 'r5319510296zy47941694293zg396924956941'
