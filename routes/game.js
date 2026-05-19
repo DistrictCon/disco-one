@@ -16,13 +16,13 @@ const MAX_QUEUE = 5
 
 const LUMI_THRESHOLDS = [
     { percent: 5, title: 'The Baron', code: 'prismatic charging' },
-    { percent: 15, title: 'The Siphon', code: 'suck it out' },
-    { percent: 30, title: 'Blackouts', code: 'heart of darkness' },
-    { percent: 35, title: 'The Defeated?', code: 'down but not out' },
-    { percent: 55, title: 'Mech Preparation', code: 'mechanized siphonry' },
-    { percent: 70, title: 'Alternative Source', code: 'by another name' },
-    { percent: 85, title: 'The Ultimate Siphon', code: 'baron no more' },
-    { percent: 95, title: 'The True Ending', code: 'disco inferno' }
+    { percent: 10, title: 'The Siphon', code: 'suck it out' },
+    { percent: 20, title: 'Blackouts', code: 'heart of darkness' },
+    { percent: 30, title: 'The Defeated?', code: 'down but not out' },
+    { percent: 40, title: 'Mech Preparation', code: 'mechanized siphonry' },
+    { percent: 50, title: 'Alternative Source', code: 'by another name' },
+    { percent: 60, title: 'The Ultimate Siphon', code: 'baron no more' },
+    { percent: 75, title: 'The True Ending', code: 'disco inferno' }
 ]
 const map = fs.readFileSync('./views/partials/map.txt').toString().split('\n').map(l => '        '+l).join('\n')
 
@@ -209,10 +209,12 @@ async function handlePattern(user, pattern) {
         } else if (otherSub && !otherSub.isValid()) {
             return 'You have already tried that pattern!'
         } else if (otherSub) {
+            otherSub.executedAt = null  // remove for auto submission
             otherSub.resubmit = true
             await otherSub.save()
             logger.debug(`User ${user.username} resubmitted a pattern: ${pattern}`)
-            return 'Your pattern was resubmitted! It is still ' + ((otherSub.valid) ? `worth ${otherSub.getPoints()} watts` : 'invalid') + '.'
+            return 'Your pattern has been resubmitted! Go check out the laser display to see it run.'
+            // return 'Your pattern was resubmitted! It is still ' + ((otherSub.valid) ? `worth ${otherSub.getPoints()} watts` : 'invalid') + '.'
 
         } else {
             const dbUser = await User.findOne({ where: { id: user.id } })
@@ -221,13 +223,14 @@ async function handlePattern(user, pattern) {
             await Submission.create({
                 pattern,
                 UserId: user.id,
-                valid: Submission.isValid(pattern),
-                executedAt: (new Date()).toISOString()
+                valid: Submission.isValid(pattern) //,
+                // executedAt: (new Date()).toISOString()
             }, { transaction: t })
-            if (Submission.isValid(pattern)) {
-                dbUser.score += Submission.getPoints(pattern)
-                await dbUser.save({ transaction: t })
-            }
+
+            // if (Submission.isValid(pattern)) {
+            //     dbUser.score += Submission.getPoints(pattern)
+            //     await dbUser.save({ transaction: t })
+            // }
 
             // TODO: test out transaction logic!
             await t.commit()
