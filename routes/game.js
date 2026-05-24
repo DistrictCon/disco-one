@@ -15,14 +15,14 @@ const AUTHORS = ['jakerella', 'BigTaro', 'RoRo', 'ZeeTwii']
 const MAX_QUEUE = 5
 
 const LUMI_THRESHOLDS = [
-    { percent: 5, title: 'The Baron', code: 'prismatic charging' },
-    { percent: 10, title: 'The Siphon', code: 'suck it out' },
-    { percent: 20, title: 'Blackouts', code: 'heart of darkness' },
-    { percent: 30, title: 'The Defeated?', code: 'down but not out' },
-    { percent: 40, title: 'Mech Preparation', code: 'mechanized siphonry' },
-    { percent: 50, title: 'Alternative Source', code: 'by another name' },
-    { percent: 60, title: 'The Ultimate Siphon', code: 'baron no more' },
-    { percent: 75, title: 'The True Ending', code: 'disco inferno' }
+    { percent: 10, title: 'The Baron', code: 'prismatic charging' },
+    { percent: 20, title: 'The Siphon', code: 'suck it out' },
+    { percent: 30, title: 'Blackouts', code: 'heart of darkness' },
+    { percent: 40, title: 'The Defeated?', code: 'down but not out' },
+    { percent: 50, title: 'Mech Preparation', code: 'mechanized siphonry' },
+    { percent: 60, title: 'Alternative Source', code: 'by another name' },
+    { percent: 70, title: 'The Ultimate Siphon', code: 'baron no more' },
+    { percent: 85, title: 'The True Ending', code: 'disco inferno' }
 ]
 const map = fs.readFileSync('./views/partials/map.txt').toString().split('\n').map(l => '        '+l).join('\n')
 
