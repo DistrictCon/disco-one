@@ -18,7 +18,12 @@ const models = [ User, Submission ]
 
     
     console.log('Opening database connection')
-    const client = new pg.Client(process.env.DATABASE_URL)
+    const client = new pg.Client(process.env.DATABASE_URL, {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false 
+        }
+    })
     await client.connect()
 
     
